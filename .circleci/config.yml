@@ -11,7 +11,7 @@ jobs:
       - run: dotnet restore
       - run: dotnet build
       - run: dotnet test -p:CollectCoverage=true -p:CoverletOutputFormat=opencover --no-build Oxbind.Test
-      - run: dotnet ~/.nuget/packages/reportgenerator/4.0.5/tools/netcoreapp2.0/ReportGenerator.dll --reports:Oxbind.Test/coverage.opencover.xml --targetdir:Coverlet-html
+      - run: dotnet ~/.nuget/packages/reportgenerator/4.0.7/tools/netcoreapp2.0/ReportGenerator.dll --reports:Oxbind.Test/coverage.opencover.xml --targetdir:Coverlet-html
       - store_artifacts:
           path: /root/project/Coverlet-html
 workflows:

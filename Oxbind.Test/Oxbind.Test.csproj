@@ -18,15 +18,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="coverlet.msbuild" Version="2.5.0">
+    <PackageReference Include="coverlet.msbuild" Version="2.5.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="1.4.0" />
     <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
-    <PackageReference Include="ReportGenerator" Version="4.0.5" />
-    <PackageReference Include="StyleChecker" Version="1.0.17" PrivateAssets="All" />
+    <PackageReference Include="ReportGenerator" Version="4.0.7" />
+    <PackageReference Include="StyleChecker" Version="1.0.18" PrivateAssets="All" />
     <PackageReference Include="StyleChecker.Annotations" Version="1.0.1" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.1-beta.61" PrivateAssets="All" />
   </ItemGroup>

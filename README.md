@@ -180,6 +180,6 @@ $ dotnet build
 
 ```
 $ dotnet test -p:CollectCoverage=true -p:CoverletOutputFormat=opencover --no-build Oxbind.Test
-$ dotnet ~/.nuget/packages/reportgenerator/4.0.5/tools/netcoreapp2.0/ReportGenerator.dll \
+$ dotnet ~/.nuget/packages/reportgenerator/4.0.7/tools/netcoreapp2.0/ReportGenerator.dll \
   --reports:Oxbind.Test/coverage.opencover.xml --targetdir:Coverlet-html
 ```

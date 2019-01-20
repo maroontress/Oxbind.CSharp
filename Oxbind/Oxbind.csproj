@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <PackageReference Include="OpenCover" Version="4.6.519" PrivateAssets="all" />
-    <PackageReference Include="StyleChecker" Version="1.0.17" PrivateAssets="all" />
+    <PackageReference Include="StyleChecker" Version="1.0.18" PrivateAssets="all" />
     <PackageReference Include="StyleChecker.Annotations" Version="1.0.1" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.1-beta.61" PrivateAssets="all" />
   </ItemGroup>
