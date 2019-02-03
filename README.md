@@ -169,17 +169,17 @@ var movie = binder.NewInstance(reader);
 
 ## How to get started
 
-```
-$ git clone URL
-$ cd Oxbind.CSharp
-$ dotnet restore
-$ dotnet build
+```bash
+git clone URL
+cd Oxbind.CSharp
+dotnet restore
+dotnet build
 ```
 
 ## How to get test coverage report with OpenCover
 
-```
-$ dotnet test -p:CollectCoverage=true -p:CoverletOutputFormat=opencover --no-build Oxbind.Test
-$ dotnet ~/.nuget/packages/reportgenerator/4.0.7/tools/netcoreapp2.0/ReportGenerator.dll \
+```bash
+dotnet test -p:CollectCoverage=true -p:CoverletOutputFormat=opencover --no-build Oxbind.Test
+dotnet ~/.nuget/packages/reportgenerator/4.0.7/tools/netcoreapp2.0/ReportGenerator.dll \
   --reports:Oxbind.Test/coverage.opencover.xml --targetdir:Coverlet-html
 ```
