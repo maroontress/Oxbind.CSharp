@@ -2,6 +2,7 @@ namespace Maroontress.Oxbind.Impl
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
 
     /// <summary>
     /// An abstraction of the validator.
@@ -120,7 +121,8 @@ namespace Maroontress.Oxbind.Impl
         /// </param>
         private void Log(string type, string message, params object[] args)
         {
-            var m = string.Format(bundle(message), args);
+            var culture = CultureInfo.CurrentCulture;
+            var m = string.Format(culture, bundle(message), args);
             log.Add($"{Label}: {bundle(type)}: {m}");
         }
     }
