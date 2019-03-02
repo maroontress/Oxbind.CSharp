@@ -162,7 +162,7 @@ var movie = binder.NewInstance(reader);
 ## Requirements for build
 
 - Visual Studio 2017 Version 15.9
-  or [.NET Core 2.2 SDK (SDK 2.2.103)][dotnet-core-sdk]
+  or [.NET Core 2.2 SDK (SDK 2.2.104)][dotnet-core-sdk]
 
 ## How to get started
 
@@ -177,9 +177,9 @@ dotnet build
 
 ```bash
 dotnet test -p:CollectCoverage=true -p:CoverletOutputFormat=opencover --no-build Oxbind.Test
-dotnet ~/.nuget/packages/reportgenerator/4.0.12/tools/netcoreapp2.0/ReportGenerator.dll \
+dotnet ~/.nuget/packages/reportgenerator/4.0.14/tools/netcoreapp2.0/ReportGenerator.dll \
   --reports:Oxbind.Test/coverage.opencover.xml --targetdir:Coverlet-html
 ```
 
 [dotnet-core-sdk]:
-  https://www.microsoft.com/net/download/thank-you/dotnet-sdk-2.2.103-windows-x64-installer
+  https://www.microsoft.com/net/download/thank-you/dotnet-sdk-2.2.104-windows-x64-installer
