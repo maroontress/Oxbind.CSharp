@@ -173,12 +173,11 @@ dotnet restore
 dotnet build
 ```
 
-## How to get test coverage report with OpenCover
+## How to get test coverage report with Coverlet
 
 ```bash
 dotnet test -p:CollectCoverage=true -p:CoverletOutputFormat=opencover --no-build Oxbind.Test
-dotnet ~/.nuget/packages/reportgenerator/4.0.14/tools/netcoreapp2.0/ReportGenerator.dll \
-  --reports:Oxbind.Test/coverage.opencover.xml --targetdir:Coverlet-html
+sh coverage-report.sh
 ```
 
 [dotnet-core-sdk]:
