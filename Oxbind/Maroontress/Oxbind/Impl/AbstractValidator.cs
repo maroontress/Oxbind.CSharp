@@ -44,13 +44,14 @@ namespace Maroontress.Oxbind.Impl
             Label = label;
             bundle = s => manager.GetString(s, culture);
 
-            Action<string, object[]> secondErrorAction
-                = (m, a) => Log("error", m, a);
+            void NonFirstErrorAction(string m, object[] a)
+                => Log("error", m, a);
+
             errorAction = (m, a) =>
             {
-                secondErrorAction(m, a);
+                NonFirstErrorAction(m, a);
                 hasError = true;
-                errorAction = secondErrorAction;
+                errorAction = NonFirstErrorAction;
             };
         }
 
