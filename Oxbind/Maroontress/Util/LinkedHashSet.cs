@@ -107,7 +107,7 @@ namespace Maroontress.Util
             }
             var node = list.First;
             map.Clear();
-            while (node != null)
+            while (!(node is null))
             {
                 map[node.Value] = node;
                 node = node.Next;
