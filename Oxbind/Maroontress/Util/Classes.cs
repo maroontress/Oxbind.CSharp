@@ -29,7 +29,7 @@ namespace Maroontress.Util
             return clazz.GetTypeInfo()
                 .DeclaredFields
                 .Where(f => !f.IsStatic
-                    && f.GetCustomAttribute<T>() != null);
+                    && !(f.GetCustomAttribute<T>() is null));
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace Maroontress.Util
             return clazz.GetTypeInfo()
                 .DeclaredMethods
                 .Where(m => !m.IsStatic
-                    && m.GetCustomAttribute<T>() != null);
+                    && !(m.GetCustomAttribute<T>() is null));
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace Maroontress.Util
             return clazz.GetTypeInfo()
                 .DeclaredFields
                 .Where(f => f.IsStatic
-                    && f.GetCustomAttribute<T>() != null);
+                    && !(f.GetCustomAttribute<T>() is null));
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace Maroontress.Util
             return clazz.GetTypeInfo()
                 .DeclaredMethods
                 .Where(m => m.IsStatic
-                    && m.GetCustomAttribute<T>() != null);
+                    && !(m.GetCustomAttribute<T>() is null));
         }
     }
 }

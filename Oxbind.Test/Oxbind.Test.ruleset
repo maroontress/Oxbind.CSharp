@@ -75,4 +75,8 @@
     <Rule Id="SA1633" Action="None" />
     <Rule Id="SA1513" Action="None" />
   </Rules>
+  <Rules AnalyzerId="StyleChecker" RuleNamespace="StyleChecker">
+    <Rule Id="EqualsNull" Action="Warning" />
+    <Rule Id="IsNull" Action="Hidden" />
+  </Rules>
 </RuleSet>

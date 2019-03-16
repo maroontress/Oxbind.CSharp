@@ -167,7 +167,7 @@ namespace Maroontress.Oxbind.Impl
         {
             var a = clazz.GetTypeInfo()
                 .GetCustomAttribute<ForElementAttribute>();
-            Debug.Assert(a != null, "no ForElement attribute");
+            Debug.Assert(!(a is null), "no ForElement attribute");
             return a.QName;
         }
 
