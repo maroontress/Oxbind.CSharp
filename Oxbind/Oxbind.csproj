@@ -2,10 +2,25 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.3</TargetFramework>
-    <ApplicationIcon />
     <OutputType>Library</OutputType>
-    <StartupObject />
-    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>Maroontress.Oxbind</PackageId>
+    <PackageVersion>1.0.2.0</PackageVersion>
+    <Authors>Tomohisa Tanaka</Authors>
+    <PackageProjectUrl>https://maroontress.github.io/Oxbind-CSharp/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/maroontress/Oxbind.CSharp</RepositoryUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Description>Oxbind is an XML deserializer using APIs of .NET Standard 1.3.</Description>
+    <PackageReleaseNotes>See https://maroontress.github.io/Oxbind-CSharp/releasenotes.html</PackageReleaseNotes>
+    <Copyright>Copyright (c) 2018 Maroontress Fast Software</Copyright>
+    <PackageTags>csharp, XML, deserializer</PackageTags>
+    <NoPackageAnalysis>true</NoPackageAnalysis>
+    <Version>1.0.2.0</Version>
+    <RepositoryType />
+    <Company>Maroontress Fast Software</Company>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -14,7 +29,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <CodeAnalysisRuleSet>Oxbind.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>Oxbind.xml</DocumentationFile>
+    <DocumentationFile>dcx\Oxbind.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
