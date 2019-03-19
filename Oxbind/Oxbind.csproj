@@ -21,6 +21,8 @@
     <RepositoryType />
     <Company>Maroontress Fast Software</Company>
     <LangVersion>7.3</LangVersion>
+    <AssemblyName>Maroontress.Oxbind</AssemblyName>
+    <RootNamespace>Maroontress.Oxbind</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -52,6 +54,21 @@
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
       <CustomToolNamespace>Maroontress.Oxbind.Impl</CustomToolNamespace>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="nuget\readme.txt">
+      <Pack>true</Pack>
+      <PackagePath>\</PackagePath>
+    </Content>
+    <Content Include="nuget\COPYRIGHT.txt">
+      <Pack>true</Pack>
+      <PackagePath>\</PackagePath>
+    </Content>
+    <Content Include="nuget\LEGAL_NOTICES.txt">
+      <Pack>true</Pack>
+      <PackagePath>\</PackagePath>
+    </Content>
   </ItemGroup>
 
 </Project>
