@@ -71,4 +71,8 @@
     </Content>
   </ItemGroup>
 
+  <PropertyGroup>
+    <PackageLicenseFile>COPYRIGHT.txt</PackageLicenseFile>
+  </PropertyGroup>
+
 </Project>
