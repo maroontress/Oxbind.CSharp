@@ -231,8 +231,8 @@ namespace Maroontress.Oxbind.Impl
         /// to the qualified name, <c>false</c> otherwise.
         /// </returns>
         public static bool Equals(XmlReader @in, XmlQualifiedName qName)
-            => @in.LocalName.Equals(qName.Name)
-                && @in.NamespaceURI.Equals(qName.Namespace);
+            => @in.LocalName == qName.Name
+                && @in.NamespaceURI == qName.Namespace;
 
         /// <summary>
         /// Creates a new <see cref="BindException"/> representing
