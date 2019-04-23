@@ -54,7 +54,7 @@ First, creates `Movie` class representing `movie` element as follows:
 using Maroontress.Oxbind;
 
 [ForElement("movie")]
-public sealed class Root
+public sealed class Movie
 {
     [ElementSchema]
     private static readonly Schema TheSchema = Schema.Of(
@@ -162,7 +162,7 @@ var movie = binder.NewInstance(reader);
 ## Requirements for build
 
 - Visual Studio 2017 Version 15.9
-  or [.NET Core 2.2 SDK (SDK 2.2.105)][dotnet-core-sdk]
+  or [.NET Core 2.2 SDK (SDK 2.2.203)][dotnet-core-sdk]
 
 ## How to get started
 
@@ -181,4 +181,4 @@ sh coverage-report.sh
 ```
 
 [dotnet-core-sdk]:
-  https://dotnet.microsoft.com/download/thank-you/dotnet-sdk-2.2.105-windows-x64-installer
+  https://dotnet.microsoft.com/download/dotnet-core/2.2
