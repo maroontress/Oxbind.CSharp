@@ -1,6 +1,7 @@
 # Oxbind
 
-Oxbind is an XML deserializer using APIs of .NET Standard 1.3.
+Oxbind is a .NET library that deserializes an XML document.
+It depends on .NET Standard 1.3.
 
 ## Example
 
@@ -159,12 +160,14 @@ var binder = factory.Of<Movie>();
 var movie = binder.NewInstance(reader);
 ```
 
-## Requirements for build
+## How to build
 
-- Visual Studio 2017 Version 15.9
+### Requirements for build
+
+- Visual Studio 2019 Version 16.0
   or [.NET Core 2.2 SDK (SDK 2.2.203)][dotnet-core-sdk]
 
-## How to get started
+### Get started
 
 ```bash
 git clone URL
@@ -173,11 +176,14 @@ dotnet restore
 dotnet build
 ```
 
-## How to get test coverage report with Coverlet
+### Get test coverage report with Coverlet
 
 ```bash
-dotnet test -p:CollectCoverage=true -p:CoverletOutputFormat=opencover --no-build Oxbind.Test
-sh coverage-report.sh
+dotnet test -p:CollectCoverage=true -p:CoverletOutputFormat=opencover \
+        --no-build Oxbind.Test
+dotnet ANYWHERE/reportgenerator.dll \
+        --reports:Oxbind.Test/coverage.opencover.xml \
+        --targetdir:Coverlet-html
 ```
 
 [dotnet-core-sdk]:
