@@ -32,16 +32,25 @@ namespace Maroontress.Oxbind
         /// Initializes a new instance of the <see cref="OxbinderFactory"/>
         /// class.
         /// </summary>
-        public OxbinderFactory()
+        /// <param name="ignoreWarnings">
+        /// If the value is <c>true</c>, the <see
+        /// cref="OxbinderFactory.Of{T}"/> ignores warning messages to the
+        /// annotations of type <c>T</c>. Otherwise, the warning messages are
+        /// treated as errors, and then the method throws <see
+        /// cref="BindException"/>.
+        /// </param>
+        public OxbinderFactory(bool ignoreWarnings = false)
         {
             metadataCache = new InternMap<Type, Metadata>();
             validationTraversal = new Traversal<Type>(type =>
             {
                 var v = new Validator(type);
-                if (!v.IsValid)
+                var messages = v.GetMessages();
+                if (!v.IsValid
+                    || (!ignoreWarnings && messages.Any()))
                 {
                     var log = string.Join(
-                        Environment.NewLine, v.GetMessages());
+                        Environment.NewLine, messages);
                     throw new BindException(
                         $"{type.Name} has failed to validate annotations: "
                             + $"{log}");

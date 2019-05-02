@@ -20,7 +20,7 @@ namespace Maroontress.Oxbind.Impl {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resource {
@@ -220,6 +220,15 @@ namespace Maroontress.Oxbind.Impl {
         internal static string FromText_is_ignored {
             get {
                 return ResourceManager.GetString("FromText_is_ignored", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The field annotated with [ForChild] or the method annotated with [FromChild] is found without the static field annotated with [ElementSchema] (probably missing [ElementSchema] annotation): {0}.
+        /// </summary>
+        internal static string missing_ElementSchema {
+            get {
+                return ResourceManager.GetString("missing_ElementSchema", resourceCulture);
             }
         }
         
