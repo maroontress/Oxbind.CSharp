@@ -36,7 +36,7 @@
     <PackageReference Include="ReportGenerator" Version="4.1.4" />
     <PackageReference Include="StyleChecker" Version="1.0.22" PrivateAssets="All" />
     <PackageReference Include="StyleChecker.Annotations" Version="1.0.1" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.1-rc.114" PrivateAssets="All" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>

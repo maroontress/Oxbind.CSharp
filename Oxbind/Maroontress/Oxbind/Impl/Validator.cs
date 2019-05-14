@@ -1,3 +1,5 @@
+#pragma warning disable SA1122
+
 namespace Maroontress.Oxbind.Impl
 {
     using System;
@@ -414,6 +416,20 @@ namespace Maroontress.Oxbind.Impl
             var forChildren = GetInstanceFields<ForChildAttribute>();
             var fromChildren = GetInstanceMethods<FromChildAttribute>();
 
+            // Checks no [ElementSchema]s and any [ForChild]/[FromChild],
+            // which probably means missing [ElementSchema].
+            if (!fields.Any()
+                && (forChildren.Any() || fromChildren.Any()))
+            {
+                var all = new[]
+                {
+                    Names.OfFields(forChildren),
+                    Names.OfMethods(fromChildren),
+                }.Where(s => !(s is ""));
+
+                Warn("missing_ElementSchema", string.Join(", ", all));
+            }
+
             bool IsType<T>(FieldInfo f)
                 => typeof(T).GetTypeInfo()
                     .IsAssignableFrom(f.FieldType.GetTypeInfo());
@@ -498,13 +514,16 @@ namespace Maroontress.Oxbind.Impl
                 p => Error("not_handled_class", Names.OfClasses(p)));
 
             // Checks the field/method(s) that are never used.
-            foreach (var c
-                in Elements.DifferenceOf(handledClasses, placeholders))
+            if (fields.Any())
             {
-                Warn(
-                    "ForChild_FromChild_is_unused",
-                    Names.Of(c),
-                    Names.SortAndJoin(map[c]));
+                foreach (var c
+                    in Elements.DifferenceOf(handledClasses, placeholders))
+                {
+                    Warn(
+                        "ForChild_FromChild_is_unused",
+                        Names.Of(c),
+                        Names.SortAndJoin(map[c]));
+                }
             }
         }
 

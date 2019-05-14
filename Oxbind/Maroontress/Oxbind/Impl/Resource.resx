@@ -204,4 +204,7 @@
   <data name="type_mismatch_FromText" xml:space="preserve">
     <value>the type of the method annotated with [FromText] is not void(string): {0}</value>
   </data>
+  <data name="missing_ElementSchema" xml:space="preserve">
+    <value>The field annotated with [ForChild] or the method annotated with [FromChild] is found without the static field annotated with [ElementSchema] (probably missing [ElementSchema] annotation): {0}</value>
+  </data>
 </root>
