@@ -1,5 +1,6 @@
 namespace Maroontress.Oxbind.Test
 {
+    using System;
     using System.IO;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -26,6 +27,7 @@ namespace Maroontress.Oxbind.Test
             var reader = new StringReader(xml);
             var root = binder.NewInstance(reader);
 
+            _ = root.First ?? throw new NullReferenceException();
             Assert.AreEqual("20", root.First.Text);
             Assert.AreEqual("10", root.First.BetaValue);
             Assert.AreEqual("30", root.First.Value);
@@ -39,20 +41,20 @@ namespace Maroontress.Oxbind.Test
                     Optional.Of<First>());
 
             [field: ForChild]
-            public First First { get; }
+            public First? First { get; }
         }
 
         [ForElement("first", AlphaNamespace)]
         public sealed class First
         {
             [field: ForAttribute("value", BetaNamespace)]
-            public string BetaValue { get; }
+            public string? BetaValue { get; }
 
             [field: ForAttribute("value")]
-            public string Value { get; }
+            public string? Value { get; }
 
             [field: ForText]
-            public string Text { get; }
+            public string? Text { get; }
         }
     }
 }

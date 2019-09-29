@@ -23,7 +23,7 @@ namespace Maroontress.Oxbind.Impl.Validator.Test
         public sealed class Root
         {
             [field: ForAttribute("value")]
-            public static string Text { get; set; }
+            public static string? Text { get; set; }
         }
     }
 }

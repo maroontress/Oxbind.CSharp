@@ -62,7 +62,10 @@ namespace Maroontress.Util.Graph
         /// </param>
         /// <returns>The new instance.</returns>
         public static CircularDependencyException Of<T>(IEnumerable<T> list)
-            => new CircularDependencyException(
+            where T : notnull
+        {
+            return new CircularDependencyException(
                 string.Join(" -> ", list.Select(o => o.ToString())));
+        }
     }
 }

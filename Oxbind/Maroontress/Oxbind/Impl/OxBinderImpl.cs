@@ -11,6 +11,7 @@ namespace Maroontress.Oxbind.Impl
     /// The type of the instance to create.
     /// </typeparam>
     public sealed class OxBinderImpl<T> : Oxbinder<T>
+        where T : class
     {
         /// <summary>
         /// The class of the instance that the method

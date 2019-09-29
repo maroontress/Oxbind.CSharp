@@ -55,7 +55,7 @@ namespace Maroontress.Oxbind
                         $"{type.Name} has failed to validate annotations: "
                             + $"{log}");
                 }
-                return v.GetSchemaClasses();
+                return v.SchemaClasses;
             });
             dagChecker = new DagChecker<Type>(Validator.GetDependencies);
         }
@@ -74,6 +74,7 @@ namespace Maroontress.Oxbind
         /// </returns>
         /// <seealso cref="Oxbinder{T}.NewInstance(TextReader)"/>
         public Oxbinder<T> Of<T>()
+            where T : class
         {
             return new OxBinderImpl<T>(GetSharedMetadata);
         }

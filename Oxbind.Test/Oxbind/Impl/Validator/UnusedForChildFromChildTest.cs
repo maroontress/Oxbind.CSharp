@@ -29,34 +29,34 @@ namespace Maroontress.Oxbind.Impl.Validator.Test
                     Optional.Of<Second>());
 
             [field: ForChild]
-            private First First { get; set; }
+            private First? First { get; set; }
 
             [field: ForChild]
-            private Second Second { get; set; }
+            private Second? Second { get; set; }
 
             [field: ForChild]
-            private IEnumerable<Third> ThirdCombo { get; set; }
+            private IEnumerable<Third>? ThirdCombo { get; set; }
         }
 
         [ForElement("first")]
         public sealed class First
         {
             [field: ForAttribute("value")]
-            public string Value { get; }
+            public string? Value { get; }
         }
 
         [ForElement("second")]
         public sealed class Second
         {
             [field: ForAttribute("value")]
-            public string Value { get; }
+            public string? Value { get; }
         }
 
         [ForElement("third")]
         public sealed class Third
         {
             [field: ForAttribute("value")]
-            public string Value { get; }
+            public string? Value { get; }
         }
     }
 }

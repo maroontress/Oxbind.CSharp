@@ -34,17 +34,17 @@ namespace Maroontress.Oxbind.Impl.Validator.Test
         public sealed class FieldRoot
         {
             [field: ForAttribute("value")]
-            private string Value { get; set; }
+            private string? Value { get; set; }
 
             [field: ForAttribute("value")]
-            private string Another { get; set; }
+            private string? Another { get; set; }
         }
 
         [ForElement("root")]
         public sealed class FieldAndMethodRoot
         {
             [field: ForAttribute("value")]
-            private string Value { get; set; }
+            private string? Value { get; set; }
 
             [FromAttribute("value")]
             private void Another([Unused] string value)

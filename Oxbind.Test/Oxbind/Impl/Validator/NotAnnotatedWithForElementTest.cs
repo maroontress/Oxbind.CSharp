@@ -27,13 +27,13 @@ namespace Maroontress.Oxbind.Impl.Validator.Test
                     Mandatory.Of<First>());
 
             [field: ForChild]
-            private First First { get; set; }
+            private First? First { get; set; }
         }
 
         public sealed class First
         {
             [field: ForAttribute("value")]
-            public string Value { get; }
+            public string? Value { get; }
         }
     }
 }

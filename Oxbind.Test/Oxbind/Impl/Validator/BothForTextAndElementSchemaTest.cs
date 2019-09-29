@@ -26,7 +26,7 @@ namespace Maroontress.Oxbind.Impl.Validator.Test
             private static readonly Schema TheSchema = Schema.Of();
 
             [field: ForText]
-            private string Text { get; set; }
+            private string? Text { get; set; }
         }
     }
 }

@@ -29,7 +29,7 @@ namespace Maroontress.Util
         {
             array = (args.Length == 0)
                     ? Array.Empty<T>()
-                    : args.Clone() as T[];
+                    : (T[])args.Clone();
         }
 
         /// <summary>

@@ -46,14 +46,14 @@ namespace Maroontress.Oxbind.Impl.Validator.Test
         public sealed class First
         {
             [field: ForAttribute("value")]
-            public string Value { get; }
+            public string? Value { get; }
         }
 
         [ForElement("second")]
         public sealed class Second
         {
             [field: ForAttribute("value")]
-            public string Value { get; }
+            public string? Value { get; }
         }
     }
 }

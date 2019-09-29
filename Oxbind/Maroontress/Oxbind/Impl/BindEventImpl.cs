@@ -9,6 +9,7 @@ namespace Maroontress.Oxbind.Impl
     /// The type of the deserialized event.
     /// </typeparam>
     public class BindEventImpl<T> : BindEvent<T>
+        where T : class
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="BindEventImpl{T}"/>

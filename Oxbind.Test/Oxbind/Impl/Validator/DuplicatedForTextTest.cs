@@ -23,10 +23,10 @@ namespace Maroontress.Oxbind.Impl.Validator.Test
         public sealed class Root
         {
             [field: ForText]
-            private string Text { get; set; }
+            private string? Text { get; set; }
 
             [field: ForText]
-            private string Value { get; set; }
+            private string? Value { get; set; }
         }
     }
 }

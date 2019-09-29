@@ -15,12 +15,6 @@ namespace Maroontress.Oxbind.Impl
     public sealed class Validator : AbstractValidator
     {
         /// <summary>
-        /// The collection of the class that the <see cref="Schema"/> object
-        /// of the <c>class</c> contains.
-        /// </summary>
-        private IEnumerable<Type> schemaClasses;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="Validator"/> class.
         /// </summary>
         /// <param name="clazz">
@@ -39,8 +33,18 @@ namespace Maroontress.Oxbind.Impl
                 Error("must_not_be_interface");
             }
             CheckAttributes();
-            CheckChildren();
+            SchemaClasses = CheckChildren();
         }
+
+        /// <summary>
+        /// Gets the collection of the class that the <see cref="Schema"/>
+        /// object of the validated class contains.
+        /// </summary>
+        /// <returns>
+        /// The collection of the class that the <see cref="Schema"/> object of
+        /// the validated class contains if the class is valid.
+        /// </returns>
+        public IEnumerable<Type> SchemaClasses { get; }
 
         /// <summary>
         /// Gets the class annotated with <see cref="ForElementAttribute"/>.
@@ -48,13 +52,13 @@ namespace Maroontress.Oxbind.Impl
         private Type Class { get; }
 
         /// <summary>
-        /// Returns the set of types that the specified class depends on.
+        /// Returns the new set of types that the specified class depends on.
         /// </summary>
         /// <param name="clazz">
         /// The type of the class.
         /// </param>
         /// <returns>
-        /// The set of types that <paramref name="clazz"/> depends on.
+        /// The new set of types that <paramref name="clazz"/> depends on.
         /// </returns>
         public static ISet<Type> GetDependencies(Type clazz)
         {
@@ -65,17 +69,6 @@ namespace Maroontress.Oxbind.Impl
                     .Where(t => t.IsMandatory)
                     .Select(t => t.ElementType));
         }
-
-        /// <summary>
-        /// Returns the collection of the class that the <see cref="Schema"/>
-        /// object of the validated class contains.
-        /// </summary>
-        /// <returns>
-        /// The collection of the class that the <see cref="Schema"/> object of
-        /// the validated class contains if the class is valid, or <c>null</c>
-        /// if it is invalid.
-        /// </returns>
-        public IEnumerable<Type> GetSchemaClasses() => schemaClasses;
 
         /// <summary>
         /// Returns whether the specified class is marked with the annotation
@@ -183,7 +176,7 @@ namespace Maroontress.Oxbind.Impl
         /// The schema object.
         /// </returns>
         private static Schema GetSchema(FieldInfo field)
-            => field.GetValue(null) as Schema;
+            => field.GetValue(null) as Schema ?? Schema.Empty;
 
         /// <summary>
         /// Returns all the placeholder classes that the schema object
@@ -201,7 +194,7 @@ namespace Maroontress.Oxbind.Impl
             IEnumerable<FieldInfo> all)
         {
             return !all.Any()
-                ? Array.Empty<SchemaType>() as IEnumerable<SchemaType>
+                ? Enumerable.Empty<SchemaType>()
                 : GetSchema(all.First()).Types();
         }
 
@@ -292,9 +285,9 @@ namespace Maroontress.Oxbind.Impl
             var fields = GetInstanceFields<ForAttributeAttribute>();
             var fromMethods = GetInstanceMethods<FromAttributeAttribute>();
 
-            XmlQualifiedName GetForAttributeValue(FieldInfo f)
+            static XmlQualifiedName GetForAttributeValue(FieldInfo f)
                 => f.GetCustomAttribute<ForAttributeAttribute>().QName;
-            XmlQualifiedName GetFromAttributeValue(MethodInfo m)
+            static XmlQualifiedName GetFromAttributeValue(MethodInfo m)
                 => m.GetCustomAttribute<FromAttributeAttribute>().QName;
 
             var map = new Dictionary<XmlQualifiedName, List<string>>();
@@ -313,10 +306,10 @@ namespace Maroontress.Oxbind.Impl
 
             // Checks that the type of the field annotated with [ForAttribute]
             // is not string.
-            bool IsValidType(Type t)
+            static bool IsValidType(Type t)
                 => StringSugarcoaters.IsValid(t);
 
-            bool IsInvalidForAttributeField(FieldInfo f)
+            static bool IsInvalidForAttributeField(FieldInfo f)
                 => !IsValidType(f.FieldType);
 
             Elements.IfNotEmpty(
@@ -336,7 +329,7 @@ namespace Maroontress.Oxbind.Impl
         /// <summary>
         /// Validates the components of the <c>elementClass</c>.
         /// </summary>
-        private void CheckChildren()
+        private IEnumerable<Type> CheckChildren()
         {
             // Checks [ElementSchema] for instance fields.
             Elements.IfNotEmpty(
@@ -391,7 +384,7 @@ namespace Maroontress.Oxbind.Impl
             }
             CheckForText(forTexts);
             CheckFromText(fromTexts);
-            CheckForElementSchema(elementSchemas);
+            return CheckForElementSchema(elementSchemas);
         }
 
         /// <summary>
@@ -402,7 +395,8 @@ namespace Maroontress.Oxbind.Impl
         /// The static fields marked with the annotation
         /// <see cref="ElementSchemaAttribute"/>.
         /// </param>
-        private void CheckForElementSchema(IEnumerable<FieldInfo> fields)
+        private IEnumerable<Type> CheckForElementSchema(
+            IEnumerable<FieldInfo> fields)
         {
             // Checks two or more [ElementSchema]s.
             if (fields.Count() > 1)
@@ -412,7 +406,7 @@ namespace Maroontress.Oxbind.Impl
 
             var schemaTypes = GetSchemaTypes(fields);
             var placeholders = schemaTypes.Select(t => t.PlaceholderType);
-            schemaClasses = schemaTypes.Select(t => t.ElementType);
+            var schemaClasses = schemaTypes.Select(t => t.ElementType);
             var forChildren = GetInstanceFields<ForChildAttribute>();
             var fromChildren = GetInstanceMethods<FromChildAttribute>();
 
@@ -430,15 +424,15 @@ namespace Maroontress.Oxbind.Impl
                 Warn("missing_ElementSchema", string.Join(", ", all));
             }
 
-            bool IsType<T>(FieldInfo f)
+            static bool IsType<T>(FieldInfo f)
                 => typeof(T).GetTypeInfo()
                     .IsAssignableFrom(f.FieldType.GetTypeInfo());
 
-            bool IsValidFromChildMethod(MethodInfo m)
+            static bool IsValidFromChildMethod(MethodInfo m)
                 => m.ReturnType.Equals(Types.Void)
                     && m.GetParameters().Length == 1;
 
-            Type GetFirstParameterType(MethodInfo m)
+            static Type GetFirstParameterType(MethodInfo m)
                 => m.GetParameters()[0].ParameterType;
 
             // Checks the type of the field annotated with [ElementSchema] is
@@ -455,7 +449,7 @@ namespace Maroontress.Oxbind.Impl
                     "not_annotated_with_ForElement", Names.OfClasses(t)));
 
             // Checks the duplication with element names.
-            XmlQualifiedName ToElementName(Type type)
+            static XmlQualifiedName ToElementName(Type type)
                 => type.GetTypeInfo()
                     .GetCustomAttribute<ForElementAttribute>()
                     .QName;
@@ -484,9 +478,9 @@ namespace Maroontress.Oxbind.Impl
                 t => Error("type_mismatch_FromChild", Names.OfMethods(t)));
 
             // Checks the duplication with the child elements.
-            Type FieldType(FieldInfo f)
+            static Type FieldType(FieldInfo f)
                 => Types.PlaceholderType(f.FieldType);
-            Type MethodType(MethodInfo m)
+            static Type MethodType(MethodInfo m)
                 => Types.PlaceholderType(GetFirstParameterType(m));
 
             var map = new Dictionary<Type, List<string>>();
@@ -525,6 +519,8 @@ namespace Maroontress.Oxbind.Impl
                         Names.SortAndJoin(map[c]));
                 }
             }
+
+            return schemaClasses;
         }
 
         /// <summary>
@@ -569,7 +565,7 @@ namespace Maroontress.Oxbind.Impl
             // Checks that the method annotated with [FromText] does not
             // return void and does not take a single parameter whose type
             // is string.
-            bool IsInvalid(MethodInfo m)
+            static bool IsInvalid(MethodInfo m)
                 => !RetutnsVoidAndHasSingleParameter(
                     m, StringSugarcoaters.IsValid);
             Elements.IfNotEmpty(

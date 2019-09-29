@@ -23,7 +23,7 @@ namespace Maroontress.Oxbind.Impl.Validator.Test
         public sealed class Root
         {
             [FromAttribute("value")]
-            public string Value()
+            public string? Value()
             {
                 return null;
             }

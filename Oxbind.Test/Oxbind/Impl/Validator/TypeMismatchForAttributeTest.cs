@@ -24,7 +24,7 @@ namespace Maroontress.Oxbind.Impl.Validator.Test
         public sealed class Root
         {
             [field: ForAttribute("value")]
-            private object Value { get; set; }
+            private object? Value { get; set; }
         }
     }
 }

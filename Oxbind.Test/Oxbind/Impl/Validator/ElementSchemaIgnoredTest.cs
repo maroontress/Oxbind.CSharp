@@ -30,14 +30,14 @@ namespace Maroontress.Oxbind.Impl.Validator.Test
             private readonly string ignored = nameof(ignored);
 
             [field: ForChild]
-            private First First { get; set; }
+            private First? First { get; set; }
         }
 
         [ForElement("first")]
         public sealed class First
         {
             [field: ForAttribute("value")]
-            public string Value { get; }
+            public string? Value { get; }
         }
     }
 }

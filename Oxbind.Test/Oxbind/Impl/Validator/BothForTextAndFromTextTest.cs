@@ -24,7 +24,7 @@ namespace Maroontress.Oxbind.Impl.Validator.Test
         public sealed class Root
         {
             [field: ForText]
-            private string Text { get; set; }
+            private string? Text { get; set; }
 
             [FromText]
             private void Notify([Unused] string value)

@@ -1,5 +1,6 @@
 namespace Maroontress.Oxbind.Test
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -24,7 +25,9 @@ namespace Maroontress.Oxbind.Test
             var reader = new StringReader(xml);
             var root = binder.NewInstance(reader);
 
+            _ = root.First ?? throw new NullReferenceException();
             Assert.AreEqual("80", root.First.Value);
+            _ = root.Second ?? throw new NullReferenceException();
             Assert.AreEqual("text", root.Second.Value);
             Assert.AreEqual(2, root.ThirdCombo.Count());
             var array = root.ThirdCombo.Select(e => e.Value)
@@ -49,6 +52,7 @@ namespace Maroontress.Oxbind.Test
             var reader = new StringReader(xml);
             var root = binder.NewInstance(reader);
 
+            _ = root.First ?? throw new NullReferenceException();
             Assert.AreEqual("80", root.First.Value);
             Assert.IsNull(root.Second);
             Assert.AreEqual(2, root.ThirdCombo.Count());
@@ -75,6 +79,7 @@ namespace Maroontress.Oxbind.Test
             var reader = new StringReader(xml);
             var root = binder.NewInstance(reader);
 
+            _ = root.First ?? throw new NullReferenceException();
             Assert.AreEqual("80", root.First.Value);
             Assert.AreEqual(2, root.SecondCombo.Count());
             var array = root.SecondCombo.Select(e => e.Value)
@@ -82,6 +87,7 @@ namespace Maroontress.Oxbind.Test
             var expect = new[] { "10", "20" };
             Assert.AreEqual(expect[0], array[0]);
             Assert.AreEqual(expect[1], array[1]);
+            _ = root.Third ?? throw new NullReferenceException();
             Assert.AreEqual("text", root.Third.Value);
         }
 
@@ -100,6 +106,7 @@ namespace Maroontress.Oxbind.Test
             var reader = new StringReader(xml);
             var root = binder.NewInstance(reader);
 
+            _ = root.First ?? throw new NullReferenceException();
             Assert.AreEqual("80", root.First.Value);
             Assert.AreEqual(2, root.SecondCombo.Count());
             var array = root.SecondCombo.Select(e => e.Value)
@@ -120,13 +127,13 @@ namespace Maroontress.Oxbind.Test
                     Multiple.Of<Third>());
 
             [field: ForChild]
-            public First First { get; }
+            public First? First { get; }
 
             [field: ForChild]
-            public Second Second { get; }
+            public Second? Second { get; }
 
             [field: ForChild]
-            public IEnumerable<Third> ThirdCombo { get; }
+            public IEnumerable<Third>? ThirdCombo { get; }
         }
 
         [ForElement("root")]
@@ -139,34 +146,34 @@ namespace Maroontress.Oxbind.Test
                     Optional.Of<Third>());
 
             [field: ForChild]
-            public First First { get; }
+            public First? First { get; }
 
             [field: ForChild]
-            public IEnumerable<Second> SecondCombo { get; }
+            public IEnumerable<Second>? SecondCombo { get; }
 
             [field: ForChild]
-            public Third Third { get; }
+            public Third? Third { get; }
         }
 
         [ForElement("first")]
         public sealed class First
         {
             [field: ForAttribute("value")]
-            public string Value { get; }
+            public string? Value { get; }
         }
 
         [ForElement("second")]
         public sealed class Second
         {
             [field: ForText]
-            public string Value { get; }
+            public string? Value { get; }
         }
 
         [ForElement("third")]
         public sealed class Third
         {
             [field: ForText]
-            public string Value { get; }
+            public string? Value { get; }
         }
     }
 }

@@ -2,7 +2,6 @@ namespace Maroontress.Oxbind.Impl
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Reflection;
     using System.Xml;
     using Maroontress.Util;
@@ -167,7 +166,10 @@ namespace Maroontress.Oxbind.Impl
         {
             var a = clazz.GetTypeInfo()
                 .GetCustomAttribute<ForElementAttribute>();
-            Debug.Assert(!(a is null), "no ForElement attribute");
+            if (a is null)
+            {
+                throw new BindException("no ForElement attribute");
+            }
             return a.QName;
         }
 

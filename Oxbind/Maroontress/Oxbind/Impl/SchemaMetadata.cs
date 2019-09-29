@@ -2,7 +2,6 @@ namespace Maroontress.Oxbind.Impl
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Linq;
     using System.Reflection;
     using System.Xml;
@@ -100,10 +99,11 @@ namespace Maroontress.Oxbind.Impl
         {
             var fieldTypeInfo = field.FieldType.GetTypeInfo();
             var valueTypeInfo = typeof(T).GetTypeInfo();
-            Debug.Assert(
-                fieldTypeInfo.IsAssignableFrom(valueTypeInfo),
-                $"{typeof(T).FullName}");
-            return field.GetValue(null) as T;
+            if (!fieldTypeInfo.IsAssignableFrom(valueTypeInfo))
+            {
+                throw new BindException($"{typeof(T).FullName}");
+            }
+            return (T)field.GetValue(null);
         }
 
         private void HandleAction(Action<SchemaType, Reflector<object>> action)
