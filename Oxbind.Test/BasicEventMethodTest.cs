@@ -1,5 +1,6 @@
 namespace Maroontress.Oxbind.Test
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -33,8 +34,8 @@ namespace Maroontress.Oxbind.Test
                     Mandatory.Of<First>(),
                     Multiple.Of<Second>());
 
-            private BindEvent<First> first;
-            private IEnumerable<BindEvent<Second>> secondCombo;
+            private BindEvent<First>? first;
+            private IEnumerable<BindEvent<Second>>? secondCombo;
 
             [FromChild]
             public void Notify(BindEvent<First> first)
@@ -50,10 +51,12 @@ namespace Maroontress.Oxbind.Test
 
             public void Test()
             {
+                _ = first ?? throw new NullReferenceException();
                 var firstValue = first.Value;
                 Assert.AreEqual(3, first.Line);
                 Assert.AreEqual(4, first.Column);
-                var first80Value = firstValue.Value;
+                var first80Value = firstValue.Value
+                    ?? throw new NullReferenceException();
                 Assert.AreEqual("80", first80Value.Value);
                 Assert.AreEqual(3, first80Value.Line);
                 Assert.AreEqual(10, first80Value.Column);
@@ -62,11 +65,15 @@ namespace Maroontress.Oxbind.Test
                 Assert.AreEqual(2, array.Length);
                 var second10 = array[0];
                 var second10Value = second10.Value;
+                _ = second10Value.Value
+                    ?? throw new NullReferenceException();
                 Assert.AreEqual(4, second10.Line);
                 Assert.AreEqual(4, second10.Column);
                 Assert.AreEqual("10", second10Value.Value.Value);
                 var second20 = array[1];
                 var second20Value = second20.Value;
+                _ = second20Value.Value
+                    ?? throw new NullReferenceException();
                 Assert.AreEqual(5, second20.Line);
                 Assert.AreEqual(4, second20.Column);
                 Assert.AreEqual("20", second20Value.Value.Value);
@@ -76,7 +83,7 @@ namespace Maroontress.Oxbind.Test
         [ForElement("first")]
         public sealed class First
         {
-            public BindEvent<string> Value { get; private set; }
+            public BindEvent<string>? Value { get; private set; }
 
             [FromAttribute("value")]
             public void Notify(BindEvent<string> value) => Value = value;
@@ -85,7 +92,7 @@ namespace Maroontress.Oxbind.Test
         [ForElement("second")]
         public sealed class Second
         {
-            public BindEvent<string> Value { get; private set; }
+            public BindEvent<string>? Value { get; private set; }
 
             [FromText]
             public void Notify(BindEvent<string> value) => Value = value;

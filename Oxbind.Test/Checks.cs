@@ -24,10 +24,11 @@ namespace Maroontress.Oxbind.Test
         /// The expected message that the <see cref="BindException"/> contains.
         /// </param>
         public static void ThrowBindException<T>(string xml, string message)
+            where T : class
         {
             var factory = new OxbinderFactory();
             var binder = factory.Of<T>();
-            ThrowBindException<T>(binder, xml, message);
+            ThrowBindException(binder, xml, message);
         }
 
         /// <summary>
@@ -49,6 +50,7 @@ namespace Maroontress.Oxbind.Test
         /// </param>
         public static void ThrowBindException<T>(
             Oxbinder<T> binder, string xml, string message)
+            where T : class
         {
             var reader = new StringReader(xml);
             try

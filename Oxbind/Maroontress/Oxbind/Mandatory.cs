@@ -37,6 +37,7 @@ namespace Maroontress.Oxbind
         /// The <see cref="SchemaType"/> object.
         /// </returns>
         public static SchemaType Of<T>()
+            where T : class
         {
             return new MandatorySchemaType(typeof(T));
         }

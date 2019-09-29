@@ -13,8 +13,11 @@ namespace Maroontress.Util.Graph
     /// <a href="http://en.wikipedia.org/wiki/Directed_acyclic_graph">
     /// Directed acyclic graph</a>.
     /// </remarks>
-    /// <typeparam name="T">The type of the node of DAG.</typeparam>
+    /// <typeparam name="T">
+    /// The type of the node of DAG.
+    /// </typeparam>
     public sealed class DagChecker<T>
+        where T : notnull
     {
         /// <summary>
         /// The node set for the breadcrumb.

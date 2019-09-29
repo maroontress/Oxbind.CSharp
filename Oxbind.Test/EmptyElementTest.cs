@@ -1,5 +1,6 @@
 namespace Maroontress.Oxbind.Test
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -36,6 +37,7 @@ namespace Maroontress.Oxbind.Test
             var reader = new StringReader(xml);
             var root = binder.NewInstance(reader);
 
+            _ = root.First ?? throw new NullReferenceException();
             Assert.AreEqual("", root.First.Value);
             Assert.AreEqual(0, root.SecondCombo.Count());
         }
@@ -49,24 +51,24 @@ namespace Maroontress.Oxbind.Test
                     Multiple.Of<Second>());
 
             [field: ForChild]
-            public First First { get; }
+            public First? First { get; }
 
             [field: ForChild]
-            public IEnumerable<Second> SecondCombo { get; }
+            public IEnumerable<Second>? SecondCombo { get; }
         }
 
         [ForElement("first")]
         public sealed class First
         {
             [field: ForText]
-            public string Value { get; }
+            public string? Value { get; }
         }
 
         [ForElement("second")]
         public sealed class Second
         {
             [field: ForText]
-            public string Value { get; }
+            public string? Value { get; }
         }
     }
 }

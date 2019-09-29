@@ -44,23 +44,23 @@ namespace Maroontress.Oxbind.Test
                 Multiple.Of<Page>());
 
             [field: ForAttribute("project")]
-            public string Project { get; }
+            public string? Project { get; }
 
             [field: ForChild]
-            public IEnumerable<Page> Pages { get; }
+            public IEnumerable<Page>? Pages { get; }
         }
 
         [ForElement("page")]
         private sealed class Page
         {
             [field: ForAttribute("id")]
-            public string Id { get; }
+            public string? Id { get; }
 
             [field: ForAttribute("title")]
-            public string Title { get; }
+            public string? Title { get; }
 
             [field: ForAttribute("nav")]
-            public string Nav { get; }
+            public string? Nav { get; }
         }
     }
 }

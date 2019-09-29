@@ -121,6 +121,7 @@ namespace Maroontress.Oxbind.Impl
         /// The new bind event.
         /// </returns>
         public static BindEvent<T> NewEvent<T>(IXmlLineInfo info, T value)
+            where T : class
             => new BindEventImpl<T>(value, info);
 
         /// <summary>

@@ -1,5 +1,6 @@
 namespace Maroontress.Oxbind.Test
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -34,17 +35,19 @@ namespace Maroontress.Oxbind.Test
                 Multiple.Of<Second>());
 
             [field: ForChild]
-            private BindEvent<First> First { get; }
+            private BindEvent<First>? First { get; }
 
             [field: ForChild]
-            private IEnumerable<BindEvent<Second>> SecondCombo { get; }
+            private IEnumerable<BindEvent<Second>>? SecondCombo { get; }
 
             public void Test()
             {
+                _ = First ?? throw new NullReferenceException();
                 var first = First.Value;
                 Assert.AreEqual(3, First.Line);
                 Assert.AreEqual(4, First.Column);
-                var firstValue = first.Value;
+                var firstValue = first.Value
+                    ?? throw new NullReferenceException();
                 Assert.AreEqual("80", firstValue.Value);
                 Assert.AreEqual(3, firstValue.Line);
                 Assert.AreEqual(10, firstValue.Column);
@@ -68,14 +71,14 @@ namespace Maroontress.Oxbind.Test
         public sealed class First
         {
             [field: ForAttribute("value")]
-            public BindEvent<string> Value { get; }
+            public BindEvent<string>? Value { get; }
         }
 
         [ForElement("second")]
         public sealed class Second
         {
             [field: ForText]
-            public string Value { get; }
+            public string? Value { get; }
         }
     }
 }

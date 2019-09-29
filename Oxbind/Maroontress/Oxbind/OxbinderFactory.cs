@@ -74,6 +74,7 @@ namespace Maroontress.Oxbind
         /// </returns>
         /// <seealso cref="Oxbinder{T}.NewInstance(TextReader)"/>
         public Oxbinder<T> Of<T>()
+            where T : class
         {
             return new OxBinderImpl<T>(GetSharedMetadata);
         }

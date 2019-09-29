@@ -1,5 +1,6 @@
 namespace Maroontress.Oxbind.Test
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -35,9 +36,9 @@ namespace Maroontress.Oxbind.Test
                     Optional.Of<Second>(),
                     Multiple.Of<Third>());
 
-            private First first;
-            private Second second;
-            private IEnumerable<Third> thirdCombo;
+            private First? first;
+            private Second? second;
+            private IEnumerable<Third>? thirdCombo;
 
             [FromChild]
             public void Notify(First first)
@@ -59,6 +60,8 @@ namespace Maroontress.Oxbind.Test
 
             public void Test()
             {
+                _ = first ?? throw new NullReferenceException();
+                _ = second ?? throw new NullReferenceException();
                 Assert.AreEqual("80", first.Value);
                 Assert.AreEqual("text", second.Value);
                 Assert.AreEqual(2, thirdCombo.Count());
@@ -73,7 +76,7 @@ namespace Maroontress.Oxbind.Test
         [ForElement("first")]
         public sealed class First
         {
-            public string Value { get; private set; }
+            public string? Value { get; private set; }
 
             [FromAttribute("value")]
             public void Notify(string value) => Value = value;
@@ -82,7 +85,7 @@ namespace Maroontress.Oxbind.Test
         [ForElement("second")]
         public sealed class Second
         {
-            public string Value { get; private set; }
+            public string? Value { get; private set; }
 
             [FromText]
             public void Notify(string value) => Value = value;
@@ -91,7 +94,7 @@ namespace Maroontress.Oxbind.Test
         [ForElement("third")]
         public sealed class Third
         {
-            public string Value { get; private set; }
+            public string? Value { get; private set; }
 
             [FromText]
             public void Notify(string value) => Value = value;

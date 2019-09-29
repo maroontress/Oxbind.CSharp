@@ -28,7 +28,7 @@ namespace Maroontress.Oxbind.Test
                     Mandatory.Of<First>());
 
             [field: ForChild]
-            private First First { get; }
+            private First? First { get; }
         }
 
         [ForElement("first")]
@@ -39,7 +39,7 @@ namespace Maroontress.Oxbind.Test
                     Mandatory.Of<Second>());
 
             [field: ForChild]
-            private Second Second { get; }
+            private Second? Second { get; }
         }
 
         [ForElement("second")]
@@ -50,7 +50,7 @@ namespace Maroontress.Oxbind.Test
                     Mandatory.Of<Root>());
 
             [field: ForChild]
-            private Root Root { get; }
+            private Root? Root { get; }
         }
     }
 }

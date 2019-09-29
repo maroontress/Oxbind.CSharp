@@ -39,7 +39,7 @@ namespace Maroontress.Oxbind.Impl.Validator.Test
                     Mandatory.Of<First>());
 
             [field: ForChild]
-            private First First { get; set; }
+            private First? First { get; set; }
 
             [FromChild]
             private void Another([Unused] First first)
@@ -55,17 +55,17 @@ namespace Maroontress.Oxbind.Impl.Validator.Test
                     Mandatory.Of<First>());
 
             [field: ForChild]
-            private First First { get; set; }
+            private First? First { get; set; }
 
             [field: ForChild]
-            private First Another { get; set; }
+            private First? Another { get; set; }
         }
 
         [ForElement("first")]
         public sealed class First
         {
             [field: ForAttribute("value")]
-            public string Value { get; }
+            public string? Value { get; }
         }
     }
 }

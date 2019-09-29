@@ -2,7 +2,6 @@ namespace Maroontress.Oxbind.Impl
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Reflection;
     using System.Xml;
     using Maroontress.Util;

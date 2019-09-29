@@ -69,14 +69,14 @@ namespace Maroontress.Oxbind.Test
                     Mandatory.Of<First>());
 
             [field: ForChild]
-            private First First { get; }
+            private First? First { get; }
         }
 
         [ForElement("first")]
         public sealed class First
         {
             [field: ForAttribute("value")]
-            public BindEvent<string> Value { get; }
+            public BindEvent<string>? Value { get; }
         }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Maroontress.Oxbind.Impl.Metadata.Test
 {
+    using System;
     using System.IO;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -22,6 +23,7 @@ namespace Maroontress.Oxbind.Impl.Metadata.Test
             var reader = new StringReader(xml);
             var root = binder.NewInstance(reader);
 
+            _ = root.First ?? throw new NullReferenceException();
             Assert.AreEqual("80", root.First.Value);
         }
 
@@ -33,14 +35,14 @@ namespace Maroontress.Oxbind.Impl.Metadata.Test
                     Mandatory.Of<First>());
 
             [field: ForChild]
-            public First First { get; }
+            public First? First { get; }
         }
 
         [ForElement("first")]
         public sealed class First
         {
             [field: ForAttribute("value")]
-            public string Value { get; }
+            public string? Value { get; }
         }
     }
 }
