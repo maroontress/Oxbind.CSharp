@@ -18,7 +18,7 @@ namespace Maroontress.Oxbind.Impl
         /// with the method.
         /// </param>
         /// <param name="unitType">
-        /// Get the type of the unit.
+        /// The type of the unit.
         /// </param>
         /// <param name="sugarcoater">
         /// The delegate that sugarcoats the specified value.
