@@ -48,7 +48,7 @@ namespace Maroontress.Oxbind.Impl
         /// <param name="list">
         /// The list of the instance method marked with the annotation <see
         /// cref="FromTextAttribute"/>. The return type of the method must be
-        /// <see cref="void"/> and the method has the single parameter whose
+        /// <c>void</c> and the method has the single parameter whose
         /// type is <see cref="string"/>.
         /// </param>
         public TextMetadata(
