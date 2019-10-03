@@ -3,7 +3,7 @@ namespace Maroontress.Oxbind.Impl
     using System.Xml;
 
     /// <summary>
-    /// Gets an object packing the specified value.
+    /// The function to sugarcoat the specified value.
     /// </summary>
     /// <typeparam name="T">
     /// The type of the value.
