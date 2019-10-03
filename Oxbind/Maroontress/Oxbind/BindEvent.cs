@@ -15,7 +15,7 @@ namespace Maroontress.Oxbind
         T Value { get; }
 
         /// <summary>
-        /// Gets the line number where this event occurs in the XML docuemnt.
+        /// Gets the line number where this event occurs in the XML document.
         /// </summary>
         int Line { get; }
 
