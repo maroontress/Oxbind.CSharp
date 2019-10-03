@@ -1,7 +1,7 @@
 namespace Maroontress.Oxbind
 {
     /// <summary>
-    /// The event of the desereialized value.
+    /// The event of the deserialized value.
     /// </summary>
     /// <typeparam name="T">
     /// The type of the value.
