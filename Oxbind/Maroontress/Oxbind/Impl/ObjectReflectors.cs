@@ -72,7 +72,7 @@ namespace Maroontress.Oxbind.Impl
     | Type of value               | PlaceholderType  | UnitType       | Sugarcoater  |
     | :---                        | :---             | :---           | :---         |
     | `T`                         | `T`              | `T`            | Pass through |
-    | `BindEvent<T>`              | `T`              | `BindEevnt<T>` | Eventizer    |
+    | `BindEvent<T>`              | `T`              | `BindEvent<T>` | Eventizer    |
     | `IEnumerable<T>`            | `IEnumerable<T>` | `T`            | Pass through |
     | `IEnumerable<BindEvent<T>>` | `IEnumerable<T>` | `BindEvent<T>` | Eventizer    |
 */
