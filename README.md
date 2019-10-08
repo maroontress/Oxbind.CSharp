@@ -17,7 +17,7 @@ Deserialize the following XML document:
 </movie>
 ```
 
-The `movie` element has the `director`, `release` and `cast` elements.
+The `movie` element has the `director`, `release`, and `cast` elements.
 Here, the `director` element occurs only once,
 the `release` element occurs zero or one times,
 and the `cast` element occurs zero or more times.
@@ -49,7 +49,7 @@ Note that Oxbind does not use XML Schema and its validation, but the example
 of the XML Schema is given to show the occurrence order of the elements is
 important.
 
-First, creates `Movie` class representing `movie` element as follows:
+First, creates a `Movie` class representing the `movie` element as follows:
 
 ```csharp
 using Maroontress.Oxbind;
@@ -64,13 +64,13 @@ public sealed class Movie
         Multiple.Of<Cast>());
 
     [ForChild]
-    public Director director;
+    public Director? director;
 
     [ForChild]
-    public Release release;
+    public Release? release;
 
     [ForChild]
-    public IEnumerable<Cast> casts;
+    public IEnumerable<Cast>? casts;
 }
 ```
 
@@ -84,18 +84,18 @@ The value can be created with the `Schema.Of(params SchemaType[])` method,
 and the arguments are as follows:
 
 - `Mandatory.Of<Director>()` represents that the element associated with
-  `Director` class occurs once. The `Movie` class must have the instance
+  the `Director` class occurs once. The `Movie` class must have the instance
   field with the `ForChild` attribute, whose type is `Director`.
 
 - `Optional.Of<Release>()` represents that the element associated with
-  `Release` class occurs zero or one times. The `Movie` class must have the
+  the `Release` class occurs zero or one times. The `Movie` class must have the
   instance field with the `ForChild` attribute, whose type is `Release`.
 
-- `Multiple.Of<Cast>()` represents that the element associated with `Cast`
+- `Multiple.Of<Cast>()` represents that the element associated with the `Cast`
   class occurs zero or more times. The `Movie` class must have the instance
   field with the `ForChild` attribute, whose type is `IEnumerable<Cast>`.
 
-Therefore, the `Movie` class has 3 fields of `director`, `release` and
+Therefore, the `Movie` class has 3 fields of `director`, `release`, and
 `casts`.
 Each field has the `ForChild` attribute, which means it occurs in the
 `movie` element.
@@ -109,23 +109,23 @@ as follows:
 public sealed class Director
 {
     [ForAttribute("name")]
-    private string name;
+    private string? name;
 
-    public string Name => name;
+    public string? Name => name;
 }
 
 [ForElement("release")]
 public sealed class Release
 {
     [field: ForAttribute("year")]
-    public string Year { get; }
+    public string? Year { get; }
 }
 
 [ForElement("cast")]
 public sealed class Cast
 {
     [field: ForText]
-    public string Name { get; }
+    public string? Name { get; }
 }
 ```
 
@@ -147,10 +147,10 @@ it has the auto property but its _backing field_ has the `ForAttribute`
 attribute.
 
 The `Cast` class has the auto property `Name` representing
-the text content of the `Cast` element,
+the text content of the `Cast` element
 so that its backing field has the `ForText` attribute.
 
-Finally, uses the deserializer with XML document and the associated classes,
+Finally, uses the deserializer with an XML document and the associated classes,
 to get a `Movie` instance from the XML document as follows:
 
 ```csharp
@@ -160,16 +160,18 @@ var binder = factory.Of<Movie>();
 var movie = binder.NewInstance(reader);
 ```
 
+> [See the result in .NET Fiddle](https://dotnetfiddle.net/Mu2FL2)
+
 ## How to build
 
 ### Requirements for build
 
-- Visual Studio 2019 Version 16.0
-  or [.NET Core 2.2 SDK (SDK 2.2.203)][dotnet-core-sdk]
+- Visual Studio 2019 Version 16.3
+  or [.NET Core 3.0 SDK (SDK 3.0.100)][dotnet-core-sdk]
 
 ### Get started
 
-```bash
+```plaintext
 git clone URL
 cd Oxbind.CSharp
 dotnet restore
@@ -178,7 +180,7 @@ dotnet build
 
 ### Get test coverage report with Coverlet
 
-```bash
+```plaintext
 dotnet test -p:CollectCoverage=true -p:CoverletOutputFormat=opencover \
         --no-build Oxbind.Test
 dotnet ANYWHERE/reportgenerator.dll \
@@ -187,4 +189,4 @@ dotnet ANYWHERE/reportgenerator.dll \
 ```
 
 [dotnet-core-sdk]:
-  https://dotnet.microsoft.com/download/dotnet-core/2.2
+  https://dotnet.microsoft.com/download/dotnet-core/3.0
