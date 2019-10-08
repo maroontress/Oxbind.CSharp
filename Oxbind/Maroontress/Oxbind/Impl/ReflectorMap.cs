@@ -62,7 +62,7 @@ namespace Maroontress.Oxbind.Impl
         /// A key of the map.
         /// </param>
         /// <param name="reflector">
-        /// The reflector associated with the key.
+        /// The reflector to be associated with the key.
         /// </param>
         protected void Put(K key, Reflector<V> reflector)
         {

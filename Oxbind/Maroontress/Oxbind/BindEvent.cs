@@ -1,7 +1,7 @@
 namespace Maroontress.Oxbind
 {
     /// <summary>
-    /// The event of the desereialized value.
+    /// The event of the deserialized value.
     /// </summary>
     /// <typeparam name="T">
     /// The type of the value.
@@ -15,7 +15,7 @@ namespace Maroontress.Oxbind
         T Value { get; }
 
         /// <summary>
-        /// Gets the line number where this event occurs in the XML docuemnt.
+        /// Gets the line number where this event occurs in the XML document.
         /// </summary>
         int Line { get; }
 
