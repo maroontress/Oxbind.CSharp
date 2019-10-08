@@ -8,12 +8,6 @@ namespace Maroontress.Oxbind.Impl
     /// </summary>
     public static class ObjectReflectors
     {
-        private static readonly Sugarcoater<object> Eventizer
-            = Readers.NewEventObject;
-
-        private static readonly Sugarcoater<object> PassThrough
-            = (r, v) => v;
-
         /// <summary>
         /// Creates a new <see cref="Reflector{T}"/> (<c>T</c> is
         /// <c>object</c>) and perform the specified action
@@ -32,47 +26,14 @@ namespace Maroontress.Oxbind.Impl
         /// the one is the placeholder type,
         /// the other is the reflector object.
         /// </param>
-        public static void Of(
+        public static void Associate(
             Type type,
             Injector injector,
             Action<Type, Reflector<object>> action)
         {
-            Reflector<T> Of<T>(Type unitType, Sugarcoater<T> sugarcoater)
-                => new Reflector<T>(injector, unitType, sugarcoater);
-
-            TripletAction(type, (p, u, s) => action(p, Of(u, s)));
-        }
-
-        private static void TripletAction(
-            Type type, Action<Type, Type, Sugarcoater<object>> action)
-        {
-            void Dispatch(Type u, Func<Type, Type> p)
-            {
-                if (!Types.IsRawType(u, Types.BindEventT))
-                {
-                    action(type, u, PassThrough);
-                    return;
-                }
-                action(p(Types.FirstInnerType(u)), u, Eventizer);
-            }
-
-            Type ToGenericType(Type u)
-                => Types.IEnumerableT.MakeGenericType(u);
-
-            if (!Types.IsRawType(type, Types.IEnumerableT))
-            {
-                Dispatch(type, u => u);
-                return;
-            }
-            Dispatch(Types.FirstInnerType(type), ToGenericType);
+            var t = Triplet.Of(type);
+            var reflector = Reflectors.Of(injector, t.UnitType, t.Sugarcoater);
+            action(t.PlaceHolderType, reflector);
         }
     }
 }
-/*
-    | Type of value               | PlaceholderType  | UnitType       | Sugarcoater  |
-    | :---                        | :---             | :---           | :---         |
-    | `T`                         | `T`              | `T`            | Pass through |
-    | `BindEvent<T>`              | `T`              | `BindEvent<T>` | Eventizer    |
-    | `IEnumerable<T>`            | `IEnumerable<T>` | `T`            | Pass through |
-    | `IEnumerable<BindEvent<T>>` | `IEnumerable<T>` | `BindEvent<T>` | Eventizer    |
-*/
