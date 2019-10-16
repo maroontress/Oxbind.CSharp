@@ -179,8 +179,8 @@ namespace Maroontress.Oxbind.Impl
             => field.GetValue(null) as Schema ?? Schema.Empty;
 
         /// <summary>
-        /// Returns all the placeholder classes that the schema object
-        /// contains.
+        /// Returns all the <see cref="SchemaType"/> objects that the specified
+        /// field contains.
         /// </summary>
         /// <param name="all">
         /// The list of the field annotated with
@@ -188,7 +188,7 @@ namespace Maroontress.Oxbind.Impl
         /// The size of the list must be either 0 or 1.
         /// </param>
         /// <returns>
-        /// All the placeholder classes that the schema object contains.
+        /// All the <see cref="SchemaType"/> objects.
         /// </returns>
         private static IEnumerable<SchemaType> GetSchemaTypes(
             IEnumerable<FieldInfo> all)
@@ -465,7 +465,6 @@ namespace Maroontress.Oxbind.Impl
                 {
                     continue;
                 }
-                list.Sort();
                 Error(
                     "duplicated_element_name",
                     key,
@@ -496,7 +495,6 @@ namespace Maroontress.Oxbind.Impl
                 {
                     continue;
                 }
-                list.Sort();
                 Error(
                     "duplicated_child_class",
                     key.Name,

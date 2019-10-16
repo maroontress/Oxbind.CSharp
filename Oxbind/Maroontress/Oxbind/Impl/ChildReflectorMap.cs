@@ -92,7 +92,8 @@ namespace Maroontress.Oxbind.Impl
             {
                 var type = getKey(m);
                 var injector = toInjector(m);
-                ObjectReflectors.Of(type, injector, (p, r) => put(p, r));
+                ObjectReflectors.Associate(
+                    type, injector, (p, r) => put(p, r));
             }
         }
 
