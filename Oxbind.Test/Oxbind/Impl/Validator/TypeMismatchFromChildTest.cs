@@ -17,7 +17,8 @@ namespace Maroontress.Oxbind.Impl.Validator.Test
             Assert.AreEqual(
                 "Root: Error: the method annotated with [FromChild] "
                 + "must have a single parameter and return void: "
-                + "NotifyFirst(First), NotifySecond(Second, Int32)",
+                + "NotifyFirst(First), NotifySecond(Second, Int32), "
+                + "NotifyThird()",
                 string.Join(Environment.NewLine, v.GetMessages()));
         }
 
@@ -25,9 +26,7 @@ namespace Maroontress.Oxbind.Impl.Validator.Test
         public sealed class Root
         {
             [ElementSchema]
-            private static readonly Schema TheSchema = Schema.Of(
-                    Mandatory.Of<First>(),
-                    Optional.Of<Second>());
+            private static readonly Schema TheSchema = Schema.Empty;
 
             [FromChild]
             private string NotifyFirst([Unused] First first)
@@ -38,6 +37,11 @@ namespace Maroontress.Oxbind.Impl.Validator.Test
             [FromChild]
             private void NotifySecond(
                 [Unused] Second second, [Unused] int value)
+            {
+            }
+
+            [FromChild]
+            private void NotifyThird()
             {
             }
         }
