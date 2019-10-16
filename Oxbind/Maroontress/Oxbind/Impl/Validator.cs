@@ -483,9 +483,11 @@ namespace Maroontress.Oxbind.Impl
             static Type MethodType(MethodInfo m)
                 => Types.PlaceholderType(GetFirstParameterType(m));
 
+            var validFromChildren
+                = fromChildren.Where(IsValidFromChildMethod);
             var map = new Dictionary<Type, List<string>>();
             Add(map, forChildren, FieldType, f => f.Name);
-            Add(map, fromChildren, MethodType, Names.GetMethodName);
+            Add(map, validFromChildren, MethodType, Names.GetMethodName);
             foreach (var p in map)
             {
                 var key = p.Key;
