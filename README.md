@@ -166,8 +166,8 @@ var movie = binder.NewInstance(reader);
 
 ### Requirements for build
 
-- Visual Studio 2019 Version 16.3
-  or [.NET Core 3.0 SDK (SDK 3.0.100)][dotnet-core-sdk]
+- Visual Studio 2019 Version 16.5
+  or [.NET Core 3.1 SDK (SDK 3.1.300)][dotnet-core-sdk]
 
 ### Get started
 
@@ -189,4 +189,4 @@ dotnet ANYWHERE/reportgenerator.dll \
 ```
 
 [dotnet-core-sdk]:
-  https://dotnet.microsoft.com/download/dotnet-core/3.0
+  https://dotnet.microsoft.com/download/dotnet-core/3.1
