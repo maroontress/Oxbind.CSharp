@@ -318,7 +318,7 @@ namespace Maroontress.Oxbind.Impl
 
             // Checks that the signature of the method annotated with
             // [FromAttribute] is not "void(string)".
-            bool IsInvalidFromAttributeMethod(MethodInfo m)
+            static bool IsInvalidFromAttributeMethod(MethodInfo m)
                 => !RetutnsVoidAndHasSingleParameter(m, IsValidType);
 
             Elements.IfNotEmpty(
