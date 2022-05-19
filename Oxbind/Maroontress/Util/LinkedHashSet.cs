@@ -155,8 +155,13 @@ namespace Maroontress.Util
         /// <inheritdoc/>
         public void SymmetricExceptWith(IEnumerable<T> other)
         {
+            var set = new HashSet<T>();
             foreach (var e in other)
             {
+                if (!set.Add(e))
+                {
+                    continue;
+                }
                 if (!Remove(e))
                 {
                     Add(e);
