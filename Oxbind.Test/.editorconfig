@@ -17,3 +17,6 @@ dotnet_diagnostic.SA1122.severity = none
 
 # CS1591: Missing XML comment for publicly visible type or member
 dotnet_diagnostic.CS1591.severity = none
+
+# NoDocumentation: No documentation found.
+dotnet_diagnostic.NoDocumentation.severity = none

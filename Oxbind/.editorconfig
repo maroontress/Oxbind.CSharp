@@ -20,3 +20,6 @@ dotnet_diagnostic.SA1002.severity = none
 
 # IsNull: Do not use 'is' pattern matching with 'null'.
 dotnet_diagnostic.IsNull.severity = none
+
+# SA1000: Keywords should be spaced correctly
+dotnet_diagnostic.SA1000.severity = none
