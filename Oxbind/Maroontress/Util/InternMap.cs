@@ -4,7 +4,7 @@ namespace Maroontress.Util
     using System.Collections.Concurrent;
 
     /// <summary>
-    /// Provides canonical value objects corresponding to the key.
+    /// Provides the canonical value object corresponding to the key.
     /// </summary>
     /// <typeparam name="K">
     /// The type of the key.
@@ -13,18 +13,58 @@ namespace Maroontress.Util
     /// The type of the value.
     /// </typeparam>
     public sealed class InternMap<K, V>
-        where K : class
+        where K : notnull
         where V : class
     {
-        /// <summary>
-        /// The map from a key to the value.
-        /// </summary>
-        private readonly ConcurrentDictionary<K, V> map
-            = new ConcurrentDictionary<K, V>();
+        private const int DefaultCapacity = 31;
 
         /// <summary>
-        /// Returns the canonical value object corresponding to the specified
-        /// key object. If the canonical value object does not exist in the
+        /// Initializes a new instance of the <see cref="InternMap{K, V}"/>
+        /// class.
+        /// </summary>
+        public InternMap()
+            : this(DefaultCapacity, DefaultConcurrencyLevel)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InternMap{K, V}"/>
+        /// class.
+        /// </summary>
+        /// <param name="initialCapacity">
+        /// The initial capacity.
+        /// </param>
+        public InternMap(int initialCapacity)
+            : this(initialCapacity, DefaultConcurrencyLevel)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InternMap{K, V}"/>
+        /// class.
+        /// </summary>
+        /// <param name="initialCapacity">
+        /// The initial capacity.
+        /// </param>
+        /// <param name="concurrencyLevel">
+        /// The concurrency level.
+        /// </param>
+        public InternMap(int initialCapacity, int concurrencyLevel)
+        {
+            Map = new(concurrencyLevel, initialCapacity);
+        }
+
+        private static int DefaultConcurrencyLevel { get; }
+            = Environment.ProcessorCount;
+
+        /// <summary>
+        /// Gets the map from a key to the value.
+        /// </summary>
+        private ConcurrentDictionary<K, V> Map { get; }
+
+        /// <summary>
+        /// Gets the canonical value object corresponding to the specified key
+        /// object. If the canonical value object does not exist in the
         /// internal object pool, creates a new value object with the specified
         /// function.
         /// </summary>
@@ -45,12 +85,16 @@ namespace Maroontress.Util
         /// </returns>
         public V Intern(K key, Func<K, V> newValue)
         {
-            return Intern(key, () => newValue(key));
+            if (newValue is null)
+            {
+                throw new ArgumentNullException(nameof(newValue));
+            }
+            return Map.GetOrAdd(key, newValue);
         }
 
         /// <summary>
-        /// Returns the canonical value object corresponding to the specified
-        /// key object. If the canonical value object does not exist in the
+        /// Gets the canonical value object corresponding to the specified key
+        /// object. If the canonical value object does not exist in the
         /// internal object pool, creates a new value object with the specified
         /// supplier.
         /// </summary>
@@ -71,13 +115,11 @@ namespace Maroontress.Util
         /// </returns>
         public V Intern(K key, Func<V> supplier)
         {
-            if (map.TryGetValue(key, out var value))
+            if (supplier is null)
             {
-                return value;
+                throw new ArgumentNullException(nameof(supplier));
             }
-            value = supplier();
-            var canonical = map.GetOrAdd(key, value);
-            return (canonical == value) ? value : canonical;
+            return Map.GetOrAdd(key, k => supplier());
         }
     }
 }
