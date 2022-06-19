@@ -3,7 +3,6 @@ namespace Maroontress.Util
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Linq;
 
     /// <summary>
     /// Hash table and linked list implementation of the <see cref="ISet{T}"/>
@@ -23,14 +22,8 @@ namespace Maroontress.Util
     /// The type of elements maintained by this set.
     /// </typeparam>
     public sealed class LinkedHashSet<T> : ISet<T>
+        where T : notnull
     {
-        private readonly Dictionary<T, LinkedListNode<T>> map
-            = new Dictionary<T, LinkedListNode<T>>();
-
-        private readonly LinkedList<T> list = new LinkedList<T>();
-
-        private readonly Func<ISet<T>> newKeySet;
-
         private Func<ISet<T>> keySet;
 
         /// <summary>
@@ -38,81 +31,133 @@ namespace Maroontress.Util
         /// class.
         /// </summary>
         public LinkedHashSet()
+            : this(16)
         {
-            newKeySet = () =>
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LinkedHashSet{T}"/>
+        /// class.
+        /// </summary>
+        /// <param name="initialCapacity">
+        /// The initial capacity.
+        /// </param>
+        public LinkedHashSet(int initialCapacity)
+        {
+            if (initialCapacity < 0)
             {
-                var set = new HashSet<T>(map.Keys);
+                throw new ArgumentException(
+                    $"Illegal initial capacity: {initialCapacity}");
+            }
+            Map = new(initialCapacity);
+            NewKeySet = () =>
+            {
+                var set = new HashSet<T>(Map.Keys);
                 keySet = () => set;
                 return set;
             };
-            keySet = newKeySet;
+            keySet = NewKeySet;
         }
 
         /// <inheritdoc/>
-        public int Count => list.Count;
+        public int Count => List.Count;
 
         /// <inheritdoc/>
         public bool IsReadOnly => false;
 
+        private LinkedList<T> List { get; } = new();
+
+        private Dictionary<T, LinkedListNode<T>> Map { get; set; }
+
+        private Func<ISet<T>> NewKeySet { get; }
+
         /// <inheritdoc/>
         public bool Add(T item)
         {
-            if (map.ContainsKey(item))
+            if (Map.ContainsKey(item))
             {
                 return false;
             }
-            var listNode = list.AddLast(item);
-            map[item] = listNode;
-            keySet = newKeySet;
+            var listNode = List.AddLast(item);
+            Map[item] = listNode;
+            keySet = NewKeySet;
             return true;
         }
 
         /// <inheritdoc/>
         public void Clear()
         {
-            map.Clear();
-            list.Clear();
-            keySet = newKeySet;
+            Map.Clear();
+            List.Clear();
+            keySet = NewKeySet;
         }
 
         /// <inheritdoc/>
-        public bool Contains(T item) => map.ContainsKey(item);
+        public bool Contains(T item) => Map.ContainsKey(item);
 
         /// <inheritdoc/>
         public void CopyTo(T[] array, int arrayIndex)
-            => list.CopyTo(array, arrayIndex);
+        {
+            if (array is null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+            if (arrayIndex < 0)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(arrayIndex),
+                    $"Illegal array index: {arrayIndex}");
+            }
+            if (arrayIndex > array.Length
+                || array.Length < Count
+                || arrayIndex > array.Length - Count)
+            {
+                throw new ArgumentException(
+                    "Too small array length");
+            }
+            List.CopyTo(array, arrayIndex);
+        }
 
         /// <inheritdoc/>
         public void ExceptWith(IEnumerable<T> other)
         {
+            if (other is null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
             foreach (var e in other)
             {
                 Remove(e);
             }
-            keySet = newKeySet;
+            keySet = NewKeySet;
         }
 
         /// <inheritdoc/>
-        public IEnumerator<T> GetEnumerator() => list.GetEnumerator();
+        public IEnumerator<T> GetEnumerator() => List.GetEnumerator();
 
         /// <inheritdoc/>
         public void IntersectWith(IEnumerable<T> other)
         {
-            var set = new HashSet<T>(other);
-            var nodes = map.Where(pair => !set.Contains(pair.Key))
-                .Select(p => p.Value);
-            foreach (var n in nodes)
+            if (other is null)
             {
-                list.Remove(n);
+                throw new ArgumentNullException(nameof(other));
             }
-            var node = list.First;
-            map.Clear();
-            while (!(node is null))
+            var newMap = new Dictionary<T, LinkedListNode<T>>();
+            foreach (var e in other)
             {
-                map[node.Value] = node;
-                node = node.Next;
+                if (!Map.TryGetValue(e, out var node))
+                {
+                    continue;
+                }
+                Map.Remove(e);
+                newMap[e] = node;
             }
-            keySet = newKeySet;
+            foreach (var v in Map.Values)
+            {
+                List.Remove(v);
+            }
+            Map = newMap;
+            keySet = NewKeySet;
         }
 
         /// <inheritdoc/>
@@ -138,13 +183,13 @@ namespace Maroontress.Util
         /// <inheritdoc/>
         public bool Remove(T item)
         {
-            if (!map.TryGetValue(item, out var listNode))
+            if (!Map.TryGetValue(item, out var listNode))
             {
                 return false;
             }
-            list.Remove(listNode);
-            map.Remove(item);
-            keySet = newKeySet;
+            List.Remove(listNode);
+            Map.Remove(item);
+            keySet = NewKeySet;
             return true;
         }
 
@@ -155,24 +200,42 @@ namespace Maroontress.Util
         /// <inheritdoc/>
         public void SymmetricExceptWith(IEnumerable<T> other)
         {
+            if (other is null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
+            if (ReferenceEquals(other, this))
+            {
+                Clear();
+                return;
+            }
+            var set = new HashSet<T>();
             foreach (var e in other)
             {
+                if (!set.Add(e))
+                {
+                    continue;
+                }
                 if (!Remove(e))
                 {
                     Add(e);
                 }
             }
-            keySet = newKeySet;
+            keySet = NewKeySet;
         }
 
         /// <inheritdoc/>
         public void UnionWith(IEnumerable<T> other)
         {
+            if (other is null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
             foreach (var e in other)
             {
                 Add(e);
             }
-            keySet = newKeySet;
+            keySet = NewKeySet;
         }
 
         /// <inheritdoc/>
