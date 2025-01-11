@@ -29,6 +29,7 @@ namespace Maroontress.Oxbind.Test
             Assert.AreEqual("80", root.First.Value);
             _ = root.Second ?? throw new NullReferenceException();
             Assert.AreEqual("text", root.Second.Value);
+            _ = root.ThirdCombo ?? throw new NullReferenceException();
             Assert.AreEqual(2, root.ThirdCombo.Count());
             var array = root.ThirdCombo.Select(e => e.Value)
                 .ToArray();
@@ -53,6 +54,7 @@ namespace Maroontress.Oxbind.Test
             var root = binder.NewInstance(reader);
 
             _ = root.First ?? throw new NullReferenceException();
+            _ = root.ThirdCombo ?? throw new NullReferenceException();
             Assert.AreEqual("80", root.First.Value);
             Assert.IsNull(root.Second);
             Assert.AreEqual(2, root.ThirdCombo.Count());
@@ -80,6 +82,7 @@ namespace Maroontress.Oxbind.Test
             var root = binder.NewInstance(reader);
 
             _ = root.First ?? throw new NullReferenceException();
+            _ = root.SecondCombo ?? throw new NullReferenceException();
             Assert.AreEqual("80", root.First.Value);
             Assert.AreEqual(2, root.SecondCombo.Count());
             var array = root.SecondCombo.Select(e => e.Value)
@@ -107,6 +110,7 @@ namespace Maroontress.Oxbind.Test
             var root = binder.NewInstance(reader);
 
             _ = root.First ?? throw new NullReferenceException();
+            _ = root.SecondCombo ?? throw new NullReferenceException();
             Assert.AreEqual("80", root.First.Value);
             Assert.AreEqual(2, root.SecondCombo.Count());
             var array = root.SecondCombo.Select(e => e.Value)

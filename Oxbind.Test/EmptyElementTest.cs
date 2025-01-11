@@ -20,6 +20,7 @@ namespace Maroontress.Oxbind.Test
             var reader = new StringReader(xml);
             var root = binder.NewInstance(reader);
 
+            _ = root.SecondCombo ?? throw new NullReferenceException();
             Assert.IsNull(root.First);
             Assert.AreEqual(0, root.SecondCombo.Count());
         }
@@ -38,6 +39,7 @@ namespace Maroontress.Oxbind.Test
             var root = binder.NewInstance(reader);
 
             _ = root.First ?? throw new NullReferenceException();
+            _ = root.SecondCombo ?? throw new NullReferenceException();
             Assert.AreEqual("", root.First.Value);
             Assert.AreEqual(0, root.SecondCombo.Count());
         }

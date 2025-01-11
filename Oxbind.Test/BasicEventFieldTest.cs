@@ -43,6 +43,7 @@ namespace Maroontress.Oxbind.Test
             public void Test()
             {
                 _ = First ?? throw new NullReferenceException();
+                _ = SecondCombo ?? throw new NullReferenceException();
                 var first = First.Value;
                 Assert.AreEqual(3, First.Line);
                 Assert.AreEqual(4, First.Column);
