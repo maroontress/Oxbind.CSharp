@@ -10,9 +10,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 public static class Checks
 {
     /// <summary>
-    /// Checks the <see cref="BindException"/> that
-    /// <see cref="Oxbinder{T}.NewInstance(TextReader)"/>
-    /// with the specified XML document throws.
+    /// Checks the <see cref="BindException"/> that <see
+    /// cref="Oxbinder{T}.NewInstance(TextReader)"/> with the specified XML
+    /// document throws.
     /// </summary>
     /// <typeparam name="T">
     /// The class associated with the root element.
@@ -32,9 +32,9 @@ public static class Checks
     }
 
     /// <summary>
-    /// Checks the <see cref="BindException"/> that
-    /// <see cref="Oxbinder{T}.NewInstance(TextReader)"/>
-    /// with the specified XML document throws.
+    /// Checks the <see cref="BindException"/> that <see
+    /// cref="Oxbinder{T}.NewInstance(TextReader)"/> with the specified XML
+    /// document throws.
     /// </summary>
     /// <typeparam name="T">
     /// The class associated with the root element.

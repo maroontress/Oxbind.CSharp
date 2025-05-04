@@ -8,15 +8,15 @@ using System;
 /// </summary>
 /// <remarks>
 /// <para>
-/// If the <see cref="Oxbinder{T}"/> finds the XML elements containing a
-/// text node, it invokes the annotated method with the value that the text
-/// node contains.
+/// If the <see cref="Oxbinder{T}"/> finds the XML elements containing a text
+/// node, it invokes the annotated method with the value that the text node
+/// contains.
 /// </para>
 /// <para>
-/// This annotation must mark an instance method, of which the return type
-/// must be <c>void</c>, and that must have a single parameter whose type
-/// is <see cref="string"/>. And the class that has the instance method
-/// must be annotated with <see cref="ForElementAttribute"/>.
+/// This annotation must mark an instance method, of which the return type must
+/// be <c>void</c>, and that must have a single parameter whose type is <see
+/// cref="string"/>. And the class that has the instance method must be
+/// annotated with <see cref="ForElementAttribute"/>.
 /// </para>
 /// <para>
 /// If there is an instance method annotated with <see

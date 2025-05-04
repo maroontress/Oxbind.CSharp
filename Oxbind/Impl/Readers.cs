@@ -9,8 +9,8 @@ using System.Xml;
 public static class Readers
 {
     /// <summary>
-    /// Does nothing if there are more parsing events, or throws
-    /// <see cref="BindException"/> otherwise.
+    /// Does nothing if there are more parsing events, or throws <see
+    /// cref="BindException"/> otherwise.
     /// </summary>
     /// <param name="in">
     /// The XML reader.
@@ -26,9 +26,9 @@ public static class Readers
     }
 
     /// <summary>
-    /// Skips the text and checks End Of Stream in the specified XML
-    /// reader. If the specified XML reader does not reach at the end of
-    /// the stream, throws <see cref="BindException"/>.
+    /// Skips the text and checks End Of Stream in the specified XML reader. If
+    /// the specified XML reader does not reach at the end of the stream,
+    /// throws <see cref="BindException"/>.
     /// </summary>
     /// <param name="in">
     /// The XML reader.
@@ -48,9 +48,8 @@ public static class Readers
     }
 
     /// <summary>
-    /// Does nothing if the element of the specified local name starts at
-    /// the specified XML reader, or throws <see cref="BindException"/>
-    /// otherwise.
+    /// Does nothing if the element of the specified local name starts at the
+    /// specified XML reader, or throws <see cref="BindException"/> otherwise.
     /// </summary>
     /// <param name="in">
     /// The XML reader.
@@ -65,9 +64,8 @@ public static class Readers
     }
 
     /// <summary>
-    /// Does nothing if the element of the specified local name ends at
-    /// the specified XML reader, or throws <see cref="BindException"/>
-    /// otherwise.
+    /// Does nothing if the element of the specified local name ends at the
+    /// specified XML reader, or throws <see cref="BindException"/> otherwise.
     /// </summary>
     /// <param name="in">
     /// The XML reader.
@@ -170,8 +168,8 @@ public static class Readers
     /// </param>
     /// <returns>
     /// The <see cref="IXmlLineInfo"/> object that the XML reader object is
-    /// casted to, or the default <see cref="IXmlLineInfo"/> object if it
-    /// is failed to cast.
+    /// casted to, or the default <see cref="IXmlLineInfo"/> object if it is
+    /// failed to cast.
     /// </returns>
     public static IXmlLineInfo AsXmlLineInfo(XmlReader @in)
         => @in is IXmlLineInfo info
@@ -179,8 +177,8 @@ public static class Readers
             : DefaultXmlLineInfo.NoLineInfo;
 
     /// <summary>
-    /// Creates a new <see cref="BindException"/> representing
-    /// the lack of the mandatory child element in the empty element.
+    /// Creates a new <see cref="BindException"/> representing the lack of the
+    /// mandatory child element in the empty element.
     /// </summary>
     /// <param name="in">
     /// The XML reader.
@@ -205,8 +203,8 @@ public static class Readers
     }
 
     /// <summary>
-    /// Gets a new <see cref="XmlQualifiedName"/> of the specified
-    /// <see cref="XmlReader"/>.
+    /// Gets a new <see cref="XmlQualifiedName"/> of the specified <see
+    /// cref="XmlReader"/>.
     /// </summary>
     /// <param name="in">
     /// The XML reader.
@@ -218,8 +216,8 @@ public static class Readers
         => new XmlQualifiedName(@in.LocalName, @in.NamespaceURI);
 
     /// <summary>
-    /// Gets whether the name that the specifed XML reader represents
-    /// equals to the specified qualified name.
+    /// Gets whether the name that the specifed XML reader represents equals to
+    /// the specified qualified name.
     /// </summary>
     /// <param name="in">
     /// The XML reader.
@@ -228,17 +226,16 @@ public static class Readers
     /// The qualified name.
     /// </param>
     /// <returns>
-    /// <c>true</c> if the name that the XML reader represents equals
-    /// to the qualified name, <c>false</c> otherwise.
+    /// <c>true</c> if the name that the XML reader represents equals to the
+    /// qualified name, <c>false</c> otherwise.
     /// </returns>
     public static bool Equals(XmlReader @in, XmlQualifiedName qName)
         => @in.LocalName == qName.Name
             && @in.NamespaceURI == qName.Namespace;
 
     /// <summary>
-    /// Creates a new <see cref="BindException"/> representing
-    /// the type of the current node in the specified XML reader
-    /// is not expected one.
+    /// Creates a new <see cref="BindException"/> representing the type of the
+    /// current node in the specified XML reader is not expected one.
     /// </summary>
     /// <param name="in">
     /// The XML reader.
@@ -265,10 +262,9 @@ public static class Readers
     }
 
     /// <summary>
-    /// Does nothing if the node type of the he specified XML reader is
-    /// equal to the specified node type, and the local name is equal to
-    /// the specified local name, or throws <see cref="BindException"/>
-    /// otherwise.
+    /// Does nothing if the node type of the he specified XML reader is equal
+    /// to the specified node type, and the local name is equal to the
+    /// specified local name, or throws <see cref="BindException"/> otherwise.
     /// </summary>
     /// <param name="in">
     /// The XML reader.
@@ -301,15 +297,14 @@ public static class Readers
     }
 
     /// <summary>
-    /// Gets whether the specified node type represents characters or
-    /// white spaces.
+    /// Gets whether the specified node type represents characters or white
+    /// spaces.
     /// </summary>
     /// <param name="nodeType">
     /// The node type to check.
     /// </param>
     /// <returns>
-    /// <c>true</c> if the node type represents characters or white
-    /// spaces.
+    /// <c>true</c> if the node type represents characters or white spaces.
     /// </returns>
     private static bool IsCharacters(XmlNodeType nodeType)
         => nodeType == XmlNodeType.Text

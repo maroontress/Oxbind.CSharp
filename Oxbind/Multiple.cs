@@ -7,25 +7,22 @@ using Maroontress.Oxbind.Impl;
 using StyleChecker.Annotations;
 
 /// <summary>
-/// The factory of the <see cref="SchemaType"/> object that represents
-/// the child element that consecutively occurs zero or more times.
+/// The factory of the <see cref="SchemaType"/> object that represents the
+/// child element that consecutively occurs zero or more times.
 /// </summary>
 public static class Multiple
 {
     /// <summary>
-    /// Creates the <see cref="SchemaType"/> object that represents
-    /// the child element corresponding to the specified class
-    /// that consecutively occurs zero or more times.
+    /// Creates the <see cref="SchemaType"/> object that represents the child
+    /// element corresponding to the specified class that consecutively occurs
+    /// zero or more times.
     /// </summary>
     /// <remarks>
-    /// The <see cref="SchemaType"/> object for the specified class
-    /// that this method returns
-    /// must not follow consecutively one that
-    /// <see cref="Optional.Of{T}()"/> or
-    /// <see cref="Of{T}()"/> with the same class returns,
-    /// in the parameters of the
-    /// <see cref="Schema.Of(SchemaType[])"/>.
-    /// For example, both
+    /// The <see cref="SchemaType"/> object for the specified class that this
+    /// method returns must not follow consecutively one that <see
+    /// cref="Optional.Of{T}()"/> or <see cref="Of{T}()"/> with the same class
+    /// returns, in the parameters of the <see
+    /// cref="Schema.Of(SchemaType[])"/>. For example, both
     /// <c>Schema.Of(Optional.Of&lt;Movie&gt;(),
     /// Multiple.Of&lt;Movie&gt;())</c> and
     /// <c>Schema.Of(Multiple.Of&lt;Movie&gt;(),
@@ -33,8 +30,8 @@ public static class Multiple
     /// </remarks>
     /// <typeparam name="T">
     /// The class annotated with <see cref="ForElementAttribute"/>,
-    /// representing the child element that
-    /// consecutively occurs zero or more times.
+    /// representing the child element that consecutively occurs zero or more
+    /// times.
     /// </typeparam>
     /// <returns>
     /// The <see cref="SchemaType"/> object.

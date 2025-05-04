@@ -11,17 +11,17 @@ using System.Linq;
 public static class Elements
 {
     /// <summary>
-    /// Performs an action for each <c>int</c> value that is sequential
-    /// ordered from 0 (inclusive) to the specified value (exclusive) by an
-    /// incremental step of 1.
+    /// Performs an action for each <c>int</c> value that is sequential ordered
+    /// from 0 (inclusive) to the specified value (exclusive) by an incremental
+    /// step of 1.
     /// </summary>
     /// <param name="count">
     /// The exclusive upper bound.
     /// </param>
     /// <param name="consumer">
-    /// The action to perform <paramref name="count"/> times with the
-    /// argument 0, 1, ..., <paramref name="count"/> &#x2212; 1 (in order
-    /// of increasing).
+    /// The action to perform <paramref name="count"/> times with the argument
+    /// 0, 1, ..., <paramref name="count"/> &#x2212; 1 (in order of
+    /// increasing).
     /// </param>
     public static void ForEach(int count, Action<int> consumer)
     {
@@ -32,8 +32,8 @@ public static class Elements
     }
 
     /// <summary>
-    /// Accepts the specified consumer function if the specified collection
-    /// is not empty.
+    /// Accepts the specified consumer function if the specified collection is
+    /// not empty.
     /// </summary>
     /// <typeparam name="T">
     /// The type of the collection's element.
@@ -56,9 +56,9 @@ public static class Elements
 
     /// <summary>
     /// Returns the relative complement of B in A (also called the
-    /// set-theoretic difference of A and B), denoted by A \ B (or A
-    /// &#x2212; B), is the set of all elements that are members of A but
-    /// not members of B.
+    /// set-theoretic difference of A and B), denoted by A \ B (or A &#x2212;
+    /// B), is the set of all elements that are members of A but not members of
+    /// B.
     /// </summary>
     /// <typeparam name="T">
     /// The type of the element.
@@ -70,8 +70,8 @@ public static class Elements
     /// The collection B.
     /// </param>
     /// <returns>
-    /// The new <see cref="ISet{T}"/> object that has the relative
-    /// complement of B in A.
+    /// The new <see cref="ISet{T}"/> object that has the relative complement
+    /// of B in A.
     /// </returns>
     public static ISet<T> DifferenceOf<T>(
         IEnumerable<T> a, IEnumerable<T> b)

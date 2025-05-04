@@ -4,32 +4,32 @@ using System;
 using System.Collections.Generic;
 
 /// <summary>
-/// Provides a way of graph traversal to visit all the reachable nodes from
-/// the specified node.
+/// Provides a way of graph traversal to visit all the reachable nodes from the
+/// specified node.
 /// </summary>
 /// <remarks>
-/// For more information, see
-/// <a href="https://en.wikipedia.org/wiki/Graph_traversal">
+/// For more information, see <a
+/// href="https://en.wikipedia.org/wiki/Graph_traversal">
 /// Graph traversal</a>:
 ///
 /// <para>
 /// <blockquote>
-/// <para>Unlike tree traversal, graph traversal may require that some
-/// nodes be visited more than once, since it is not necessarily known
-/// before transitioning to a node that it has already been explored. As
-/// graphs become more dense, this redundancy becomes more prevalent,
-/// causing computation time to increase; as graphs become more sparse, the
-/// opposite holds true.</para>
+/// <para>Unlike tree traversal, graph traversal may require that some nodes be
+/// visited more than once, since it is not necessarily known before
+/// transitioning to a node that it has already been explored. As graphs become
+/// more dense, this redundancy becomes more prevalent, causing computation
+/// time to increase; as graphs become more sparse, the opposite holds
+/// true.</para>
 ///
-/// <para>Thus, it is usually necessary to remember which nodes have
-/// already been explored by the algorithm, so that nodes are revisited as
-/// infrequently as possible (or in the worst case, to prevent the
-/// traversal from continuing indefinitely). This may be accomplished by
-/// associating each node of the graph with a "color" or "visitation" state
-/// during the traversal, which is then checked and updated as the
-/// algorithm visits each node. If the node has already been visited, it is
-/// ignored and the path is pursued no further; otherwise, the algorithm
-/// checks/updates the node and continues down its current path.</para>
+/// <para>Thus, it is usually necessary to remember which nodes have already
+/// been explored by the algorithm, so that nodes are revisited as infrequently
+/// as possible (or in the worst case, to prevent the traversal from continuing
+/// indefinitely). This may be accomplished by associating each node of the
+/// graph with a "color" or "visitation" state during the traversal, which is
+/// then checked and updated as the algorithm visits each node. If the node has
+/// already been visited, it is ignored and the path is pursued no further;
+/// otherwise, the algorithm checks/updates the node and continues down its
+/// current path.</para>
 /// </blockquote>
 /// </para>
 /// </remarks>
@@ -75,9 +75,9 @@ public sealed class Traversal<T>
     /// visited.
     /// </summary>
     /// <remarks>
-    /// At first, calls the <see cref="Traversal{T}.getDependencies"/>
-    /// function with the specified node. And then calls recursively the
-    /// function with those nodes that have never been visited.
+    /// At first, calls the <see cref="Traversal{T}.getDependencies"/> function
+    /// with the specified node. And then calls recursively the function with
+    /// those nodes that have never been visited.
     /// </remarks>
     /// <param name="all">
     /// The reachable nodes.

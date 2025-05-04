@@ -15,11 +15,11 @@ public interface Oxbinder<out T>
     /// Creates a new instance from the specified text reader.
     /// </summary>
     /// <remarks>
-    /// This method throws <see cref="BindException" /> if there are
-    /// invalid annotations in the class representing the XML root element
-    /// (that was specified with <see cref="OxbinderFactory.Of()" /> when
-    /// this <c>Oxbinder</c> was created), or in the classes representing
-    /// the descendants of that root element.
+    /// This method throws <see cref="BindException" /> if there are invalid
+    /// annotations in the class representing the XML root element (that was
+    /// specified with <see cref="OxbinderFactory.Of()" /> when this
+    /// <c>Oxbinder</c> was created), or in the classes representing the
+    /// descendants of that root element.
     /// </remarks>
     /// <param name="reader">
     /// The text reader that provides the XML stream.

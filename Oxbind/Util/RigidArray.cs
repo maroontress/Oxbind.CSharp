@@ -5,8 +5,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 /// <summary>
-/// Represents an array that is immutable; meaning it cannot be changed
-/// once it is created.
+/// Represents an array that is immutable; meaning it cannot be changed once it
+/// is created.
 /// </summary>
 /// <typeparam name="T">
 /// The type of elements stored in the array.
@@ -19,8 +19,7 @@ public sealed class RigidArray<T> : IReadOnlyList<T>
     private readonly T[] array;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RigidArray{T}"/>
-    /// class.
+    /// Initializes a new instance of the <see cref="RigidArray{T}"/> class.
     /// </summary>
     /// <param name="args">
     /// The array to be copied.

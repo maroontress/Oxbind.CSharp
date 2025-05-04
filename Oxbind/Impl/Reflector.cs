@@ -14,8 +14,8 @@ public sealed class Reflector<T>
     /// Initializes a new instance of the <see cref="Reflector{T}"/> class.
     /// </summary>
     /// <param name="inject">
-    /// The delegate that injects the sugarcoated value to the field or
-    /// with the method.
+    /// The delegate that injects the sugarcoated value to the field or with
+    /// the method.
     /// </param>
     /// <param name="unitType">
     /// The type of the unit.

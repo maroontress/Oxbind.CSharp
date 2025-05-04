@@ -41,8 +41,8 @@ public abstract class ReflectorMap<K, V> : Dictionary<K, Reflector<V>>
     /// specified method.
     /// </summary>
     /// <param name="info">
-    /// The method information associated with the method which the value
-    /// is injected with.
+    /// The method information associated with the method which the value is
+    /// injected with.
     /// </param>
     /// <returns>
     /// The new <see cref="Injector"/>.
@@ -51,12 +51,12 @@ public abstract class ReflectorMap<K, V> : Dictionary<K, Reflector<V>>
         => (i, v) => info.Invoke(i, new[] { v });
 
     /// <summary>
-    /// Associates the <see cref="Reflector{T}"/> object with the specified
-    /// key in this map.
+    /// Associates the <see cref="Reflector{T}"/> object with the specified key
+    /// in this map.
     /// </summary>
     /// <remarks>
-    /// No <see cref="Reflector{T}"/> must be associated with the specified
-    /// key on ahead.
+    /// No <see cref="Reflector{T}"/> must be associated with the specified key
+    /// on ahead.
     /// </remarks>
     /// <param name="key">
     /// A key of the map.

@@ -29,15 +29,13 @@ public sealed class OxbinderFactory
     private readonly DagChecker<Type> dagChecker;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="OxbinderFactory"/>
-    /// class.
+    /// Initializes a new instance of the <see cref="OxbinderFactory"/> class.
     /// </summary>
     /// <param name="ignoreWarnings">
-    /// If the value is <c>true</c>, the <see
-    /// cref="OxbinderFactory.Of{T}"/> ignores warning messages to the
-    /// annotations of type <c>T</c>. Otherwise, the warning messages are
-    /// treated as errors, and then the method throws <see
-    /// cref="BindException"/>.
+    /// If the value is <c>true</c>, the <see cref="OxbinderFactory.Of{T}"/>
+    /// ignores warning messages to the annotations of type <c>T</c>.
+    /// Otherwise, the warning messages are treated as errors, and then the
+    /// method throws <see cref="BindException"/>.
     /// </param>
     public OxbinderFactory(bool ignoreWarnings = false)
     {
@@ -61,12 +59,11 @@ public sealed class OxbinderFactory
     }
 
     /// <summary>
-    /// Creates an <see cref="Oxbinder{T}"/> object for the specified
-    /// class.
+    /// Creates an <see cref="Oxbinder{T}"/> object for the specified class.
     /// </summary>
     /// <typeparam name="T">
-    /// The type of the class annotated with <see
-    /// cref="ForElementAttribute"/> that stands for the root element.
+    /// The type of the class annotated with <see cref="ForElementAttribute"/>
+    /// that stands for the root element.
     /// </typeparam>
     /// <returns>
     /// The <see cref="Oxbinder{T}"/> object to create new objects of the

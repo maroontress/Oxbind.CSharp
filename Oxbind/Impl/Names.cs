@@ -37,8 +37,8 @@ public static class Names
     }
 
     /// <summary>
-    /// Sorts the specified strings and returns the joined string of them
-    /// with the default delimiter.
+    /// Sorts the specified strings and returns the joined string of them with
+    /// the default delimiter.
     /// </summary>
     /// <param name="all">
     /// The <c>string</c>s.
@@ -140,8 +140,8 @@ public static class Names
     }
 
     /// <summary>
-    /// Sorts the names of the specified objects and returns the joined
-    /// string of them with the default format.
+    /// Sorts the names of the specified objects and returns the joined string
+    /// of them with the default format.
     /// </summary>
     /// <typeparam name="T">
     /// The type of the objects.

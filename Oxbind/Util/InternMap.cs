@@ -19,8 +19,7 @@ public sealed class InternMap<K, V>
     private const int DefaultCapacity = 31;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="InternMap{K, V}"/>
-    /// class.
+    /// Initializes a new instance of the <see cref="InternMap{K, V}"/> class.
     /// </summary>
     public InternMap()
         : this(DefaultCapacity, DefaultConcurrencyLevel)
@@ -28,8 +27,7 @@ public sealed class InternMap<K, V>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="InternMap{K, V}"/>
-    /// class.
+    /// Initializes a new instance of the <see cref="InternMap{K, V}"/> class.
     /// </summary>
     /// <param name="initialCapacity">
     /// The initial capacity.
@@ -40,8 +38,7 @@ public sealed class InternMap<K, V>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="InternMap{K, V}"/>
-    /// class.
+    /// Initializes a new instance of the <see cref="InternMap{K, V}"/> class.
     /// </summary>
     /// <param name="initialCapacity">
     /// The initial capacity.
@@ -64,14 +61,13 @@ public sealed class InternMap<K, V>
 
     /// <summary>
     /// Gets the canonical value object corresponding to the specified key
-    /// object. If the canonical value object does not exist in the
-    /// internal object pool, creates a new value object with the specified
-    /// function.
+    /// object. If the canonical value object does not exist in the internal
+    /// object pool, creates a new value object with the specified function.
     /// </summary>
     /// <remarks>
-    /// The specified function can be called concurrently with the equal
-    /// keys if the multiple threads call this method. However, the
-    /// canonical value object that this method returns is only one.
+    /// The specified function can be called concurrently with the equal keys
+    /// if the multiple threads call this method. However, the canonical value
+    /// object that this method returns is only one.
     /// </remarks>
     /// <param name="key">
     /// The key object.
@@ -94,14 +90,13 @@ public sealed class InternMap<K, V>
 
     /// <summary>
     /// Gets the canonical value object corresponding to the specified key
-    /// object. If the canonical value object does not exist in the
-    /// internal object pool, creates a new value object with the specified
-    /// supplier.
+    /// object. If the canonical value object does not exist in the internal
+    /// object pool, creates a new value object with the specified supplier.
     /// </summary>
     /// <remarks>
-    /// The specified function can be called concurrently with the equal
-    /// keys if the multiple threads call this method. However, the
-    /// canonical value object that this method returns is only one.
+    /// The specified function can be called concurrently with the equal keys
+    /// if the multiple threads call this method. However, the canonical value
+    /// object that this method returns is only one.
     /// </remarks>
     /// <param name="key">
     /// The key object.

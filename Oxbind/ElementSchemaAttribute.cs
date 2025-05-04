@@ -7,16 +7,15 @@ using System;
 /// </summary>
 /// <remarks>
 /// <para>
-/// This annotation must mark a <c>static</c> and <c>readonly</c> field
-/// whose type is <see cref="Schema"/>. And the class that has the
-/// <c>static</c> field must be annotated with <see
-/// cref="ForElementAttribute"/>.
+/// This annotation must mark a <c>static</c> and <c>readonly</c> field whose
+/// type is <see cref="Schema"/>. And the class that has the <c>static</c>
+/// field must be annotated with <see cref="ForElementAttribute"/>.
 /// </para>
 /// <para>
 /// If there is a <c>static</c> field annotated with <see
 /// cref="ElementSchemaAttribute"/> in a class, there must be no other
-/// <c>static</c> fields annotated with it, and be no instance fields
-/// annotated with <see cref="ForTextAttribute"/> in that class.
+/// <c>static</c> fields annotated with it, and be no instance fields annotated
+/// with <see cref="ForTextAttribute"/> in that class.
 /// </para>
 /// </remarks>
 /// <seealso cref="Schema"/>

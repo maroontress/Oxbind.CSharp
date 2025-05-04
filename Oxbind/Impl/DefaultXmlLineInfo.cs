@@ -35,8 +35,7 @@ public sealed class DefaultXmlLineInfo : IXmlLineInfo
     }
 
     /// <summary>
-    /// Gets the <see cref="IXmlLineInfo"/> representing no line
-    /// information.
+    /// Gets the <see cref="IXmlLineInfo"/> representing no line information.
     /// </summary>
     public static IXmlLineInfo NoLineInfo { get; }
         = new DefaultXmlLineInfo();

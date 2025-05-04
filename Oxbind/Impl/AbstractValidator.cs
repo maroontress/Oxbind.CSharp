@@ -69,8 +69,8 @@ public abstract class AbstractValidator
     private string Label { get; }
 
     /// <summary>
-    /// Get a new log messages representing the warnings/errors that
-    /// this validator has detected.
+    /// Get a new log messages representing the warnings/errors that this
+    /// validator has detected.
     /// </summary>
     /// <returns>
     /// The log messages.
@@ -94,8 +94,8 @@ public abstract class AbstractValidator
         => Log("warning", message, args);
 
     /// <summary>
-    /// Logs an error message and marks this validator to indicate that it
-    /// has detected errors.
+    /// Logs an error message and marks this validator to indicate that it has
+    /// detected errors.
     /// </summary>
     /// <param name="message">
     /// The key of the resource bundle representing the pattern of the

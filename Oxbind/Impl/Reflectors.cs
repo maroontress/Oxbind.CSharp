@@ -11,8 +11,8 @@ public static class Reflectors
     /// Gets a new instance of the <see cref="Reflector{T}"/> class.
     /// </summary>
     /// <param name="inject">
-    /// The delegate that injects the sugarcoated value to the field or
-    /// with the method.
+    /// The delegate that injects the sugarcoated value to the field or with
+    /// the method.
     /// </param>
     /// <param name="unitType">
     /// Get the type of the unit.

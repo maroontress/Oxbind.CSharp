@@ -37,12 +37,12 @@ public sealed class Validator : AbstractValidator
     }
 
     /// <summary>
-    /// Gets the collection of the class that the <see cref="Schema"/>
-    /// object of the validated class contains.
+    /// Gets the collection of the class that the <see cref="Schema"/> object
+    /// of the validated class contains.
     /// </summary>
     /// <returns>
-    /// The collection of the class that the <see cref="Schema"/> object of
-    /// the validated class contains if the class is valid.
+    /// The collection of the class that the <see cref="Schema"/> object of the
+    /// validated class contains if the class is valid.
     /// </returns>
     public IEnumerable<Type> SchemaClasses { get; }
 
@@ -71,15 +71,15 @@ public sealed class Validator : AbstractValidator
     }
 
     /// <summary>
-    /// Returns whether the specified class is marked with the annotation
-    /// <see cref="ForElementAttribute"/>.
+    /// Returns whether the specified class is marked with the annotation <see
+    /// cref="ForElementAttribute"/>.
     /// </summary>
     /// <param name="clazz">
     /// The class to test.
     /// </param>
     /// <returns>
-    /// <c>true</c> if the specified class is marked with the annotation
-    /// <see cref="ForElementAttribute"/>.
+    /// <c>true</c> if the specified class is marked with the annotation <see
+    /// cref="ForElementAttribute"/>.
     /// </returns>
     private static bool IsElementClass(Type clazz)
         => clazz.GetTypeInfo()
@@ -88,8 +88,8 @@ public sealed class Validator : AbstractValidator
 
     /// <summary>
     /// If the specified key is not already associated with a value (or is
-    /// mapped to <c>null</c>), attempts to compute its value using the
-    /// given mapping function and enters it into the specified map unless
+    /// mapped to <c>null</c>), attempts to compute its value using the given
+    /// mapping function and enters it into the specified map unless
     /// <c>null</c>.
     /// </summary>
     /// <typeparam name="K">
@@ -108,8 +108,8 @@ public sealed class Validator : AbstractValidator
     /// The function to compute a value.
     /// </param>
     /// <returns>
-    /// The current (existing or computed) value associated with the
-    /// specified key, or <c>null</c> if the computed value is <c>null</c>.
+    /// The current (existing or computed) value associated with the specified
+    /// key, or <c>null</c> if the computed value is <c>null</c>.
     /// </returns>
     private static V ComputeIfAbsent<K, V>(
         Dictionary<K, V> d, K key, Func<K, V> toValue)
@@ -124,12 +124,12 @@ public sealed class Validator : AbstractValidator
     }
 
     /// <summary>
-    /// Add the key and value that each of the specified elements provides
-    /// to the specified multi-value map.
+    /// Add the key and value that each of the specified elements provides to
+    /// the specified multi-value map.
     /// </summary>
     /// <typeparam name="T">
-    /// The type of each of <paramref name="all"/> that can provide the key
-    /// and value.
+    /// The type of each of <paramref name="all"/> that can provide the key and
+    /// value.
     /// </typeparam>
     /// <typeparam name="K">
     /// The type of key.
@@ -138,12 +138,12 @@ public sealed class Validator : AbstractValidator
     /// The type of value.
     /// </typeparam>
     /// <param name="map">
-    /// The map of the key to the associated <see cref="List{T}"/>
-    /// containing the value.
+    /// The map of the key to the associated <see cref="List{T}"/> containing
+    /// the value.
     /// </param>
     /// <param name="all">
-    /// The collection containing the elements. Each element can provides
-    /// the key and value with the functions <paramref name="getKey"/> and
+    /// The collection containing the elements. Each element can provides the
+    /// key and value with the functions <paramref name="getKey"/> and
     /// <paramref name="getValue"/>.
     /// </param>
     /// <param name="getKey">
@@ -183,9 +183,9 @@ public sealed class Validator : AbstractValidator
     /// field contains.
     /// </summary>
     /// <param name="all">
-    /// The list of the field annotated with
-    /// <see cref="ElementSchemaAttribute"/>.
-    /// The size of the list must be either 0 or 1.
+    /// The list of the field annotated with <see
+    /// cref="ElementSchemaAttribute"/>. The size of the list must be either 0
+    /// or 1.
     /// </param>
     /// <returns>
     /// All the <see cref="SchemaType"/> objects.
@@ -208,8 +208,8 @@ public sealed class Validator : AbstractValidator
     }
 
     /// <summary>
-    /// Returns the static fields of the <c>elementClass</c>
-    /// marked with the specified annotation.
+    /// Returns the static fields of the <c>elementClass</c> marked with the
+    /// specified annotation.
     /// </summary>
     /// <typeparam name="T">
     /// The annotation class.
@@ -222,8 +222,8 @@ public sealed class Validator : AbstractValidator
         => Classes.GetStaticFields<T>(Class);
 
     /// <summary>
-    /// Returns the instance fields of the <c>elementClass</c>
-    /// marked with the specified annotation.
+    /// Returns the instance fields of the <c>elementClass</c> marked with the
+    /// specified annotation.
     /// </summary>
     /// <typeparam name="T">
     /// The annotation class.
@@ -236,8 +236,8 @@ public sealed class Validator : AbstractValidator
         => Classes.GetInstanceFields<T>(Class);
 
     /// <summary>
-    /// Returns the static methods of the <c>elementClass</c> marked with
-    /// the specified annotation.
+    /// Returns the static methods of the <c>elementClass</c> marked with the
+    /// specified annotation.
     /// </summary>
     /// <typeparam name="T">
     /// The annotation class.
@@ -250,8 +250,8 @@ public sealed class Validator : AbstractValidator
         => Classes.GetStaticMethods<T>(Class);
 
     /// <summary>
-    /// Returns the instance methods of the <c>elementClass</c> marked with
-    /// the specified annotation.
+    /// Returns the instance methods of the <c>elementClass</c> marked with the
+    /// specified annotation.
     /// </summary>
     /// <typeparam name="T">
     /// The annotation class.
@@ -265,8 +265,7 @@ public sealed class Validator : AbstractValidator
 
     /// <summary>
     /// Validates the fields/methods marked with the annotation <see
-    /// cref="ForAttributeAttribute"/>/<see
-    /// cref="FromAttributeAttribute"/>.
+    /// cref="ForAttributeAttribute"/>/<see cref="FromAttributeAttribute"/>.
     /// </summary>
     private void CheckAttributes()
     {
@@ -388,12 +387,12 @@ public sealed class Validator : AbstractValidator
     }
 
     /// <summary>
-    /// Validates the <see cref="Schema"/> object marked with the
-    /// annotation <see cref="ElementSchemaAttribute"/>.
+    /// Validates the <see cref="Schema"/> object marked with the annotation
+    /// <see cref="ElementSchemaAttribute"/>.
     /// </summary>
     /// <param name="fields">
-    /// The static fields marked with the annotation
-    /// <see cref="ElementSchemaAttribute"/>.
+    /// The static fields marked with the annotation <see
+    /// cref="ElementSchemaAttribute"/>.
     /// </param>
     private IEnumerable<Type> CheckForElementSchema(
         IEnumerable<FieldInfo> fields)
@@ -435,14 +434,14 @@ public sealed class Validator : AbstractValidator
         static Type GetFirstParameterType(MethodInfo m)
             => m.GetParameters()[0].ParameterType;
 
-        // Checks the type of the field annotated with [ElementSchema] is
-        // not Schema class.
+        // Checks the type of the field annotated with [ElementSchema] is not
+        // Schema class.
         Elements.IfNotEmpty(
             fields.Where(s => !IsType<Schema>(s)),
             t => Error("type_mismatch_ElementSchema", Names.OfFields(t)));
 
-        // Checks each type that the Schema object contains is not
-        // the class annotated with [ForElement].
+        // Checks each type that the Schema object contains is not the class
+        // annotated with [ForElement].
         Elements.IfNotEmpty(
             schemaClasses.Where(t => !IsElementClass(t)),
             t => Error(
@@ -524,12 +523,12 @@ public sealed class Validator : AbstractValidator
     }
 
     /// <summary>
-    /// Validates the fields marked with the annotation
-    /// <see cref="ForTextAttribute"/>s.
+    /// Validates the fields marked with the annotation <see
+    /// cref="ForTextAttribute"/>s.
     /// </summary>
     /// <param name="fields">
-    /// The instance fields marked with the annotation
-    /// <see cref="ForTextAttribute"/>.
+    /// The instance fields marked with the annotation <see
+    /// cref="ForTextAttribute"/>.
     /// </param>
     private void CheckForText(IEnumerable<FieldInfo> fields)
     {
@@ -539,20 +538,20 @@ public sealed class Validator : AbstractValidator
             Error("duplicated_ForText", Names.OfFields(fields));
         }
 
-        // Checks that the type of the field annotated with [ForText] is
-        // not string.
+        // Checks that the type of the field annotated with [ForText] is not
+        // string.
         Elements.IfNotEmpty(
             fields.Where(f => !StringSugarcoaters.IsValid(f.FieldType)),
             t => Error("type_mismatch_ForText", Names.OfFields(t)));
     }
 
     /// <summary>
-    /// Validates the methods marked with the annotation
-    /// <see cref="FromTextAttribute"/>s.
+    /// Validates the methods marked with the annotation <see
+    /// cref="FromTextAttribute"/>s.
     /// </summary>
     /// <param name="methods">
-    /// The instance methods marked with the annotation
-    /// <see cref="FromTextAttribute"/>.
+    /// The instance methods marked with the annotation <see
+    /// cref="FromTextAttribute"/>.
     /// </param>
     private void CheckFromText(IEnumerable<MethodInfo> methods)
     {
@@ -562,9 +561,8 @@ public sealed class Validator : AbstractValidator
             Error("duplicated_FromText", Names.OfMethods(methods));
         }
 
-        // Checks that the method annotated with [FromText] does not
-        // return void and does not take a single parameter whose type
-        // is string.
+        // Checks that the method annotated with [FromText] does not return
+        // void and does not take a single parameter whose type is string.
         static bool IsInvalid(MethodInfo m)
             => !RetutnsVoidAndHasSingleParameter(
                 m, StringSugarcoaters.IsValid);

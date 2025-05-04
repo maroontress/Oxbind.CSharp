@@ -13,8 +13,8 @@ using System.Collections.Generic;
 /// maintains a doubly-linked list running through all of its entries. This
 /// linked list defines the iteration ordering, which is the order in which
 /// elements were inserted into the set (<i>insertion-order</i>). Note that
-/// insertion order is <i>not</i> affected if an element is re-inserted
-/// into the set. (An element <c>e</c> is reinserted into a set <c>s</c> if
+/// insertion order is <i>not</i> affected if an element is re-inserted into
+/// the set. (An element <c>e</c> is reinserted into a set <c>s</c> if
 /// <c>s.Add(e)</c> is invoked when <c>s.Contains(e)</c> would return
 /// <c>true</c> immediately prior to the invocation.)
 /// </remarks>
@@ -27,8 +27,7 @@ public sealed class LinkedHashSet<T> : ISet<T>
     private Func<ISet<T>> keySet;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="LinkedHashSet{T}"/>
-    /// class.
+    /// Initializes a new instance of the <see cref="LinkedHashSet{T}"/> class.
     /// </summary>
     public LinkedHashSet()
         : this(16)
@@ -36,8 +35,7 @@ public sealed class LinkedHashSet<T> : ISet<T>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="LinkedHashSet{T}"/>
-    /// class.
+    /// Initializes a new instance of the <see cref="LinkedHashSet{T}"/> class.
     /// </summary>
     /// <param name="initialCapacity">
     /// The initial capacity.

@@ -5,14 +5,13 @@ using System.Xml;
 using Maroontress.Oxbind.Impl;
 
 /// <summary>
-/// Indicates that an error has occurred while creating a new instance with
-/// the XML reader.
+/// Indicates that an error has occurred while creating a new instance with the
+/// XML reader.
 /// </summary>
 public sealed class BindException : Exception
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="BindException"/>
-    /// class.
+    /// Initializes a new instance of the <see cref="BindException"/> class.
     /// </summary>
     public BindException()
     {
@@ -20,8 +19,8 @@ public sealed class BindException : Exception
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BindException"/>
-    /// class, with the specified detail message.
+    /// Initializes a new instance of the <see cref="BindException"/> class,
+    /// with the specified detail message.
     /// </summary>
     /// <param name="message">
     /// The detail message.
@@ -33,8 +32,8 @@ public sealed class BindException : Exception
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BindException"/>
-    /// class, with the specified detail message and cause.
+    /// Initializes a new instance of the <see cref="BindException"/> class,
+    /// with the specified detail message and cause.
     /// </summary>
     /// <param name="message">
     /// The detail message.
@@ -49,9 +48,8 @@ public sealed class BindException : Exception
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BindException"/>
-    /// class, with the specified detail message and the specified
-    /// location.
+    /// Initializes a new instance of the <see cref="BindException"/> class,
+    /// with the specified detail message and the specified location.
     /// </summary>
     /// <param name="message">
     /// The detail message.
@@ -66,8 +64,8 @@ public sealed class BindException : Exception
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BindException"/>
-    /// class, with the specified detail message and cause.
+    /// Initializes a new instance of the <see cref="BindException"/> class,
+    /// with the specified detail message and cause.
     /// </summary>
     /// <param name="message">
     /// The detail message.
@@ -95,10 +93,10 @@ public sealed class BindException : Exception
     /// </summary>
     /// <remarks>
     /// This method returns the string with the form
-    /// <c>"</c>Line<c>:</c>Column<c>: </c>Message<c>"</c>
-    /// if the <see cref="LineInfo"/> has the line information (i.e.
-    /// <see cref="IXmlLineInfo.HasLineInfo"/> returns <c>true</c>),
-    /// otherwise returns the same as <see cref="Exception.Message"/>.
+    /// <c>"</c>Line<c>:</c>Column<c>: </c>Message<c>"</c> if the <see
+    /// cref="LineInfo"/> has the line information (i.e. <see
+    /// cref="IXmlLineInfo.HasLineInfo"/> returns <c>true</c>), otherwise
+    /// returns the same as <see cref="Exception.Message"/>.
     /// </remarks>
     /// <returns>
     /// The string representation.

@@ -5,12 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 
 /// <summary>
-/// A checker that checks a directed acyclic graph (DAG), is a directed
-/// graph with no directed cycles.
+/// A checker that checks a directed acyclic graph (DAG), is a directed graph
+/// with no directed cycles.
 /// </summary>
 /// <remarks>
-/// For more information about DAG, see
-/// <a href="http://en.wikipedia.org/wiki/Directed_acyclic_graph">
+/// For more information about DAG, see <a
+/// href="http://en.wikipedia.org/wiki/Directed_acyclic_graph">
 /// Directed acyclic graph</a>.
 /// </remarks>
 /// <typeparam name="T">
@@ -25,8 +25,7 @@ public sealed class DagChecker<T>
     private readonly LinkedHashSet<T> set = new LinkedHashSet<T>();
 
     /// <summary>
-    /// The node set containing the nodes that have no circular
-    /// dependencies.
+    /// The node set containing the nodes that have no circular dependencies.
     /// </summary>
     private readonly ISet<T> checkedSet;
 
@@ -36,8 +35,7 @@ public sealed class DagChecker<T>
     private readonly Func<T, ISet<T>> getDependencies;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DagChecker{T}"/>
-    /// class.
+    /// Initializes a new instance of the <see cref="DagChecker{T}"/> class.
     /// </summary>
     /// <param name="getDependencies">
     /// The function that returns the dependencies of the specified node.
@@ -49,20 +47,19 @@ public sealed class DagChecker<T>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DagChecker{T}"/>
-    /// class, with the specified node set containing the nodes that have
-    /// no circular dependencies.
+    /// Initializes a new instance of the <see cref="DagChecker{T}"/> class,
+    /// with the specified node set containing the nodes that have no circular
+    /// dependencies.
     /// </summary>
     /// <remarks>
-    /// The <see cref="Check(T)"/> method may add the nodes to the
-    /// specified node set.
+    /// The <see cref="Check(T)"/> method may add the nodes to the specified
+    /// node set.
     /// </remarks>
     /// <param name="getDependencies">
     /// The function that returns the dependencies of the specified node.
     /// </param>
     /// <param name="checkedSet">
-    /// The node set containing the nodes that have no circular
-    /// dependencies.
+    /// The node set containing the nodes that have no circular dependencies.
     /// </param>
     public DagChecker(Func<T, ISet<T>> getDependencies, ISet<T> checkedSet)
     {

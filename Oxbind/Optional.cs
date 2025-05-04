@@ -6,25 +6,21 @@ using Maroontress.Oxbind.Impl;
 using StyleChecker.Annotations;
 
 /// <summary>
-/// The factory of the <see cref="SchemaType"/> object that represents
-/// the child element that occurs once or not at all.
+/// The factory of the <see cref="SchemaType"/> object that represents the
+/// child element that occurs once or not at all.
 /// </summary>
 public static class Optional
 {
     /// <summary>
-    /// Creates the <see cref="SchemaType"/> object that represents
-    /// the child element corresponding to the specified class
-    /// that occurs once or not at all.
+    /// Creates the <see cref="SchemaType"/> object that represents the child
+    /// element corresponding to the specified class that occurs once or not at
+    /// all.
     /// </summary>
     /// <remarks>
-    /// The <see cref="SchemaType"/> object for the specified class
-    /// that this method returns
-    /// must not follow consecutively one that
-    /// <see cref="Multiple.Of{T}()"/>
-    /// with the same class returns,
-    /// in the parameters of the
-    /// <see cref="Schema.Of(SchemaType[])"/>.
-    /// For example,
+    /// The <see cref="SchemaType"/> object for the specified class that this
+    /// method returns must not follow consecutively one that <see
+    /// cref="Multiple.Of{T}()"/> with the same class returns, in the
+    /// parameters of the <see cref="Schema.Of(SchemaType[])"/>. For example,
     /// <c>Schema.Of(Multiple.Of&lt;Movie&gt;(),
     /// Optional.Of&lt;Movie&gt;())</c> is invalid.
     /// </remarks>

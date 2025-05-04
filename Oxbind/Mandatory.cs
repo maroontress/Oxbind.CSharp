@@ -6,25 +6,23 @@ using Maroontress.Oxbind.Impl;
 using StyleChecker.Annotations;
 
 /// <summary>
-/// The factory of the <see cref="SchemaType"/> object that represents
-/// the child element that occurs exactly one times.
+/// The factory of the <see cref="SchemaType"/> object that represents the
+/// child element that occurs exactly one times.
 /// </summary>
 public static class Mandatory
 {
     /// <summary>
-    /// Creates the <see cref="SchemaType"/> object that represents
-    /// the child element corresponding to the specified class
-    /// that occurs exactly one times.
+    /// Creates the <see cref="SchemaType"/> object that represents the child
+    /// element corresponding to the specified class that occurs exactly one
+    /// times.
     /// </summary>
     /// <remarks>
-    /// The <see cref="SchemaType"/> object for the specified class
-    /// that this method returns
-    /// must not follow consecutively one that
-    /// <see cref="Multiple.Of{T}()"/> or
-    /// <see cref="Multiple.Of{T}()"/> with the same class returns,
-    /// in the parameters of the
-    /// <see cref="Schema.Of(SchemaType[])"/>.
-    /// For example, both <c>Schema.Of(Optional.Of&lt;Movie&gt;(),
+    /// The <see cref="SchemaType"/> object for the specified class that this
+    /// method returns must not follow consecutively one that <see
+    /// cref="Multiple.Of{T}()"/> or <see cref="Multiple.Of{T}()"/> with the
+    /// same class returns, in the parameters of the <see
+    /// cref="Schema.Of(SchemaType[])"/>. For example, both
+    /// <c>Schema.Of(Optional.Of&lt;Movie&gt;(),
     /// Mandatory.Of&lt;Movie&gt;())</c> and
     /// <c>Schema.Of(Multiple.Of&lt;Movie&gt;(),
     /// Mandatory.Of&lt;Movie&gt;())</c> are invalid.

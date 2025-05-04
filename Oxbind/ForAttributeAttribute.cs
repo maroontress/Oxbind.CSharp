@@ -8,9 +8,8 @@ using System.Xml;
 /// </summary>
 /// <remarks>
 /// <para>
-/// If the <see cref="Oxbinder{T}"/> finds the XML attribute, it populates
-/// the annotated field corresponding to the attribute name, with that
-/// value.
+/// If the <see cref="Oxbinder{T}"/> finds the XML attribute, it populates the
+/// annotated field corresponding to the attribute name, with that value.
 /// </para>
 /// <para>
 /// This annotation must mark an instance field whose type is <see
@@ -18,13 +17,12 @@ using System.Xml;
 /// annotated with <see cref="ForElementAttribute"/>.
 /// </para>
 /// <para>
-/// Each attribute name of the annotation <see
-/// cref="ForAttributeAttribute"/> and <see cref="FromAttributeAttribute"/>
-/// must be unique in one class.
-/// For example, in a class, if an instance field is annotated with
-/// <c>[ForAttribute("name")]</c>, there must be no other fields annotated
-/// with <c>[ForAttribute("name")]</c> and also be no methods annotated
-/// with <c>[FromAttribute("name")]</c>.
+/// Each attribute name of the annotation <see cref="ForAttributeAttribute"/>
+/// and <see cref="FromAttributeAttribute"/> must be unique in one class. For
+/// example, in a class, if an instance field is annotated with
+/// <c>[ForAttribute("name")]</c>, there must be no other fields annotated with
+/// <c>[ForAttribute("name")]</c> and also be no methods annotated with
+/// <c>[FromAttribute("name")]</c>.
 /// </para>
 /// </remarks>
 /// <seealso cref="FromAttributeAttribute"/>

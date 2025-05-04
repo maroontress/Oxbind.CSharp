@@ -21,8 +21,8 @@ public sealed class CircularDependencyException
 
     /// <summary>
     /// Initializes a new instance of the <see
-    /// cref="CircularDependencyException"/> class,
-    /// with the specified detail message.
+    /// cref="CircularDependencyException"/> class, with the specified detail
+    /// message.
     /// </summary>
     /// <param name="message">
     /// A detail message.
@@ -49,16 +49,15 @@ public sealed class CircularDependencyException
     }
 
     /// <summary>
-    /// Creates a new instance of the <see
-    /// cref="CircularDependencyException"/> class,
-    /// with the list representing a circular dependency.
+    /// Creates a new instance of the <see cref="CircularDependencyException"/>
+    /// class, with the list representing a circular dependency.
     /// </summary>
     /// <typeparam name="T">
     /// The type of the node.
     /// </typeparam>
     /// <param name="list">
-    /// The list of nodes. The first node is equals to the
-    /// last node. The <i>k</i>th node depends (<i>k</i> + 1)th node.
+    /// The list of nodes. The first node is equals to the last node. The
+    /// <i>k</i>th node depends (<i>k</i> + 1)th node.
     /// </param>
     /// <returns>The new instance.</returns>
     public static CircularDependencyException Of<T>(IEnumerable<T> list)

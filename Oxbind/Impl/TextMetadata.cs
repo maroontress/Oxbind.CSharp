@@ -22,9 +22,9 @@ public sealed class TextMetadata : Metadata
     /// The class annotated with <see cref="ForElementAttribute"/>.
     /// </param>
     /// <param name="list">
-    /// The list of the instance field marked with the annotation
-    /// <see cref="ForTextAttribute"/>. The type of the field must be
-    /// <see cref="string"/>.
+    /// The list of the instance field marked with the annotation <see
+    /// cref="ForTextAttribute"/>. The type of the field must be <see
+    /// cref="string"/>.
     /// </param>
     public TextMetadata(
         Type clazz, IEnumerable<FieldInfo> list)
@@ -48,8 +48,8 @@ public sealed class TextMetadata : Metadata
     /// <param name="list">
     /// The list of the instance method marked with the annotation <see
     /// cref="FromTextAttribute"/>. The return type of the method must be
-    /// <c>void</c> and the method has the single parameter whose
-    /// type is <see cref="string"/>.
+    /// <c>void</c> and the method has the single parameter whose type is <see
+    /// cref="string"/>.
     /// </param>
     public TextMetadata(
         Type clazz, IEnumerable<MethodInfo> list)

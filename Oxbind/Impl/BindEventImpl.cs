@@ -12,8 +12,7 @@ public class BindEventImpl<T> : BindEvent<T>
     where T : class
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="BindEventImpl{T}"/>
-    /// class.
+    /// Initializes a new instance of the <see cref="BindEventImpl{T}"/> class.
     /// </summary>
     /// <param name="value">
     /// The deserialized value.

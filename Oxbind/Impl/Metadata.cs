@@ -7,8 +7,7 @@ using System.Xml;
 using Maroontress.Oxbind.Util;
 
 /// <summary>
-/// Metadata binding a class and its members to the XML element and
-/// attributes.
+/// Metadata binding a class and its members to the XML element and attributes.
 /// </summary>
 /// <remarks>
 /// <c>Metadata</c> objects are immutable.
@@ -16,8 +15,7 @@ using Maroontress.Oxbind.Util;
 public abstract class Metadata
 {
     /// <summary>
-    /// The map of the attribute name to the <see cref="Reflector{T}"/>
-    /// object.
+    /// The map of the attribute name to the <see cref="Reflector{T}"/> object.
     /// </summary>
     private readonly
         IReadOnlyDictionary<XmlQualifiedName, Reflector<string>>
@@ -43,22 +41,21 @@ public abstract class Metadata
     public Type ElementClass { get; }
 
     /// <summary>
-    /// Gets the name of the XML element, which is the value of the
-    /// annotation <see cref="ForElementAttribute"/> for the class bound to
-    /// this metadata.
+    /// Gets the name of the XML element, which is the value of the annotation
+    /// <see cref="ForElementAttribute"/> for the class bound to this metadata.
     /// </summary>
     public XmlQualifiedName ElementName { get; }
 
     /// <summary>
-    /// Returns a new instance bound to the root XML element that is read
-    /// from the specified XML reader.
+    /// Returns a new instance bound to the root XML element that is read from
+    /// the specified XML reader.
     /// </summary>
     /// <param name="in">
     /// The XML reader.
     /// </param>
     /// <param name="getMetadata">
-    /// The function that returns the <see cref="Metadata"/>
-    /// object associated with its argument of the specified class.
+    /// The function that returns the <see cref="Metadata"/> object associated
+    /// with its argument of the specified class.
     /// </param>
     /// <returns>
     /// A new instance bound to the root XML element.
@@ -73,15 +70,15 @@ public abstract class Metadata
     }
 
     /// <summary>
-    /// Creates a new instance bound to the next XML element in the
-    /// specified XML reader.
+    /// Creates a new instance bound to the next XML element in the specified
+    /// XML reader.
     /// </summary>
     /// <param name="in">
     /// The XML reader.
     /// </param>
     /// <param name="getMetadata">
-    /// The function that returns the <see cref="Metadata"/> object
-    /// associated with its argument of the specified class.
+    /// The function that returns the <see cref="Metadata"/> object associated
+    /// with its argument of the specified class.
     /// </param>
     /// <returns>
     /// A new instance bound to the next XML element in the specified XML
@@ -114,8 +111,8 @@ public abstract class Metadata
     }
 
     /// <summary>
-    /// Handles the component of the specified instance with content of
-    /// the element that the specified XML reader provides.
+    /// Handles the component of the specified instance with content of the
+    /// element that the specified XML reader provides.
     /// </summary>
     /// <param name="instance">
     /// The instance whose components are handled.
@@ -124,8 +121,8 @@ public abstract class Metadata
     /// The XML reader.
     /// </param>
     /// <param name="getMetadata">
-    /// The function that returns the <see cref="Metadata"/>
-    /// object associated with its argument of the specified class.
+    /// The function that returns the <see cref="Metadata"/> object associated
+    /// with its argument of the specified class.
     /// </param>
     protected abstract void HandleComponentsWithContent(
         object instance,
@@ -133,8 +130,8 @@ public abstract class Metadata
         Func<Type, Metadata> getMetadata);
 
     /// <summary>
-    /// Handles the component of the specified instance with empty element
-    /// that the specified XML reader is providing.
+    /// Handles the component of the specified instance with empty element that
+    /// the specified XML reader is providing.
     /// </summary>
     /// <param name="instance">
     /// The instance whose components are handled.
@@ -143,8 +140,8 @@ public abstract class Metadata
     /// The XML reader.
     /// </param>
     /// <param name="getMetadata">
-    /// The function that returns the <see cref="Metadata"/>
-    /// object associated with its argument of the specified class.
+    /// The function that returns the <see cref="Metadata"/> object associated
+    /// with its argument of the specified class.
     /// </param>
     protected abstract void HandleComponentsWithEmptyElement(
         object instance,
@@ -152,12 +149,11 @@ public abstract class Metadata
         Func<Type, Metadata> getMetadata);
 
     /// <summary>
-    /// Returns the element name bound to the class annotated with
-    /// <see cref="ForElementAttribute"/>.
+    /// Returns the element name bound to the class annotated with <see
+    /// cref="ForElementAttribute"/>.
     /// </summary>
     /// <param name="clazz">
-    /// The class that must be marked with the annotation
-    /// <c>[ForElement]</c>.
+    /// The class that must be marked with the annotation <c>[ForElement]</c>.
     /// </param>
     /// <returns>
     /// The element name.
@@ -174,9 +170,9 @@ public abstract class Metadata
     }
 
     /// <summary>
-    /// Performs the delegate <see cref="Reflector{T}"/> associated with
-    /// the key that represents the attribute name, with the specified XML
-    /// reader and instance.
+    /// Performs the delegate <see cref="Reflector{T}"/> associated with the
+    /// key that represents the attribute name, with the specified XML reader
+    /// and instance.
     /// </summary>
     /// <param name="in">
     /// The XML reader.

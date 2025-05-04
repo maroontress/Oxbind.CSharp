@@ -14,15 +14,15 @@ public static class StringSugarcoaters
         = NewMap();
 
     /// <summary>
-    /// Gets whether the specified type is <see cref="string"/> or
-    /// <see cref="BindEvent{T}"/> (<c>T</c> is <c>string</c>).
+    /// Gets whether the specified type is <see cref="string"/> or <see
+    /// cref="BindEvent{T}"/> (<c>T</c> is <c>string</c>).
     /// </summary>
     /// <param name="type">
     /// The type to test.
     /// </param>
     /// <returns>
-    /// <c>true</c> if the specified type is <see cref="string"/> or
-    /// <see cref="BindEvent{T}"/> (<c>T</c> is <c>string</c>).
+    /// <c>true</c> if the specified type is <see cref="string"/> or <see
+    /// cref="BindEvent{T}"/> (<c>T</c> is <c>string</c>).
     /// </returns>
     public static bool IsValid(Type type)
         => Map.ContainsKey(type);

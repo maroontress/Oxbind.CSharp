@@ -8,8 +8,8 @@ using System.Xml;
 using Maroontress.Oxbind.Util;
 
 /// <summary>
-/// Metadata of the classes that have a <c>static</c> and <c>readonly</c>
-/// <see cref="Schema"/> field annotated with the <see
+/// Metadata of the classes that have a <c>static</c> and <c>readonly</c> <see
+/// cref="Schema"/> field annotated with the <see
 /// cref="ElementSchemaAttribute"/>.
 /// </summary>
 public sealed class SchemaMetadata : Metadata
@@ -20,15 +20,13 @@ public sealed class SchemaMetadata : Metadata
     private readonly Schema schema;
 
     /// <summary>
-    /// The immutable map that wraps a <see cref="ChildReflectorMap"/>
-    /// object.
+    /// The immutable map that wraps a <see cref="ChildReflectorMap"/> object.
     /// </summary>
     private readonly IReadOnlyDictionary<Type, Reflector<object>>
         childReflectorMap;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SchemaMetadata"/>
-    /// class.
+    /// Initializes a new instance of the <see cref="SchemaMetadata"/> class.
     /// </summary>
     /// <param name="clazz">
     /// The class annotated with <see cref="ForElementAttribute"/>.
@@ -64,15 +62,14 @@ public sealed class SchemaMetadata : Metadata
     /// Returns the <see cref="Schema"/> object of the specified class.
     /// </summary>
     /// <param name="clazz">
-    /// The class containing the <c>static</c> and <c>readonly</c>
-    /// <see cref="Schema"/> fields annotated with
-    /// <see cref="ElementSchemaAttribute"/>.
+    /// The class containing the <c>static</c> and <c>readonly</c> <see
+    /// cref="Schema"/> fields annotated with <see
+    /// cref="ElementSchemaAttribute"/>.
     /// </param>
     /// <returns>
-    /// The <see cref="ElementSchemaAttribute"/> object of the first
-    /// <see cref="Schema"/> field,
-    /// or <see cref="Schema.Empty"/>
-    /// if the class contains no <see cref="Schema"/> fields.
+    /// The <see cref="ElementSchemaAttribute"/> object of the first <see
+    /// cref="Schema"/> field, or <see cref="Schema.Empty"/> if the class
+    /// contains no <see cref="Schema"/> fields.
     /// </returns>
     private static Schema SchemaOf(Type clazz)
     {
@@ -88,8 +85,7 @@ public sealed class SchemaMetadata : Metadata
     /// The class of the value that <paramref name="field"/> has.
     /// </typeparam>
     /// <param name="field">
-    /// The <see cref="FieldInfo"/> object representing a <c>static</c>
-    /// field.
+    /// The <see cref="FieldInfo"/> object representing a <c>static</c> field.
     /// </param>
     /// <returns>
     /// The value of the <paramref name="field"/>.

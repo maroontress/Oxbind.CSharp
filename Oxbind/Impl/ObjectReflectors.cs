@@ -9,22 +9,19 @@ using System;
 public static class ObjectReflectors
 {
     /// <summary>
-    /// Creates a new <see cref="Reflector{T}"/> (<c>T</c> is
-    /// <c>object</c>) and perform the specified action
-    /// with the placeholder type and the new reflector
-    /// associated with the specified type and injector.
+    /// Creates a new <see cref="Reflector{T}"/> (<c>T</c> is <c>object</c>)
+    /// and perform the specified action with the placeholder type and the new
+    /// reflector associated with the specified type and injector.
     /// </summary>
     /// <param name="type">
     /// The type of the value to be injected.
     /// </param>
     /// <param name="injector">
-    /// The injector that injects the value to the field or with the
-    /// method.
+    /// The injector that injects the value to the field or with the method.
     /// </param>
     /// <param name="action">
-    /// The action that consumes two parameters,
-    /// the one is the placeholder type,
-    /// the other is the reflector object.
+    /// The action that consumes two parameters, the one is the placeholder
+    /// type, the other is the reflector object.
     /// </param>
     public static void Associate(
         Type type,

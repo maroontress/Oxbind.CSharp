@@ -9,8 +9,8 @@ using Maroontress.Oxbind.Util;
 
 /// <summary>
 /// The map of a <c>class</c> object annotated with <see
-/// cref="ForElementAttribute"/> to the <see cref="Reflector{T}"/> object
-/// that dispatches an <c>object</c> of the class to an instance.
+/// cref="ForElementAttribute"/> to the <see cref="Reflector{T}"/> object that
+/// dispatches an <c>object</c> of the class to an instance.
 /// </summary>
 public sealed class ChildReflectorMap : ReflectorMap<Type, object>
 {
@@ -19,8 +19,8 @@ public sealed class ChildReflectorMap : ReflectorMap<Type, object>
     /// class.
     /// </summary>
     /// <param name="clazz">
-    /// The class annotated with <see cref="ForChildAttribute"/> and/or
-    /// <see cref="FromChildAttribute"/>.
+    /// The class annotated with <see cref="ForChildAttribute"/> and/or <see
+    /// cref="FromChildAttribute"/>.
     /// </param>
     private ChildReflectorMap(Type clazz)
     {
@@ -46,11 +46,11 @@ public sealed class ChildReflectorMap : ReflectorMap<Type, object>
     /// cref="FromChildAttribute"/>.
     /// </param>
     /// <returns>
-    /// A new unmodifiable map. Each key in the map is the <c>class</c>
-    /// object annotated with <see cref="ForElementAttribute"/>. The value
-    /// associated with the key is the <see cref="Reflector{T}"/> object
-    /// that dispatches the object whose class is the key to the instance
-    /// of <paramref name="clazz"/> class.
+    /// A new unmodifiable map. Each key in the map is the <c>class</c> object
+    /// annotated with <see cref="ForElementAttribute"/>. The value associated
+    /// with the key is the <see cref="Reflector{T}"/> object that dispatches
+    /// the object whose class is the key to the instance of <paramref
+    /// name="clazz"/> class.
     /// </returns>
     public static IReadOnlyDictionary<Type, Reflector<object>>
         Of(Type clazz)
@@ -59,11 +59,11 @@ public sealed class ChildReflectorMap : ReflectorMap<Type, object>
     }
 
     /// <summary>
-    /// Gets the type of each <see cref="MemberInfo"/> (that is either
-    /// <see cref="FieldInfo"/> or <see cref="MethodInfo"/> in the
-    /// specified <see cref="IEnumerable{T}"/> with the specified function,
-    /// and associates the type with a <see cref="Reflector{T}"/> object
-    /// using the specified <see cref="Action"/>.
+    /// Gets the type of each <see cref="MemberInfo"/> (that is either <see
+    /// cref="FieldInfo"/> or <see cref="MethodInfo"/> in the specified <see
+    /// cref="IEnumerable{T}"/> with the specified function, and associates the
+    /// type with a <see cref="Reflector{T}"/> object using the specified <see
+    /// cref="Action"/>.
     /// </summary>
     /// <typeparam name="T">
     /// The type of <see cref="FieldInfo"/> or <see cref="MethodInfo"/>.
@@ -75,8 +75,8 @@ public sealed class ChildReflectorMap : ReflectorMap<Type, object>
     /// The function mapping of a <see cref="MemberInfo"/> to the type.
     /// </param>
     /// <param name="toInjector">
-    /// The function that returns the injector associated with the
-    /// specified type.
+    /// The function that returns the injector associated with the specified
+    /// type.
     /// </param>
     /// <param name="put">
     /// <see cref="ReflectorMap{K,V}.Put(K, Reflector{V})"/>.

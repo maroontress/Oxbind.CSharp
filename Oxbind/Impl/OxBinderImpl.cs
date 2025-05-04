@@ -14,24 +14,23 @@ public sealed class OxBinderImpl<T> : Oxbinder<T>
     where T : class
 {
     /// <summary>
-    /// The class of the instance that the method
-    /// <see cref="NewInstance(TextReader)"/> returns.
+    /// The class of the instance that the method <see
+    /// cref="NewInstance(TextReader)"/> returns.
     /// </summary>
     private readonly Type clazz;
 
     /// <summary>
-    /// The function that returns the <see cref="Metadata"/>
-    /// associated with the specified class.
+    /// The function that returns the <see cref="Metadata"/> associated with
+    /// the specified class.
     /// </summary>
     private readonly Func<Type, Metadata> getMetadata;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="OxBinderImpl{T}"/>
-    /// class.
+    /// Initializes a new instance of the <see cref="OxBinderImpl{T}"/> class.
     /// </summary>
     /// <param name="getMetadata">
-    /// The function that returns the <see cref="Metadata"/> associated
-    /// with the specified class.
+    /// The function that returns the <see cref="Metadata"/> associated with
+    /// the specified class.
     /// </param>
     public OxBinderImpl(Func<Type, Metadata> getMetadata)
     {

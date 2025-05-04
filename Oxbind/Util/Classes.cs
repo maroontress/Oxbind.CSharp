@@ -11,8 +11,8 @@ using System.Reflection;
 public static class Classes
 {
     /// <summary>
-    /// Returns the list of instance fields of the specified class
-    /// annotated with the specified annotation.
+    /// Returns the list of instance fields of the specified class annotated
+    /// with the specified annotation.
     /// </summary>
     /// <param name="clazz">
     /// The class.
@@ -33,8 +33,8 @@ public static class Classes
     }
 
     /// <summary>
-    /// Returns the list of instance methods of the specified class
-    /// annotated with the specified annotation.
+    /// Returns the list of instance methods of the specified class annotated
+    /// with the specified annotation.
     /// </summary>
     /// <param name="clazz">
     /// The class.
@@ -55,8 +55,8 @@ public static class Classes
     }
 
     /// <summary>
-    /// Returns the list of static fields of the specified class annotated
-    /// with the specified annotation.
+    /// Returns the list of static fields of the specified class annotated with
+    /// the specified annotation.
     /// </summary>
     /// <param name="clazz">
     /// The class.

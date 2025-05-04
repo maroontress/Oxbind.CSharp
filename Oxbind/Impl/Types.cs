@@ -66,8 +66,8 @@ public static class Types
     }
 
     /// <summary>
-    /// Gets the type of the first type parameter of the specified
-    /// generic type.
+    /// Gets the type of the first type parameter of the specified generic
+    /// type.
     /// </summary>
     /// <param name="t">
     /// The generic type.
@@ -90,10 +90,9 @@ public static class Types
     /// <paramref name="type"/>.
     /// </param>
     /// <returns>
-    /// <c>true</c> if <paramref name="type"/> is generic type
-    /// and if its generic type definition equals to
-    /// <paramref name="expectedType"/>, or if <paramref name="type"/>
-    /// is not generic type and it equals equals to
+    /// <c>true</c> if <paramref name="type"/> is generic type and if its
+    /// generic type definition equals to <paramref name="expectedType"/>, or
+    /// if <paramref name="type"/> is not generic type and it equals equals to
     /// <paramref name="expectedType"/>. <c>false</c> otherwise.
     /// </returns>
     public static bool IsRawType(Type type, Type expectedType)
