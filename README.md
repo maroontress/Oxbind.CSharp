@@ -1,7 +1,7 @@
 # Oxbind
 
-Oxbind is a .NET library that deserializes an XML document.
-It depends on .NET Standard 1.3.
+Oxbind is a .NET library that deserializes an XML document. It depends on .NET
+Standard 1.3.
 
 ## Example
 
@@ -17,11 +17,10 @@ Deserialize the following XML document:
 </movie>
 ```
 
-The `movie` element has the `director`, `release`, and `cast` elements.
-Here, the `director` element occurs only once,
-the `release` element occurs zero or one times,
-and the `cast` element occurs zero or more times.
-The schema of this XML document can be described with _XML Schema_ as follows:
+The `movie` element has the `director`, `release`, and `cast` elements. Here,
+the `director` element occurs only once, the `release` element occurs zero or
+one times, and the `cast` element occurs zero or more times. The schema of this
+XML document can be described with _XML Schema_ as follows:
 
 ```xsd
   ...
@@ -55,106 +54,89 @@ First, creates a `Movie` class representing the `movie` element as follows:
 using Maroontress.Oxbind;
 
 [ForElement("movie")]
-public sealed class Movie
+public record class Movie(
+    [ForAttribute("title")] string Title,
+    [Mandatory] Director TheDirector,
+    [Optional] Release? MaybeRelease,
+    [Multiple] IEnumerable<Cast> Casts)
 {
-    [ElementSchema]
-    private static readonly Schema TheSchema = Schema.Of(
-        Mandatory.Of<Director>(),
-        Optional.Of<Release>(),
-        Multiple.Of<Cast>());
-
-    [ForChild]
-    public Director? director;
-
-    [ForChild]
-    public Release? release;
-
-    [ForChild]
-    public IEnumerable<Cast>? casts;
 }
 ```
 
 The `Movie` class has the `ForElement` attribute with the argument `"movie"`,
 which means it is associated with the `movie` element.
 
-And there is the `static` and `readonly` field whose type is `Schema`,
-with the `ElementSchema` attribute, in the `Movie` class.
-The value of this field represents the schema of the `root` element.
-The value can be created with the `Schema.Of(params SchemaType[])` method,
-and the arguments are as follows:
+And the constructor has parameters with some attributes, which are corresponding
+to the schema of the root element.
 
-- `Mandatory.Of<Director>()` represents that the element associated with
-  the `Director` class occurs once. The `Movie` class must have the instance
-  field with the `ForChild` attribute, whose type is `Director`.
+- `[ForAttribute("title")] string Title` represents the instance property
+  `Title`, which is associated with the XML attribute `title` of the `movie`
+  elemtent. This means that the constructor's parameter with `[ForAttribute(…)]`
+  is associated with the _XML attribute_ whose name is the argument of the _C#
+  attribute_.
 
-- `Optional.Of<Release>()` represents that the element associated with
-  the `Release` class occurs zero or one times. The `Movie` class must have the
-  instance field with the `ForChild` attribute, whose type is `Release`.
+- `[Mandatory] Director TheDirector` represents the instance property
+  `TheDirector`, which is associated with the XML element `director` that occurs
+  once. The type of `Director` is the class with the `ForElement` attribute with
+  the argument `"director"`.
 
-- `Multiple.Of<Cast>()` represents that the element associated with the `Cast`
-  class occurs zero or more times. The `Movie` class must have the instance
-  field with the `ForChild` attribute, whose type is `IEnumerable<Cast>`.
+- `[Optional] Release? MaybeRelease` represents that the instance property
+  `MaybeRelease`, which is associated with the XML element `release` that occurs
+  zero or one times. The type of `Release` is the class with the `ForElement`
+  attribute with the argument `"release"`.
 
-Therefore, the `Movie` class has 3 fields of `director`, `release`, and
-`casts`.
-Each field has the `ForChild` attribute, which means it occurs in the
-`movie` element.
+- `[Multiple] IEnumerable<Cast> Casts` represents that the instance property
+  `Casts`, which is associated with the XML element `cast` that occurs zero or
+  more times. The type of `Cast` is the class with the `ForElement` attribute
+  with the argument `"cast"`.
 
-Second, creates `Director`, `Release` and `Cast` classes
-representing `director`, `release` and `cast` elements, respectively,
-as follows:
+Therefore, the `Movie` class has four properties: `Title`, `TheDirector`,
+`MaybeRelease`, and `Casts`.
+
+Second, creates `Director`, `Release` and `Cast` classes representing
+`director`, `release` and `cast` elements, respectively, as follows:
 
 ```csharp
 [ForElement("director")]
-public sealed class Director
+public record class Director([ForAttribute("name")] string Name)
 {
-    [ForAttribute("name")]
-    private string? name;
-
-    public string? Name => name;
 }
 
 [ForElement("release")]
-public sealed class Release
+public sealed class Release([ForAttribute("year")] string year)
 {
-    [field: ForAttribute("year")]
-    public string? Year { get; }
+    public string Year { get; } = year;
 }
 
 [ForElement("cast")]
-public sealed class Cast
+public record class Cast([ForText] string Name)
 {
-    [field: ForText]
-    public string? Name { get; }
 }
 ```
 
-All the classes have the `ForElement` attribute,
-which means each class is associated with the element
-whose name is the argument of the attribute (for example,
-the `Director` class is associated with the `director` element, and so on).
+All the classes have the `ForElement` attribute, which means each class is
+associated with the element whose name is the argument of the attribute. For
+example, the `Director` class is associated with the `director` element, and so
+on.
 
-The `Director` class has the instance field `name`, whose type is `string`,
-with the `ForAttribute` attribute.
-This means that the `name` instance field is
-associated with the _XML attribute_
-whose name is the argument of the _C# attribute_
-(for example, the instance field `name` is associated with the XML attribute
- `"name"`).
+The `Director` class has the constructor. The parameters of the constructor with
+some attributes is associated with the schema. `[ForAttribute("name")] string
+Name` represents the instance property `Name`, which is associated with the XML
+attribute `name` of the `director` elemtent.
 
-The `Release` class is similar to the `Director` class, except that
-it has the auto property but its _backing field_ has the `ForAttribute`
-attribute.
 
-The `Cast` class has the auto property `Name` representing
-the text content of the `Cast` element
-so that its backing field has the `ForText` attribute.
+The `Release` class is similar to the `Director` class, except that it is not a
+`record class`.
+
+The `Cast` class is also similar to the `Director` class, but its constructor
+has the parameter with the `ForText` attribute, which means the instance
+property `Name` is associated with the inner text of the `cast` element.
 
 Finally, uses the deserializer with an XML document and the associated classes,
 to get a `Movie` instance from the XML document as follows:
 
 ```csharp
-var reader = new StringReader("...");
+var reader = new StringReader(…);
 var factory = new OxbinderFactory();
 var binder = factory.Of<Movie>();
 var movie = binder.NewInstance(reader);
@@ -166,27 +148,26 @@ var movie = binder.NewInstance(reader);
 
 ### Requirements for build
 
-- Visual Studio 2022 (Version 17.2)
-  or [.NET 6.0 SDK (SDK 6.0.300)][dotnet-sdk]
+- Visual Studio 2022 (Version 17.13) or [.NET 9.0 SDK (SDK 9.0.203)][dotnet-sdk]
 
 ### Get started
 
 ```plaintext
 git clone URL
 cd Oxbind.CSharp
-dotnet restore
-dotnet build
+dotnet build --configuration Release
 ```
 
 ### Get test coverage report with Coverlet
 
 ```plaintext
-dotnet test -p:CollectCoverage=true -p:CoverletOutputFormat=opencover \
-        --no-build Oxbind.Test
-dotnet ANYWHERE/reportgenerator.dll \
-        --reports:Oxbind.Test/coverage.opencover.xml \
-        --targetdir:Coverlet-html
+dotnet tool install -g dotnet-reportgenerator-globaltool
+dotnet test --configuration Release --no-build \
+  --logger "console;verbosity=detailed" \
+  --collect:"XPlat Code Coverage" \
+  --results-directory MsTestResults
+reportgenerator -reports:MsTestResults/*/coverage.cobertura.xml \
+  -targetdir:Coverlet-html
 ```
 
-[dotnet-sdk]:
-  https://dotnet.microsoft.com/en-us/download
+[dotnet-sdk]: https://dotnet.microsoft.com/en-us/download

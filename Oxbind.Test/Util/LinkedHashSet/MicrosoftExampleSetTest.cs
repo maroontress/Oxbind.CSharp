@@ -1,15 +1,15 @@
-namespace Maroontress.Util.Test.LinkedHashSet
-{
-    using System.Collections.Generic;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+namespace Maroontress.Oxbind.Test.Util.LinkedHashSet;
 
-    [TestClass]
-    public sealed class MicrosoftExampleSetTest
-        : AbstractMicrosoftExampleSetTest
+using System.Collections.Generic;
+using Maroontress.Oxbind.Util;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+[TestClass]
+public sealed class MicrosoftExampleSetTest
+    : AbstractMicrosoftExampleSetTest
+{
+    protected override ISet<int> NewSet()
     {
-        protected override ISet<int> NewSet()
-        {
-            return new LinkedHashSet<int>();
-        }
+        return new LinkedHashSet<int>();
     }
 }

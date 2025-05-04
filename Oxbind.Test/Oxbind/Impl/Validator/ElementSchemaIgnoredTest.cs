@@ -1,43 +1,40 @@
-#pragma warning disable CS1591
+namespace Maroontress.Oxbind.Test.Oxbind.Impl.Validator;
 
-namespace Maroontress.Oxbind.Impl.Validator.Test
+using System;
+using Maroontress.Oxbind.Impl;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+[TestClass]
+public sealed class ElementSchemaIgnoredTest
 {
-    using System;
-    using Maroontress.Oxbind.Impl;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-    [TestClass]
-    public sealed class ElementSchemaIgnoredTest
+    [TestMethod]
+    public void RootTest()
     {
-        [TestMethod]
-        public void RootTest()
-        {
-            var v = new Validator(typeof(Root));
-            Assert.AreEqual(
-                "Root: Warning: [ElementSchema] is ignored for instance "
-                + "fields: ignored",
-                string.Join(Environment.NewLine, v.GetMessages()));
-        }
+        var v = new Validator(typeof(Root));
+        Assert.AreEqual(
+            "Root: Warning: [ElementSchema] is ignored for instance "
+            + "fields: ignored",
+            string.Join(Environment.NewLine, v.GetMessages()));
+    }
 
-        [ForElement("root")]
-        public sealed class Root
-        {
-            [ElementSchema]
-            private static readonly Schema TheSchema = Schema.Of(
-                    Mandatory.Of<First>());
+    [ForElement("root")]
+    public sealed class Root
+    {
+        [ElementSchema]
+        private static readonly Schema TheSchema = Schema.Of(
+                Mandatory.Of<First>());
 
-            [ElementSchema]
-            private readonly string ignored = nameof(ignored);
+        [ElementSchema]
+        private readonly string ignored = nameof(ignored);
 
-            [field: ForChild]
-            private First? First { get; set; }
-        }
+        [field: ForChild]
+        private First? First { get; set; }
+    }
 
-        [ForElement("first")]
-        public sealed class First
-        {
-            [field: ForAttribute("value")]
-            public string? Value { get; }
-        }
+    [ForElement("first")]
+    public sealed class First
+    {
+        [field: ForAttribute("value")]
+        public string? Value { get; }
     }
 }
