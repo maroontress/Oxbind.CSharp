@@ -10,33 +10,19 @@ using System.Xml;
 /// <typeparam name="T">
 /// The type of the instance to create.
 /// </typeparam>
-public sealed class OxBinderImpl<T> : Oxbinder<T>
+/// <param name="getMetadata">
+/// The function that returns the <see cref="Metadata"/> associated with the
+/// specified class.
+/// </param>
+public sealed class OxBinderImpl<T>(Func<Type, Metadata> getMetadata)
+    : Oxbinder<T>
     where T : class
 {
     /// <summary>
-    /// The class of the instance that the method <see
-    /// cref="NewInstance(TextReader)"/> returns.
+    /// Gets the function that returns the <see cref="Impl.Metadata"/>
+    /// associated with the specified class.
     /// </summary>
-    private readonly Type clazz;
-
-    /// <summary>
-    /// The function that returns the <see cref="Metadata"/> associated with
-    /// the specified class.
-    /// </summary>
-    private readonly Func<Type, Metadata> getMetadata;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="OxBinderImpl{T}"/> class.
-    /// </summary>
-    /// <param name="getMetadata">
-    /// The function that returns the <see cref="Metadata"/> associated with
-    /// the specified class.
-    /// </param>
-    public OxBinderImpl(Func<Type, Metadata> getMetadata)
-    {
-        clazz = typeof(T);
-        this.getMetadata = getMetadata;
-    }
+    private Func<Type, Metadata> MetadataSupplier { get; } = getMetadata;
 
     /// <inheritdoc/>
     public T NewInstance(TextReader reader)
@@ -67,8 +53,8 @@ public sealed class OxBinderImpl<T> : Oxbinder<T>
             Readers.ConfirmNext(@in);
             @in.Read();
         }
-        var m = getMetadata(clazz);
-        var instance = m.MandatoryElement(@in, getMetadata);
+        var m = MetadataSupplier(typeof(T));
+        var instance = m.MandatoryElement(@in, MetadataSupplier);
         Readers.ConfirmEndOfStream(@in);
         return (T)instance;
     }

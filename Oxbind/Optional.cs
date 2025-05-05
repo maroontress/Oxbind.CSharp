@@ -37,13 +37,9 @@ public static class Optional
         return new OptionalSchemaType(typeof(T));
     }
 
-    private sealed class OptionalSchemaType : SchemaType
+    private sealed class OptionalSchemaType(Type type)
+        : SchemaType(type, false, false)
     {
-        public OptionalSchemaType(Type type)
-            : base(type, false, false)
-        {
-        }
-
         /// <inheritdoc/>
         public override void ApplyWithContent(
             XmlReader input,

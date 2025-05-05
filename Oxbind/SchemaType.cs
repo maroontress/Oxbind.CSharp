@@ -18,36 +18,24 @@ using Maroontress.Oxbind.Impl;
 /// <seealso cref="Mandatory.Of{T}()"/>
 /// <seealso cref="Multiple.Of{T}()"/>
 /// <seealso cref="Optional.Of{T}()"/>
-public abstract class SchemaType
+/// <param name="type">
+/// The class corresponding to the child element.
+/// </param>
+/// <param name="isMandatory">
+/// Whether the child element always occurs inside the parent.
+/// </param>
+/// <param name="isMultiple">
+/// Whether the child element occurs zero or multiple times.
+/// </param>
+public abstract class SchemaType(Type type, bool isMandatory, bool isMultiple)
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SchemaType"/> class.
-    /// </summary>
-    /// <param name="type">
-    /// The class corresponding to the child element.
-    /// </param>
-    /// <param name="isMandatory">
-    /// Whether the child element always occurs inside the parent.
-    /// </param>
-    /// <param name="isMultiple">
-    /// Whether the child element occurs zero or multiple times.
-    /// </param>
-    protected SchemaType(Type type, bool isMandatory, bool isMultiple)
-    {
-        ElementType = type;
-        IsMandatory = isMandatory;
-        PlaceholderType = isMultiple
-            ? Types.IEnumerableT.MakeGenericType(type)
-            : type;
-    }
-
     /// <summary>
     /// Gets the class corresponding to the child element.
     /// </summary>
     /// <value>
     /// The class corresponding to the child element.
     /// </value>
-    public Type ElementType { get; }
+    public Type ElementType { get; } = type;
 
     /// <summary>
     /// Gets the placeholder class corresponding to the child element.
@@ -55,7 +43,9 @@ public abstract class SchemaType
     /// <value>
     /// The placeholder class corresponding to the child element.
     /// </value>
-    public Type PlaceholderType { get; }
+    public Type PlaceholderType { get; } = isMultiple
+        ? Types.IEnumerableT.MakeGenericType(type)
+        : type;
 
     /// <summary>
     /// Gets a value indicating whether the child element always occurs inside
@@ -64,7 +54,7 @@ public abstract class SchemaType
     /// <value>
     /// <c>true</c> if the child element always occurs inside the parent.
     /// </value>
-    public bool IsMandatory { get; }
+    public bool IsMandatory { get; } = isMandatory;
 
     /// <summary>
     /// Applies the content of the element with the specified action.

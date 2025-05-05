@@ -1,5 +1,3 @@
-#pragma warning disable SA1122
-
 namespace Maroontress.Oxbind.Impl;
 
 using System;
@@ -64,7 +62,7 @@ public sealed class Validator : AbstractValidator
     {
         var all = Classes.GetStaticFields<ElementSchemaAttribute>(clazz);
         return !all.Any()
-            ? new HashSet<Type>()
+            ? []
             : new HashSet<Type>(GetSchema(all.First()).Types()
                 .Where(t => t.IsMandatory)
                 .Select(t => t.ElementType));
@@ -113,6 +111,7 @@ public sealed class Validator : AbstractValidator
     /// </returns>
     private static V ComputeIfAbsent<K, V>(
         Dictionary<K, V> d, K key, Func<K, V> toValue)
+        where K : notnull
     {
         if (d.TryGetValue(key, out var value))
         {
@@ -155,13 +154,15 @@ public sealed class Validator : AbstractValidator
     private static void Add<T, K, V>(
         Dictionary<K, List<V>> map,
         IEnumerable<T> all,
-        Func<T, K> getKey,
+        Func<T, K?> getKey,
         Func<T, V> getValue)
+        where K : notnull
     {
         foreach (var m in all)
         {
-            var key = getKey(m);
-            ComputeIfAbsent(map, key, k => new List<V>())
+            var key = getKey(m) ?? throw new NullReferenceException(
+                $"{nameof(T)} doesn't provide the key");
+            ComputeIfAbsent(map, key, k => [])
                 .Add(getValue(m));
         }
     }
@@ -193,9 +194,8 @@ public sealed class Validator : AbstractValidator
     private static IEnumerable<SchemaType> GetSchemaTypes(
         IEnumerable<FieldInfo> all)
     {
-        return !all.Any()
-            ? Enumerable.Empty<SchemaType>()
-            : GetSchema(all.First()).Types();
+        return all.Take(1)
+            .SelectMany(i => GetSchema(i).Types());
     }
 
     private static bool RetutnsVoidAndHasSingleParameter(
@@ -284,10 +284,11 @@ public sealed class Validator : AbstractValidator
         var fields = GetInstanceFields<ForAttributeAttribute>();
         var fromMethods = GetInstanceMethods<FromAttributeAttribute>();
 
-        static XmlQualifiedName GetForAttributeValue(FieldInfo f)
-            => f.GetCustomAttribute<ForAttributeAttribute>().QName;
-        static XmlQualifiedName GetFromAttributeValue(MethodInfo m)
-            => m.GetCustomAttribute<FromAttributeAttribute>().QName;
+        static XmlQualifiedName? GetForAttributeValue(FieldInfo f)
+            => f.GetCustomAttribute<ForAttributeAttribute>()?.QName;
+
+        static XmlQualifiedName? GetFromAttributeValue(MethodInfo m)
+            => m.GetCustomAttribute<FromAttributeAttribute>()?.QName;
 
         var map = new Dictionary<XmlQualifiedName, List<string>>();
         Add(map, fields, GetForAttributeValue, f => f.Name);
@@ -418,7 +419,7 @@ public sealed class Validator : AbstractValidator
             {
                 Names.OfFields(forChildren),
                 Names.OfMethods(fromChildren),
-            }.Where(s => !(s is ""));
+            }.Where(s => s is not "");
 
             Warn("missing_ElementSchema", string.Join(", ", all));
         }
@@ -448,10 +449,10 @@ public sealed class Validator : AbstractValidator
                 "not_annotated_with_ForElement", Names.OfClasses(t)));
 
         // Checks the duplication with element names.
-        static XmlQualifiedName ToElementName(Type type)
+        static XmlQualifiedName? ToElementName(Type type)
             => type.GetTypeInfo()
                 .GetCustomAttribute<ForElementAttribute>()
-                .QName;
+                ?.QName;
         var nameMap = new Dictionary<XmlQualifiedName, List<string>>();
         var validSchemaClasses
             = schemaClasses.Where(IsElementClass);

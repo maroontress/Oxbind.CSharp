@@ -12,31 +12,22 @@ using Maroontress.Oxbind.Util;
 /// cref="Schema"/> field annotated with the <see
 /// cref="ElementSchemaAttribute"/>.
 /// </summary>
-public sealed class SchemaMetadata : Metadata
+/// <param name="clazz">
+/// The class annotated with <see cref="ForElementAttribute"/>.
+/// </param>
+public sealed class SchemaMetadata(Type clazz)
+    : Metadata(clazz)
 {
     /// <summary>
     /// The <see cref="Schema"/> object.
     /// </summary>
-    private readonly Schema schema;
+    private readonly Schema schema = SchemaOf(clazz);
 
     /// <summary>
     /// The immutable map that wraps a <see cref="ChildReflectorMap"/> object.
     /// </summary>
     private readonly IReadOnlyDictionary<Type, Reflector<object>>
-        childReflectorMap;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SchemaMetadata"/> class.
-    /// </summary>
-    /// <param name="clazz">
-    /// The class annotated with <see cref="ForElementAttribute"/>.
-    /// </param>
-    public SchemaMetadata(Type clazz)
-        : base(clazz)
-    {
-        schema = SchemaOf(clazz);
         childReflectorMap = ChildReflectorMap.Of(clazz);
-    }
 
     /// <inheritdoc/>
     protected override void HandleComponentsWithContent(
@@ -74,7 +65,7 @@ public sealed class SchemaMetadata : Metadata
     private static Schema SchemaOf(Type clazz)
     {
         return Classes.GetStaticFields<ElementSchemaAttribute>(clazz)
-            .Select(f => ValueOf<Schema>(f))
+            .Select(ValueOf<Schema>)
             .FirstOrDefault() ?? Schema.Empty;
     }
 
@@ -90,7 +81,7 @@ public sealed class SchemaMetadata : Metadata
     /// <returns>
     /// The value of the <paramref name="field"/>.
     /// </returns>
-    private static T ValueOf<T>(FieldInfo field)
+    private static T? ValueOf<T>(FieldInfo field)
         where T : class
     {
         var fieldTypeInfo = field.FieldType.GetTypeInfo();
@@ -99,7 +90,7 @@ public sealed class SchemaMetadata : Metadata
         {
             throw new BindException($"{typeof(T).FullName}");
         }
-        return (T)field.GetValue(null);
+        return (T?)field.GetValue(null);
     }
 
     private void HandleAction(Action<SchemaType, Reflector<object>> action)

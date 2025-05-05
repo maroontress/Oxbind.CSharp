@@ -1,6 +1,5 @@
 namespace Maroontress.Oxbind.Util;
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -11,33 +10,25 @@ using System.Collections.Generic;
 /// <typeparam name="T">
 /// The type of elements stored in the array.
 /// </typeparam>
-public sealed class RigidArray<T> : IReadOnlyList<T>
+/// <param name="args">
+/// The array to be copied.
+/// </param>
+public sealed class RigidArray<T>(T[] args) : IReadOnlyList<T>
 {
-    /// <summary>
-    /// The back-end array that represents this.
-    /// </summary>
-    private readonly T[] array;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="RigidArray{T}"/> class.
-    /// </summary>
-    /// <param name="args">
-    /// The array to be copied.
-    /// </param>
-    public RigidArray(T[] args)
-    {
-        array = (args.Length == 0)
-                ? Array.Empty<T>()
-                : (T[])args.Clone();
-    }
-
     /// <summary>
     /// Gets the number of elements in the collection.
     /// </summary>
     /// <value>
     /// The number of elements in the collection.
     /// </value>
-    public int Count => array.Length;
+    public int Count => Elements.Length;
+
+    /// <summary>
+    /// Gets the back-end array that represents this.
+    /// </summary>
+    private T[] Elements { get; } = (args.Length == 0)
+        ? []
+        : (T[])args.Clone();
 
     /// <summary>
     /// Gets the element at the specified index in the read-only list.
@@ -48,7 +39,7 @@ public sealed class RigidArray<T> : IReadOnlyList<T>
     /// <value>
     /// The element at the specified index in the read-only list.
     /// </value>
-    public T this[int index] => array[index];
+    public T this[int index] => Elements[index];
 
     /// <summary>
     /// Returns an enumerator that iterates through the collection.
@@ -58,10 +49,10 @@ public sealed class RigidArray<T> : IReadOnlyList<T>
     /// </returns>
     public IEnumerator<T> GetEnumerator()
     {
-        var n = array.Length;
+        var n = Elements.Length;
         for (var k = 0; k < n; ++k)
         {
-            yield return array[k];
+            yield return Elements[k];
         }
     }
 
@@ -72,5 +63,5 @@ public sealed class RigidArray<T> : IReadOnlyList<T>
     /// An enumerator that can be used to iterate through the collection.
     /// </returns>
     IEnumerator IEnumerable.GetEnumerator()
-        => array.GetEnumerator();
+        => Elements.GetEnumerator();
 }

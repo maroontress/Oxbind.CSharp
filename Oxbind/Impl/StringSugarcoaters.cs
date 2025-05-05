@@ -47,7 +47,7 @@ public static class StringSugarcoaters
     }
 
     private static Dictionary<Type, Sugarcoater<string>> NewMap()
-        => new Dictionary<Type, Sugarcoater<string>>()
+        => new()
         {
             [Types.String] = (r, s) => s,
             [Types.BindEventString] = Readers.NewEvent,

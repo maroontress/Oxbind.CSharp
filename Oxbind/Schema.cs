@@ -1,6 +1,5 @@
 namespace Maroontress.Oxbind;
 
-using System;
 using Maroontress.Oxbind.Util;
 
 /// <summary>
@@ -79,8 +78,7 @@ public sealed class Schema
     /// private static readonly Schema MySchema = Schema.EMPTY; ... }
     /// </code>
     /// </example>
-    public static readonly Schema Empty
-        = new Schema(Array.Empty<SchemaType>());
+    public static readonly Schema Empty = new([]);
 
     /// <summary>
     /// <see cref="SchemaType"/> objects representing this schema.

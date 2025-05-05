@@ -111,10 +111,10 @@ public sealed class ChildReflectorMap : ReflectorMap<Type, object>
     {
         var returnType = m.ReturnType;
         Debug.Assert(returnType.Equals(Types.Void), $"{returnType}");
-        var paramTypes = m.GetParameters()
-            .Select(p => p.ParameterType);
-        var count = paramTypes.Count();
-        Debug.Assert(count == 1, $"{count}");
-        return paramTypes.First();
+        return m.GetParameters()
+                .Select(p => p.ParameterType)
+                .First() is not {} firstType
+            ? throw new NullReferenceException("slipped through validation")
+            : firstType;
     }
 }

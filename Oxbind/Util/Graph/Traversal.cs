@@ -36,7 +36,13 @@ using System.Collections.Generic;
 /// <typeparam name="T">
 /// The type of the node.
 /// </typeparam>
-public sealed class Traversal<T>
+/// <remarks>
+/// Initializes a new instance of the <see cref="Traversal{T}"/> class.
+/// </remarks>
+/// <param name="getDependencies">
+/// The function that returns the dependencies of the specified node.
+/// </param>
+public sealed class Traversal<T>(Func<T, IEnumerable<T>> getDependencies)
 {
     /// <summary>
     /// The set of the visiting node.
@@ -46,18 +52,7 @@ public sealed class Traversal<T>
     /// <summary>
     /// The function that returns the dependencies of the specified node.
     /// </summary>
-    private readonly Func<T, IEnumerable<T>> getDependencies;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Traversal{T}"/> class.
-    /// </summary>
-    /// <param name="getDependencies">
-    /// The function that returns the dependencies of the specified node.
-    /// </param>
-    public Traversal(Func<T, IEnumerable<T>> getDependencies)
-    {
-        this.getDependencies = getDependencies;
-    }
+    private readonly Func<T, IEnumerable<T>> getDependencies = getDependencies;
 
     /// <summary>
     /// Visits all the reachable nodes from the specified node.

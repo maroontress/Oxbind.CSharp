@@ -27,27 +27,21 @@ using System.Xml;
 /// </remarks>
 /// <seealso cref="FromAttributeAttribute"/>
 /// <seealso cref="ForElementAttribute"/>
+/// <param name="name">
+/// The attribute name.
+/// </param>
+/// <param name="ns">
+/// The namespace URI.
+/// </param>
 [AttributeUsage(
     AttributeTargets.Field,
     Inherited = false,
     AllowMultiple = false)]
-public sealed class ForAttributeAttribute : Attribute
+public sealed class ForAttributeAttribute(string name, string ns = "")
+    : Attribute
 {
-    /// <summary>
-    /// Initializes a new instance of the <see
-    /// cref="ForAttributeAttribute"/> class.
-    /// </summary>
-    /// <param name="name">
-    /// The attribute name.
-    /// </param>
-    /// <param name="ns">
-    /// The namespace URI.
-    /// </param>
-    public ForAttributeAttribute(string name, string ns = "")
-        => QName = new XmlQualifiedName(name, ns);
-
     /// <summary>
     /// Gets the qualified name of the attribute.
     /// </summary>
-    public XmlQualifiedName QName { get; }
+    public XmlQualifiedName QName { get; } = new(name, ns);
 }

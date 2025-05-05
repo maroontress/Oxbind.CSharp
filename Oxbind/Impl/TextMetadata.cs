@@ -66,7 +66,7 @@ public sealed class TextMetadata : Metadata
         var type = parameters[0].ParameterType;
         var sugarcoater = StringSugarcoaters.Of(type);
         Reflector = new Reflector<string>(
-            (i, t) => textMethod.Invoke(i, new[] { t }),
+            (i, t) => textMethod.Invoke(i, [t]),
             type,
             sugarcoater);
     }

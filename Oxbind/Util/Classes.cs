@@ -29,7 +29,7 @@ public static class Classes
         return clazz.GetTypeInfo()
             .DeclaredFields
             .Where(f => !f.IsStatic
-                && !(f.GetCustomAttribute<T>() is null));
+                && f.GetCustomAttribute<T>() is not null);
     }
 
     /// <summary>
@@ -51,7 +51,7 @@ public static class Classes
         return clazz.GetTypeInfo()
             .DeclaredMethods
             .Where(m => !m.IsStatic
-                && !(m.GetCustomAttribute<T>() is null));
+                && m.GetCustomAttribute<T>() is not null);
     }
 
     /// <summary>
@@ -73,7 +73,7 @@ public static class Classes
         return clazz.GetTypeInfo()
             .DeclaredFields
             .Where(f => f.IsStatic
-                && !(f.GetCustomAttribute<T>() is null));
+                && f.GetCustomAttribute<T>() is not null);
     }
 
     /// <summary>
@@ -95,6 +95,6 @@ public static class Classes
         return clazz.GetTypeInfo()
             .DeclaredMethods
             .Where(m => m.IsStatic
-                && !(m.GetCustomAttribute<T>() is null));
+                && m.GetCustomAttribute<T>() is not null);
     }
 }

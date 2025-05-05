@@ -12,7 +12,13 @@ using System.Collections.Concurrent;
 /// <typeparam name="V">
 /// The type of the value.
 /// </typeparam>
-public sealed class InternMap<K, V>
+/// <param name="initialCapacity">
+/// The initial capacity.
+/// </param>
+/// <param name="concurrencyLevel">
+/// The concurrency level.
+/// </param>
+public sealed class InternMap<K, V>(int initialCapacity, int concurrencyLevel)
     where K : notnull
     where V : class
 {
@@ -37,20 +43,6 @@ public sealed class InternMap<K, V>
     {
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="InternMap{K, V}"/> class.
-    /// </summary>
-    /// <param name="initialCapacity">
-    /// The initial capacity.
-    /// </param>
-    /// <param name="concurrencyLevel">
-    /// The concurrency level.
-    /// </param>
-    public InternMap(int initialCapacity, int concurrencyLevel)
-    {
-        Map = new(concurrencyLevel, initialCapacity);
-    }
-
     private static int DefaultConcurrencyLevel { get; }
         = Environment.ProcessorCount;
 
@@ -58,6 +50,7 @@ public sealed class InternMap<K, V>
     /// Gets the map from a key to the value.
     /// </summary>
     private ConcurrentDictionary<K, V> Map { get; }
+        = new(concurrencyLevel, initialCapacity);
 
     /// <summary>
     /// Gets the canonical value object corresponding to the specified key

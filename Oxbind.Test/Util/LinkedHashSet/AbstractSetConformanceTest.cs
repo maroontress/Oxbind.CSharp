@@ -22,7 +22,7 @@ public abstract class AbstractSetConformanceTest
     {
         var s = NewSet();
         Assert.AreEqual(0, s.Count);
-        Assert.AreEqual(false, s.IsReadOnly);
+        Assert.IsFalse(s.IsReadOnly);
         Assert.IsFalse(s.Any());
         Assert.IsFalse(s.Contains("foo"));
         var o = Array.Empty<string>();
@@ -36,29 +36,29 @@ public abstract class AbstractSetConformanceTest
         var s = NewSet();
         {
             var empty = Array.Empty<string>();
-            Assert.ThrowsException<ArgumentException>(
+            Assert.ThrowsExactly<ArgumentException>(
                 () => s.CopyTo(empty, 1));
         }
         s.Add("foo");
         {
             var empty = Array.Empty<string>();
-            Assert.ThrowsException<ArgumentException>(
+            Assert.ThrowsExactly<ArgumentException>(
                 () => s.CopyTo(empty, 0));
         }
         {
             var one = new string[1];
-            Assert.ThrowsException<ArgumentException>(
+            Assert.ThrowsExactly<ArgumentException>(
                 () => s.CopyTo(one, 1));
         }
         s.Add("bar");
         {
             var one = new string[1];
-            Assert.ThrowsException<ArgumentException>(
+            Assert.ThrowsExactly<ArgumentException>(
                 () => s.CopyTo(one, 0));
         }
         {
             var two = new string[2];
-            Assert.ThrowsException<ArgumentException>(
+            Assert.ThrowsExactly<ArgumentException>(
                 () => s.CopyTo(two, 1));
         }
     }
@@ -69,7 +69,7 @@ public abstract class AbstractSetConformanceTest
         var s = NewSet();
         {
             var empty = Array.Empty<string>();
-            Assert.ThrowsException<ArgumentOutOfRangeException>(
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(
                 () => s.CopyTo(empty, -1));
         }
     }
@@ -79,7 +79,7 @@ public abstract class AbstractSetConformanceTest
     {
         var s = NewSet();
         {
-            Assert.ThrowsException<ArgumentNullException>(
+            Assert.ThrowsExactly<ArgumentNullException>(
                 () => s.CopyTo(null!, 0));
         }
     }
@@ -158,7 +158,7 @@ public abstract class AbstractSetConformanceTest
         var all = Create("foo", "bar");
         var s = NewSet();
         s.UnionWith(all);
-        Assert.ThrowsException<ArgumentNullException>(
+        Assert.ThrowsExactly<ArgumentNullException>(
             () => s.ExceptWith(null!));
     }
 
@@ -228,7 +228,7 @@ public abstract class AbstractSetConformanceTest
         var all = Create("foo", "bar");
         var s = NewSet();
         s.UnionWith(all);
-        Assert.ThrowsException<ArgumentNullException>(
+        Assert.ThrowsExactly<ArgumentNullException>(
             () => s.IntersectWith(null!));
     }
 
@@ -240,11 +240,11 @@ public abstract class AbstractSetConformanceTest
 
         var s = NewSet();
         var m = M(s);
-        Assert.IsFalse(m(ImmutableArray<string>.Empty));
+        Assert.IsFalse(m([]));
         Assert.IsTrue(m(Create("foo")));
         s.Add("foo");
         s.Add("bar");
-        Assert.IsFalse(m(ImmutableArray<string>.Empty));
+        Assert.IsFalse(m([]));
         Assert.IsFalse(m(Create("foo")));
         Assert.IsFalse(m(Create("baz")));
         Assert.IsFalse(m(Create("foo", "bar")));
@@ -259,7 +259,7 @@ public abstract class AbstractSetConformanceTest
         var all = Create("foo", "bar");
         var s = NewSet();
         s.UnionWith(all);
-        Assert.ThrowsException<ArgumentNullException>(
+        Assert.ThrowsExactly<ArgumentNullException>(
             () => s.IsProperSubsetOf(null!));
     }
 
@@ -280,11 +280,11 @@ public abstract class AbstractSetConformanceTest
 
         var s = NewSet();
         var m = M(s);
-        Assert.IsFalse(m(ImmutableArray<string>.Empty));
+        Assert.IsFalse(m([]));
         Assert.IsFalse(m(Create("foo")));
         s.Add("foo");
         s.Add("bar");
-        Assert.IsTrue(m(ImmutableArray<string>.Empty));
+        Assert.IsTrue(m([]));
         Assert.IsTrue(m(Create("foo")));
         Assert.IsFalse(m(Create("baz")));
         Assert.IsFalse(m(Create("foo", "bar")));
@@ -298,7 +298,7 @@ public abstract class AbstractSetConformanceTest
         var all = Create("foo", "bar");
         var s = NewSet();
         s.UnionWith(all);
-        Assert.ThrowsException<ArgumentNullException>(
+        Assert.ThrowsExactly<ArgumentNullException>(
             () => s.IsProperSupersetOf(null!));
     }
 
@@ -319,11 +319,11 @@ public abstract class AbstractSetConformanceTest
 
         var s = NewSet();
         var m = M(s);
-        Assert.IsTrue(m(ImmutableArray<string>.Empty));
+        Assert.IsTrue(m([]));
         Assert.IsTrue(m(Create("foo")));
         s.Add("foo");
         s.Add("bar");
-        Assert.IsFalse(m(ImmutableArray<string>.Empty));
+        Assert.IsFalse(m([]));
         Assert.IsFalse(m(Create("foo")));
         Assert.IsFalse(m(Create("baz")));
         Assert.IsTrue(m(Create("foo", "bar")));
@@ -338,7 +338,7 @@ public abstract class AbstractSetConformanceTest
         var all = Create("foo", "bar");
         var s = NewSet();
         s.UnionWith(all);
-        Assert.ThrowsException<ArgumentNullException>(
+        Assert.ThrowsExactly<ArgumentNullException>(
             () => s.IsSubsetOf(null!));
     }
 
@@ -359,11 +359,11 @@ public abstract class AbstractSetConformanceTest
 
         var s = NewSet();
         var m = M(s);
-        Assert.IsTrue(m(ImmutableArray<string>.Empty));
+        Assert.IsTrue(m([]));
         Assert.IsFalse(m(Create("foo")));
         s.Add("foo");
         s.Add("bar");
-        Assert.IsTrue(m(ImmutableArray<string>.Empty));
+        Assert.IsTrue(m([]));
         Assert.IsTrue(m(Create("foo")));
         Assert.IsTrue(m(Create("foo", "bar")));
         Assert.IsFalse(m(Create("foo", "bar", "baz")));
@@ -375,7 +375,7 @@ public abstract class AbstractSetConformanceTest
         var all = Create("foo", "bar");
         var s = NewSet();
         s.UnionWith(all);
-        Assert.ThrowsException<ArgumentNullException>(
+        Assert.ThrowsExactly<ArgumentNullException>(
             () => s.IsSupersetOf(null!));
     }
 
@@ -396,11 +396,11 @@ public abstract class AbstractSetConformanceTest
 
         var s = NewSet();
         var m = M(s);
-        Assert.IsFalse(m(ImmutableArray<string>.Empty));
+        Assert.IsFalse(m([]));
         Assert.IsFalse(m(Create("foo")));
         s.Add("foo");
         s.Add("bar");
-        Assert.IsFalse(m(ImmutableArray<string>.Empty));
+        Assert.IsFalse(m([]));
         Assert.IsTrue(m(Create("foo")));
         Assert.IsTrue(m(Create("foo", "bar")));
         Assert.IsTrue(m(Create("foo", "bar", "baz")));
@@ -429,7 +429,7 @@ public abstract class AbstractSetConformanceTest
         var all = Create("foo", "bar");
         var s = NewSet();
         s.UnionWith(all);
-        Assert.ThrowsException<ArgumentNullException>(
+        Assert.ThrowsExactly<ArgumentNullException>(
             () => s.Overlaps(null!));
     }
 
@@ -441,11 +441,11 @@ public abstract class AbstractSetConformanceTest
 
         var s = NewSet();
         var m = M(s);
-        Assert.IsTrue(m(ImmutableArray<string>.Empty));
+        Assert.IsTrue(m([]));
         Assert.IsFalse(m(Create("foo")));
         s.Add("foo");
         s.Add("bar");
-        Assert.IsFalse(m(ImmutableArray<string>.Empty));
+        Assert.IsFalse(m([]));
         Assert.IsFalse(m(Create("foo")));
         Assert.IsFalse(m(Create("baz")));
         Assert.IsTrue(m(Create("foo", "bar")));
@@ -460,7 +460,7 @@ public abstract class AbstractSetConformanceTest
         var all = Create("foo", "bar");
         var s = NewSet();
         s.UnionWith(all);
-        Assert.ThrowsException<ArgumentNullException>(
+        Assert.ThrowsExactly<ArgumentNullException>(
             () => s.SetEquals(null!));
     }
 
@@ -579,7 +579,7 @@ public abstract class AbstractSetConformanceTest
         var all = Create("foo", "bar");
         var s = NewSet();
         s.UnionWith(all);
-        Assert.ThrowsException<ArgumentNullException>(
+        Assert.ThrowsExactly<ArgumentNullException>(
             () => s.SymmetricExceptWith(null!));
     }
 
@@ -609,7 +609,7 @@ public abstract class AbstractSetConformanceTest
         var all = Create("foo", "bar");
         var s = NewSet();
         s.UnionWith(all);
-        Assert.ThrowsException<ArgumentNullException>(
+        Assert.ThrowsExactly<ArgumentNullException>(
             () => s.UnionWith(null!));
     }
 

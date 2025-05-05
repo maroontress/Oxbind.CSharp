@@ -22,7 +22,7 @@ public sealed class DagChecker<T>
     /// <summary>
     /// The node set for the breadcrumb.
     /// </summary>
-    private readonly LinkedHashSet<T> set = new LinkedHashSet<T>();
+    private readonly LinkedHashSet<T> set = [];
 
     /// <summary>
     /// The node set containing the nodes that have no circular dependencies.

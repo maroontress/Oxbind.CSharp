@@ -26,15 +26,15 @@ public sealed class AttributeReflectorMap
     {
         Scan(
             Classes.GetInstanceMethods<FromAttributeAttribute>(clazz),
-            m => m.GetCustomAttribute<FromAttributeAttribute>().QName,
+            m => m.GetCustomAttribute<FromAttributeAttribute>()?.QName,
             m => m.GetParameters().First().ParameterType,
-            m => ToInjector(m),
+            ToInjector,
             Put);
         Scan(
             Classes.GetInstanceFields<ForAttributeAttribute>(clazz),
-            f => f.GetCustomAttribute<ForAttributeAttribute>().QName,
+            f => f.GetCustomAttribute<ForAttributeAttribute>()?.QName,
             f => f.FieldType,
-            f => ToInjector(f),
+            ToInjector,
             Put);
     }
 
@@ -87,7 +87,7 @@ public sealed class AttributeReflectorMap
     /// </param>
     private static void Scan<T>(
         IEnumerable<T> all,
-        Func<T, XmlQualifiedName> getAnnotation,
+        Func<T, XmlQualifiedName?> getAnnotation,
         Func<T, Type> getType,
         Func<T, Injector> toInjector,
         Action<XmlQualifiedName, Reflector<string>> put)
@@ -95,7 +95,8 @@ public sealed class AttributeReflectorMap
     {
         foreach (var m in all)
         {
-            var name = getAnnotation(m);
+            var name = getAnnotation(m) ?? throw new NullReferenceException(
+                $"{nameof(T)} doesn't provide the name");
             var type = getType(m);
             var sugarcoater = StringSugarcoaters.Of(type);
             var reflector = new Reflector<string>(

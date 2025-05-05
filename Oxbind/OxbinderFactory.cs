@@ -11,36 +11,23 @@ using Maroontress.Oxbind.Util.Graph;
 /// <summary>
 /// The factory of the <see cref="Oxbinder{T}"/> object.
 /// </summary>
-public sealed class OxbinderFactory
+/// <param name="ignoreWarnings">
+/// If the value is <c>true</c>, the <see cref="OxbinderFactory.Of{T}"/>
+/// ignores warning messages to the annotations of type <c>T</c>.
+/// Otherwise, the warning messages are treated as errors, and then the
+/// method throws <see cref="BindException"/>.
+/// </param>
+public sealed class OxbinderFactory(bool ignoreWarnings = false)
 {
     /// <summary>
     /// The cache of the metadata.
     /// </summary>
-    private readonly InternMap<Type, Metadata> metadataCache;
+    private readonly InternMap<Type, Metadata> metadataCache = new();
 
     /// <summary>
     /// The cache of the validated classes.
     /// </summary>
-    private readonly Traversal<Type> validationTraversal;
-
-    /// <summary>
-    /// The cache of the classes that have been checked for DAG.
-    /// </summary>
-    private readonly DagChecker<Type> dagChecker;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="OxbinderFactory"/> class.
-    /// </summary>
-    /// <param name="ignoreWarnings">
-    /// If the value is <c>true</c>, the <see cref="OxbinderFactory.Of{T}"/>
-    /// ignores warning messages to the annotations of type <c>T</c>.
-    /// Otherwise, the warning messages are treated as errors, and then the
-    /// method throws <see cref="BindException"/>.
-    /// </param>
-    public OxbinderFactory(bool ignoreWarnings = false)
-    {
-        metadataCache = new InternMap<Type, Metadata>();
-        validationTraversal = new Traversal<Type>(type =>
+    private readonly Traversal<Type> validationTraversal = new(type =>
         {
             var v = new Validator(type);
             var messages = v.GetMessages();
@@ -55,8 +42,12 @@ public sealed class OxbinderFactory
             }
             return v.SchemaClasses;
         });
-        dagChecker = new DagChecker<Type>(Validator.GetDependencies);
-    }
+
+    /// <summary>
+    /// The cache of the classes that have been checked for DAG.
+    /// </summary>
+    private readonly DagChecker<Type> dagChecker
+        = new(Validator.GetDependencies);
 
     /// <summary>
     /// Creates an <see cref="Oxbinder{T}"/> object for the specified class.

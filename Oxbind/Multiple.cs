@@ -42,13 +42,9 @@ public static class Multiple
         return new MultipleSchemaType(typeof(T));
     }
 
-    private sealed class MultipleSchemaType : SchemaType
+    private sealed class MultipleSchemaType(Type type)
+        : SchemaType(type, false, true)
     {
-        public MultipleSchemaType(Type type)
-            : base(type, false, true)
-        {
-        }
-
         /// <inheritdoc/>
         public override void ApplyWithContent(
             XmlReader input,

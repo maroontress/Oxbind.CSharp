@@ -10,16 +10,6 @@ using System.Globalization;
 public abstract class AbstractValidator
 {
     /// <summary>
-    /// The resource bundle.
-    /// </summary>
-    private readonly Func<string, string> bundle;
-
-    /// <summary>
-    /// The buffer to store log messages.
-    /// </summary>
-    private readonly List<string> log = new List<string>();
-
-    /// <summary>
     /// Indicates whether this validator has detected errors.
     /// </summary>
     private bool hasError = false;
@@ -42,7 +32,7 @@ public abstract class AbstractValidator
         var culture = Resource.Culture;
 
         Label = label;
-        bundle = s => manager.GetString(s, culture);
+        Bundle = s => manager.GetString(s, culture);
 
         void NonFirstErrorAction(string m, object[] a)
             => Log("error", m, a);
@@ -69,6 +59,16 @@ public abstract class AbstractValidator
     private string Label { get; }
 
     /// <summary>
+    /// Gets the resource bundle.
+    /// </summary>
+    private Func<string, string?> Bundle { get; }
+
+    /// <summary>
+    /// Gets the buffer to store log messages.
+    /// </summary>
+    private List<string> Messages { get; } = [];
+
+    /// <summary>
     /// Get a new log messages representing the warnings/errors that this
     /// validator has detected.
     /// </summary>
@@ -76,9 +76,7 @@ public abstract class AbstractValidator
     /// The log messages.
     /// </returns>
     public IEnumerable<string> GetMessages()
-    {
-        return log;
-    }
+        => Messages;
 
     /// <summary>
     /// Logs a warning message.
@@ -123,7 +121,12 @@ public abstract class AbstractValidator
     private void Log(string type, string message, params object[] args)
     {
         var culture = CultureInfo.CurrentCulture;
-        var m = string.Format(culture, bundle(message), args);
-        log.Add($"{Label}: {bundle(type)}: {m}");
+        if (Bundle(message) is not {} format)
+        {
+            throw new ArgumentException(
+                $"unknown key: {message}", nameof(message));
+        }
+        var m = string.Format(culture, format, args);
+        Messages.Add($"{Label}: {Bundle(type)}: {m}");
     }
 }

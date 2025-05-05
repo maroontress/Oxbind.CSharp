@@ -12,7 +12,9 @@ using System.Reflection;
 /// <typeparam name="V">
 /// The type of a value of the <see cref="Reflector{T}"/>.
 /// </typeparam>
-public abstract class ReflectorMap<K, V> : Dictionary<K, Reflector<V>>
+public abstract class ReflectorMap<K, V>
+    : Dictionary<K, Reflector<V>>
+    where K : notnull
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ReflectorMap{K, V}"/>
@@ -48,7 +50,7 @@ public abstract class ReflectorMap<K, V> : Dictionary<K, Reflector<V>>
     /// The new <see cref="Injector"/>.
     /// </returns>
     protected static Injector ToInjector(MethodInfo info)
-        => (i, v) => info.Invoke(i, new[] { v });
+        => (i, v) => info.Invoke(i, [v]);
 
     /// <summary>
     /// Associates the <see cref="Reflector{T}"/> object with the specified key

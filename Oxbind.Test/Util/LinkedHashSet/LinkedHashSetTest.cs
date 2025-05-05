@@ -23,7 +23,7 @@ public sealed class LinkedHashSetTest
     [TestMethod]
     public void InvalidInitialCapacity()
     {
-        Assert.ThrowsException<ArgumentException>(
+        Assert.ThrowsExactly<ArgumentException>(
             () => _ = NewLinkedHashSet<string>(-1));
     }
 
@@ -72,7 +72,7 @@ public sealed class LinkedHashSetTest
     {
         var n = (LinkedHashSet<string>?)null;
         var s = NewLinkedHashSet<string>();
-        Assert.ThrowsException<ArgumentNullException>(
+        Assert.ThrowsExactly<ArgumentNullException>(
             () => s.IntersectWith(n!));
     }
 
@@ -172,7 +172,7 @@ public sealed class LinkedHashSetTest
     {
         var n = (LinkedHashSet<string>?)null;
         var s = NewLinkedHashSet<string>();
-        Assert.ThrowsException<ArgumentNullException>(
+        Assert.ThrowsExactly<ArgumentNullException>(
             () => s.SymmetricExceptWith(n!));
     }
 
@@ -219,7 +219,7 @@ public sealed class LinkedHashSetTest
         var right = (LinkedHashSet<string>?)null;
         var s = NewLinkedHashSet<string>();
         s.UnionWith(Create("foo", "bar", "baz"));
-        Assert.ThrowsException<ArgumentNullException>(
+        Assert.ThrowsExactly<ArgumentNullException>(
             () => s.UnionWith(right!));
     }
 
@@ -273,7 +273,7 @@ public sealed class LinkedHashSetTest
     {
         var n = (LinkedHashSet<string>?)null;
         var s = NewLinkedHashSet<string>();
-        Assert.ThrowsException<ArgumentNullException>(
+        Assert.ThrowsExactly<ArgumentNullException>(
             () => _ = s.Overlaps(n!));
     }
 
@@ -311,7 +311,7 @@ public sealed class LinkedHashSetTest
     {
         var n = (LinkedHashSet<string>?)null;
         var s = NewLinkedHashSet<string>();
-        Assert.ThrowsException<ArgumentNullException>(
+        Assert.ThrowsExactly<ArgumentNullException>(
             () => _ = s.IsSubsetOf(n!));
     }
 
@@ -349,7 +349,7 @@ public sealed class LinkedHashSetTest
     {
         var n = (LinkedHashSet<string>?)null;
         var s = NewLinkedHashSet<string>();
-        Assert.ThrowsException<ArgumentNullException>(
+        Assert.ThrowsExactly<ArgumentNullException>(
             () => _ = s.IsProperSubsetOf(n!));
     }
 
@@ -387,7 +387,7 @@ public sealed class LinkedHashSetTest
     {
         var n = (LinkedHashSet<string>?)null;
         var s = NewLinkedHashSet<string>();
-        Assert.ThrowsException<ArgumentNullException>(
+        Assert.ThrowsExactly<ArgumentNullException>(
             () => _ = s.IsSupersetOf(n!));
     }
 
@@ -425,7 +425,7 @@ public sealed class LinkedHashSetTest
     {
         var n = (LinkedHashSet<string>?)null;
         var s = NewLinkedHashSet<string>();
-        Assert.ThrowsException<ArgumentNullException>(
+        Assert.ThrowsExactly<ArgumentNullException>(
             () => _ = s.IsProperSupersetOf(n!));
     }
 
@@ -463,7 +463,7 @@ public sealed class LinkedHashSetTest
     {
         var n = (LinkedHashSet<string>?)null;
         var s = NewLinkedHashSet<string>();
-        Assert.ThrowsException<ArgumentNullException>(
+        Assert.ThrowsExactly<ArgumentNullException>(
             () => _ = s.SetEquals(n!));
     }
 

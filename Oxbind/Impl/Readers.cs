@@ -140,8 +140,9 @@ public static class Readers
     {
         var type = value.GetType();
         var eventType = Types.BindEventImplT.MakeGenericType(type);
-        return Activator.CreateInstance(
-            eventType, new object[] { value, info });
+        return Activator.CreateInstance(eventType, value, info)
+            ?? throw new NullReferenceException(
+                "unexpected event type (maybe Nullable<T>)");
     }
 
     /// <summary>
@@ -213,7 +214,7 @@ public static class Readers
     /// The new qualified name that the specified XML reader represents.
     /// </returns>
     public static XmlQualifiedName NewQName(XmlReader @in)
-        => new XmlQualifiedName(@in.LocalName, @in.NamespaceURI);
+        => new(@in.LocalName, @in.NamespaceURI);
 
     /// <summary>
     /// Gets whether the name that the specifed XML reader represents equals to

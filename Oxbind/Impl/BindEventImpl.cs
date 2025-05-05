@@ -8,31 +8,21 @@ using System.Xml;
 /// <typeparam name="T">
 /// The type of the deserialized event.
 /// </typeparam>
-public class BindEventImpl<T> : BindEvent<T>
+/// <param name="value">
+/// The deserialized value.
+/// </param>
+/// <param name="info">
+/// The location information of the XML document.
+/// </param>
+public sealed class BindEventImpl<T>(T value, IXmlLineInfo info) : BindEvent<T>
     where T : class
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="BindEventImpl{T}"/> class.
-    /// </summary>
-    /// <param name="value">
-    /// The deserialized value.
-    /// </param>
-    /// <param name="info">
-    /// The location information of the XML document.
-    /// </param>
-    public BindEventImpl(T value, IXmlLineInfo info)
-    {
-        Value = value;
-        Line = info.LineNumber;
-        Column = info.LinePosition;
-    }
+    /// <inheritdoc/>
+    public T Value { get; } = value;
 
     /// <inheritdoc/>
-    public T Value { get; }
+    public int Line { get; } = info.LineNumber;
 
     /// <inheritdoc/>
-    public int Line { get; }
-
-    /// <inheritdoc/>
-    public int Column { get; }
+    public int Column { get; } = info.LinePosition;
 }

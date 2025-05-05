@@ -5,10 +5,19 @@ using System.Xml;
 /// <summary>
 /// The default implementation of <see cref="IXmlLineInfo"/> interface.
 /// </summary>
-public sealed class DefaultXmlLineInfo : IXmlLineInfo
+/// <param name="lineNumber">
+/// The line number of the XML document.
+/// </param>
+/// <param name="linePosition">
+/// The line position of the XML document.
+/// </param>
+/// <param name="hasLineInfo">
+/// Indicates whether the line information is available.
+/// </param>
+public sealed class DefaultXmlLineInfo(
+    int lineNumber, int linePosition, bool hasLineInfo)
+    : IXmlLineInfo
 {
-    private readonly bool hasLineInfo;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="DefaultXmlLineInfo"/>
     /// class with the specified <see cref="IXmlLineInfo"/>.
@@ -17,10 +26,8 @@ public sealed class DefaultXmlLineInfo : IXmlLineInfo
     /// The location information to be copied.
     /// </param>
     public DefaultXmlLineInfo(IXmlLineInfo info)
+        : this(info.LineNumber, info.LinePosition, info.HasLineInfo())
     {
-        LineNumber = info.LineNumber;
-        LinePosition = info.LinePosition;
-        hasLineInfo = info.HasLineInfo();
     }
 
     /// <summary>
@@ -28,24 +35,23 @@ public sealed class DefaultXmlLineInfo : IXmlLineInfo
     /// class.
     /// </summary>
     private DefaultXmlLineInfo()
+        : this(0, 0, false)
     {
-        LineNumber = 0;
-        LinePosition = 0;
-        hasLineInfo = false;
     }
 
     /// <summary>
     /// Gets the <see cref="IXmlLineInfo"/> representing no line information.
     /// </summary>
-    public static IXmlLineInfo NoLineInfo { get; }
-        = new DefaultXmlLineInfo();
+    public static IXmlLineInfo NoLineInfo { get; } = new DefaultXmlLineInfo();
 
     /// <inheritdoc/>
-    public int LineNumber { get; }
+    public int LineNumber { get; } = lineNumber;
 
     /// <inheritdoc/>
-    public int LinePosition { get; }
+    public int LinePosition { get; } = linePosition;
+
+    private bool LineInfo { get; } = hasLineInfo;
 
     /// <inheritdoc/>
-    public bool HasLineInfo() => hasLineInfo;
+    public bool HasLineInfo() => LineInfo;
 }

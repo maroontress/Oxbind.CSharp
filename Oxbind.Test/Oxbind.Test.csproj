@@ -5,9 +5,10 @@
     <IsPackable>false</IsPackable>
     <LangVersion>13.0</LangVersion>
     <Nullable>enable</Nullable>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AssemblyName>Maroontress.Oxbind.Test</AssemblyName>
     <RootNamespace>Maroontress.Oxbind.Test</RootNamespace>
-    <DocumentationFile>dcx\Oxbind.Test.xml</DocumentationFile>
+    <DocumentationFile>dcx\documentation.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

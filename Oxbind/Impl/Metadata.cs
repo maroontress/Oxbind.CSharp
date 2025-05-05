@@ -12,39 +12,30 @@ using Maroontress.Oxbind.Util;
 /// <remarks>
 /// <c>Metadata</c> objects are immutable.
 /// </remarks>
-public abstract class Metadata
+/// <param name="elementClass">
+/// The class annotated with <see cref="ForElementAttribute"/>.
+/// </param>
+public abstract class Metadata(Type elementClass)
 {
     /// <summary>
     /// The map of the attribute name to the <see cref="Reflector{T}"/> object.
     /// </summary>
     private readonly
         IReadOnlyDictionary<XmlQualifiedName, Reflector<string>>
-        attributeReflectorMap;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Metadata"/> class.
-    /// </summary>
-    /// <param name="elementClass">
-    /// The class annotated with <see cref="ForElementAttribute"/>.
-    /// </param>
-    protected Metadata(Type elementClass)
-    {
-        ElementClass = elementClass;
-        ElementName = GetElementName(elementClass);
         attributeReflectorMap = AttributeReflectorMap.Of(elementClass);
-    }
 
     /// <summary>
     /// Gets the class representing the XML element, annotated with <see
     /// cref="ForElementAttribute"/> for the class bound to this metadata.
     /// </summary>
-    public Type ElementClass { get; }
+    public Type ElementClass { get; } = elementClass;
 
     /// <summary>
     /// Gets the name of the XML element, which is the value of the annotation
     /// <see cref="ForElementAttribute"/> for the class bound to this metadata.
     /// </summary>
     public XmlQualifiedName ElementName { get; }
+        = GetElementName(elementClass);
 
     /// <summary>
     /// Returns a new instance bound to the root XML element that is read from
@@ -87,7 +78,11 @@ public abstract class Metadata
     public object CreateInstance(
         XmlReader @in, Func<Type, Metadata> getMetadata)
     {
-        var instance = Activator.CreateInstance(ElementClass);
+        if (Activator.CreateInstance(ElementClass) is not {} instance)
+        {
+            throw new NullReferenceException(
+                "unexpected element type (maybe Nullable<T>)");
+        }
         Elements.ForEach(@in.AttributeCount, k =>
         {
             @in.MoveToAttribute(k);
@@ -160,13 +155,10 @@ public abstract class Metadata
     /// </returns>
     private static XmlQualifiedName GetElementName(Type clazz)
     {
-        var a = clazz.GetTypeInfo()
-            .GetCustomAttribute<ForElementAttribute>();
-        if (a is null)
-        {
-            throw new BindException("no ForElement attribute");
-        }
-        return a.QName;
+        return clazz.GetTypeInfo()
+                .GetCustomAttribute<ForElementAttribute>() is not {} a
+            ? throw new BindException("no ForElement attribute")
+            : a.QName;
     }
 
     /// <summary>

@@ -40,13 +40,9 @@ public static class Mandatory
         return new MandatorySchemaType(typeof(T));
     }
 
-    private sealed class MandatorySchemaType : SchemaType
+    private sealed class MandatorySchemaType(Type type)
+        : SchemaType(type, true, false)
     {
-        public MandatorySchemaType(Type type)
-            : base(type, true, false)
-        {
-        }
-
         /// <inheritdoc/>
         public override void ApplyWithContent(
             XmlReader input,

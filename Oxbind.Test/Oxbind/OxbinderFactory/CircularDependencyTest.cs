@@ -1,5 +1,3 @@
-#pragma warning disable CS1591
-
 namespace Maroontress.Oxbind.Test.Oxbind.OxbinderFactory;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;

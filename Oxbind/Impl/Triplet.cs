@@ -5,7 +5,7 @@ using System;
 /// <summary>
 /// Capsulize the placeholder type, the unit type, and the sugarcoater.
 /// </summary>
-public struct Triplet
+public readonly struct Triplet
 {
     private static readonly Sugarcoater<object> Eventizer
         = Readers.NewEventObject;

@@ -64,10 +64,11 @@ public static class Names
     {
         var b = new StringBuilder(InitialCapacity);
         return b.Append(method.Name)
-            .Append("(")
+            .Append('(')
             .Append(Join(method.GetParameters()
                 .Select(p => p.ParameterType.Name)))
-            .Append(")").ToString();
+            .Append(')')
+            .ToString();
     }
 
     /// <summary>
