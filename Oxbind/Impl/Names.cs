@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text;
 
 /// <summary>
-///  Creates various joined names of the class, method, field.
+/// Provides helper methods to format type and parameter names.
 /// </summary>
 public static class Names
 {
@@ -26,7 +26,7 @@ public static class Names
     /// delimiter.
     /// </summary>
     /// <param name="all">
-    /// The <c>string</c>s.
+    /// The strings.
     /// </param>
     /// <returns>
     /// The joined string.
@@ -41,7 +41,7 @@ public static class Names
     /// the default delimiter.
     /// </summary>
     /// <param name="all">
-    /// The <c>string</c>s.
+    /// The strings.
     /// </param>
     /// <returns>
     /// The sorted and joined string.
@@ -52,68 +52,18 @@ public static class Names
     }
 
     /// <summary>
-    /// Returns the name of the specified method with the default format.
-    /// </summary>
-    /// <param name="method">
-    /// A method.
-    /// </param>
-    /// <returns>
-    /// The name of the method with the default format.
-    /// </returns>
-    public static string GetMethodName(MethodInfo method)
-    {
-        var b = new StringBuilder(InitialCapacity);
-        return b.Append(method.Name)
-            .Append('(')
-            .Append(Join(method.GetParameters()
-                .Select(p => p.ParameterType.Name)))
-            .Append(')')
-            .ToString();
-    }
-
-    /// <summary>
-    /// Returns the joined string of the class names with the default
+    /// Returns the joined string of the parameter names with the default
     /// delimiter.
     /// </summary>
     /// <param name="all">
-    /// The classes.
+    /// The parameters.
     /// </param>
     /// <returns>
     /// The joined string.
     /// </returns>
-    public static string OfClasses(IEnumerable<Type> all)
+    public static string OfParameters(IEnumerable<ParameterInfo> all)
     {
-        return MemberNames(all, Of);
-    }
-
-    /// <summary>
-    /// Returns the joined string of the method names with the default
-    /// delimiter.
-    /// </summary>
-    /// <param name="all">
-    /// The methods.
-    /// </param>
-    /// <returns>
-    /// The joined string.
-    /// </returns>
-    public static string OfMethods(IEnumerable<MethodInfo> all)
-    {
-        return MemberNames(all, GetMethodName);
-    }
-
-    /// <summary>
-    /// Returns the joined string of the field names with the default
-    /// delimiter.
-    /// </summary>
-    /// <param name="all">
-    /// The fields.
-    /// </param>
-    /// <returns>
-    /// The joined string.
-    /// </returns>
-    public static string OfFields(IEnumerable<FieldInfo> all)
-    {
-        return MemberNames(all, m => m.Name);
+        return JoinedNames(all, p => p.Name ?? "(no name)");
     }
 
     /// <summary>
@@ -142,7 +92,7 @@ public static class Names
 
     /// <summary>
     /// Sorts the names of the specified objects and returns the joined string
-    /// of them with the default format.
+    /// of them with the default delimiter.
     /// </summary>
     /// <typeparam name="T">
     /// The type of the objects.
@@ -156,7 +106,7 @@ public static class Names
     /// <returns>
     /// The joined string.
     /// </returns>
-    private static string MemberNames<T>(
+    private static string JoinedNames<T>(
         IEnumerable<T> all, Func<T, string> getName)
     {
         return Join(all.Select(m => getName(m))

@@ -10,17 +10,17 @@ public sealed class TypeMismatchForTextTest
     [TestMethod]
     public void RootTest()
     {
-        var v = new Validator(typeof(Root));
+        var logger = new Journal("Root");
+        var v = new Validator(typeof(Root), logger);
+        Assert.IsFalse(v.IsValid);
         Assert.AreEqual(
-            "Root: Error: the type of the field annotated with "
-            + "[ForText] is not string: <Text>k__BackingField",
-            string.Join(Environment.NewLine, v.GetMessages()));
+            """
+            Root: Error: The type of a constructor parameter attributed with [ForText] must be string or BindResult<string>: InnerText.
+            """,
+            string.Join(Environment.NewLine, logger.GetMessages()));
     }
 
     [ForElement("root")]
-    public sealed class Root
-    {
-        [field: ForText]
-        private int Text { get; set; }
-    }
+    public record class Root(
+        [ForText] object InnerText);
 }

@@ -5,27 +5,29 @@ using System.Collections.Generic;
 using System.Linq;
 
 /// <summary>
-/// A checker that checks a directed acyclic graph (DAG), is a directed graph
+/// A checker for directed acyclic graphs (DAGs). A DAG is a directed graph
 /// with no directed cycles.
 /// </summary>
 /// <remarks>
 /// For more information about DAG, see <a
-/// href="http://en.wikipedia.org/wiki/Directed_acyclic_graph">
+/// href="https://en.wikipedia.org/wiki/Directed_acyclic_graph">
 /// Directed acyclic graph</a>.
 /// </remarks>
 /// <typeparam name="T">
-/// The type of the node of DAG.
+/// The type of the nodes in the graph.
 /// </typeparam>
 public sealed class DagChecker<T>
     where T : notnull
 {
     /// <summary>
-    /// The node set for the breadcrumb.
+    /// A set used to track the current path during cycle detection (acting as
+    /// breadcrumbs).
     /// </summary>
     private readonly LinkedHashSet<T> set = [];
 
     /// <summary>
-    /// The node set containing the nodes that have no circular dependencies.
+    /// A set of nodes that have already been checked and confirmed to be free
+    /// of circular dependencies.
     /// </summary>
     private readonly ISet<T> checkedSet;
 
@@ -68,13 +70,14 @@ public sealed class DagChecker<T>
     }
 
     /// <summary>
-    /// Checks recursively that the node has a circular dependency.
+    /// Recursively checks if the specified node or its dependencies form a
+    /// circular dependency.
     /// </summary>
     /// <param name="node">
-    /// The node of the DAG.
+    /// The node to start checking from.
     /// </param>
     /// <exception cref="CircularDependencyException">
-    /// if the circular dependency has occurred.
+    /// Thrown when a circular dependency is detected.
     /// </exception>
     public void Check(T node)
     {

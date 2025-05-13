@@ -5,23 +5,22 @@ using System.Collections.Generic;
 using System.Linq;
 
 /// <summary>
-/// The utility class for <see cref="ICollection{T}"/> objects and loop
-/// operations.
+/// A utility class for common operations on collections (primarily <see
+/// cref="IEnumerable{T}"/>) and iteration.
 /// </summary>
 public static class Elements
 {
     /// <summary>
-    /// Performs an action for each <c>int</c> value that is sequential ordered
-    /// from 0 (inclusive) to the specified value (exclusive) by an incremental
-    /// step of 1.
+    /// Performs an action for each integer from 0 up to (but not including)
+    /// <paramref name="count"/>.
     /// </summary>
     /// <param name="count">
     /// The exclusive upper bound.
     /// </param>
     /// <param name="consumer">
-    /// The action to perform <paramref name="count"/> times with the argument
-    /// 0, 1, ..., <paramref name="count"/> &#x2212; 1 (in order of
-    /// increasing).
+    /// The action to execute for each integer from 0 (inclusive) to <paramref
+    /// name="count"/> (exclusive). The current integer is passed as an
+    /// argument to the action.
     /// </param>
     public static void ForEach(int count, Action<int> consumer)
     {
@@ -57,8 +56,8 @@ public static class Elements
     /// <summary>
     /// Returns the relative complement of B in A (also called the
     /// set-theoretic difference of A and B), denoted by A \ B (or A &#x2212;
-    /// B), is the set of all elements that are members of A but not members of
-    /// B.
+    /// B). This is the set of all elements that are members of A but not
+    /// members of B.
     /// </summary>
     /// <typeparam name="T">
     /// The type of the element.

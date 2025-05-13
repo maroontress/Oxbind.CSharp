@@ -10,13 +10,15 @@ public sealed class NoForElementTest
     [TestMethod]
     public void RootTest()
     {
-        var v = new Validator(typeof(Root));
+        var logger = new Journal("Root");
+        var v = new Validator(typeof(Root), logger);
+        Assert.IsFalse(v.IsValid);
         Assert.AreEqual(
-            "Root: Error: must be annotated with [ForElement]",
-            string.Join(Environment.NewLine, v.GetMessages()));
+            """
+            Root: Error: The class must be attributed with [ForElement].
+            """,
+            string.Join(Environment.NewLine, logger.GetMessages()));
     }
 
-    public sealed class Root
-    {
-    }
+    public sealed class Root;
 }

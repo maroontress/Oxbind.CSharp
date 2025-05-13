@@ -11,16 +11,16 @@ using System.Xml;
 /// The type of the instance to create.
 /// </typeparam>
 /// <param name="getMetadata">
-/// The function that returns the <see cref="Metadata"/> associated with the
-/// specified class.
+/// The function that returns the <see cref="Metadata"/> object for the
+/// specified type.
 /// </param>
 public sealed class OxBinderImpl<T>(Func<Type, Metadata> getMetadata)
     : Oxbinder<T>
     where T : class
 {
     /// <summary>
-    /// Gets the function that returns the <see cref="Impl.Metadata"/>
-    /// associated with the specified class.
+    /// Gets the function that returns the <see cref="Metadata"/> object for
+    /// the specified type.
     /// </summary>
     private Func<Type, Metadata> MetadataSupplier { get; } = getMetadata;
 
@@ -46,15 +46,18 @@ public sealed class OxBinderImpl<T>(Func<Type, Metadata> getMetadata)
     /// </returns>
     private T NewInstance(XmlReader @in)
     {
+        // Ensure there's content to read before advancing.
         Readers.ConfirmNext(@in);
         @in.Read();
         if (@in.NodeType == XmlNodeType.XmlDeclaration)
         {
+            // Ensure there's content to read before advancing.
             Readers.ConfirmNext(@in);
             @in.Read();
         }
         var m = MetadataSupplier(typeof(T));
-        var instance = m.MandatoryElement(@in, MetadataSupplier);
+        var instance = m.RequiredElement(@in, MetadataSupplier);
+        // Ensure no unexpected trailing content.
         Readers.ConfirmEndOfStream(@in);
         return (T)instance;
     }

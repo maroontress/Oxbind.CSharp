@@ -10,18 +10,18 @@ public sealed class TypeMismatchForAttributeTest
     [TestMethod]
     public void RootTest()
     {
-        var v = new Validator(typeof(Root));
+        var logger = new Journal("Root");
+        var v = new Validator(typeof(Root), logger);
+        Assert.IsFalse(v.IsValid);
         Assert.AreEqual(
-            "Root: Error: the type of the field annotated with "
-            + "[ForAttribute] is not string: "
-            + "<Value>k__BackingField",
-            string.Join(Environment.NewLine, v.GetMessages()));
+            """
+            Root: Error: The type of a constructor parameter attributed with [ForAttribute] must be string? or BindResult<string>?: IntValue, ObjectValue.
+            """,
+            string.Join(Environment.NewLine, logger.GetMessages()));
     }
 
     [ForElement("root")]
-    public sealed class Root
-    {
-        [field: ForAttribute("value")]
-        private object? Value { get; set; }
-    }
+    public record class Root(
+        [ForAttribute("value")] object? ObjectValue,
+        [ForAttribute("count")] int? IntValue);
 }

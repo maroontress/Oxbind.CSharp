@@ -3,14 +3,14 @@ namespace Maroontress.Oxbind.Impl;
 using System;
 
 /// <summary>
-/// Capsulizes each step to realize the injection.
+/// Encapsulates the logic for value injection, including type transformation.
 /// </summary>
 /// <typeparam name="T">
 /// The type of the value to be injected.
 /// </typeparam>
 /// <param name="inject">
-/// The delegate that injects the sugarcoated value to the field or with
-/// the method.
+/// The delegate that injects the processed value into an array of constructor
+/// arguments.
 /// </param>
 /// <param name="unitType">
 /// The type of the unit.

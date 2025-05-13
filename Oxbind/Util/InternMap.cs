@@ -4,7 +4,8 @@ using System;
 using System.Collections.Concurrent;
 
 /// <summary>
-/// Provides the canonical value object corresponding to the key.
+/// Provides a mechanism to obtain a canonical (interned) instance of a value
+/// for a given key, typically used for caching or reducing memory footprint.
 /// </summary>
 /// <typeparam name="K">
 /// The type of the key.
@@ -53,17 +54,35 @@ public sealed class InternMap<K, V>(int initialCapacity, int concurrencyLevel)
         = new(concurrencyLevel, initialCapacity);
 
     /// <summary>
-    /// Gets the canonical value object corresponding to the specified key
-    /// object. If the canonical value object does not exist in the internal
-    /// object pool, creates a new value object with the specified function.
+    /// Gets the canonical value object corresponding to the specified key.
+    /// </summary>
+    /// <param name="key">
+    /// The key.
+    /// </param>
+    /// <returns>
+    /// The canonical value object associated with the specified key,
+    /// or <c>null</c> if no value is found.
+    /// </returns>
+    public V? Get(K key)
+    {
+        return Map.TryGetValue(key, out var value)
+            ? value
+            : null;
+    }
+
+    /// <summary>
+    /// Gets the canonical value object corresponding to the specified key. If
+    /// a canonical value does not already exist in the map, it is created
+    /// using the specified function.
     /// </summary>
     /// <remarks>
-    /// The specified function can be called concurrently with the equal keys
-    /// if the multiple threads call this method. However, the canonical value
-    /// object that this method returns is only one.
+    /// If multiple threads call this method concurrently with the same key,
+    /// the <paramref name="newValue"/> function might be invoked multiple
+    /// times. However, only one canonical value object will be stored and
+    /// returned for that key.
     /// </remarks>
     /// <param name="key">
-    /// The key object.
+    /// The key.
     /// </param>
     /// <param name="newValue">
     /// The function that returns a new value object corresponding to the
@@ -74,39 +93,36 @@ public sealed class InternMap<K, V>(int initialCapacity, int concurrencyLevel)
     /// </returns>
     public V Intern(K key, Func<K, V> newValue)
     {
-        if (newValue is null)
-        {
-            throw new ArgumentNullException(nameof(newValue));
-        }
-        return Map.GetOrAdd(key, newValue);
+        return newValue is null
+            ? throw new ArgumentNullException(nameof(newValue))
+            : Map.GetOrAdd(key, newValue);
     }
 
     /// <summary>
-    /// Gets the canonical value object corresponding to the specified key
-    /// object. If the canonical value object does not exist in the internal
-    /// object pool, creates a new value object with the specified supplier.
+    /// Gets the canonical value object corresponding to the specified key. If
+    /// a canonical value does not already exist in the map, it is created
+    /// using the specified supplier.
     /// </summary>
     /// <remarks>
-    /// The specified function can be called concurrently with the equal keys
-    /// if the multiple threads call this method. However, the canonical value
-    /// object that this method returns is only one.
+    /// If multiple threads call this method concurrently with the same key,
+    /// the <paramref name="supplier"/> function might be invoked multiple
+    /// times. However, only a single canonical value object will be stored and
+    /// returned for that key.
     /// </remarks>
     /// <param name="key">
-    /// The key object.
+    /// The key.
     /// </param>
     /// <param name="supplier">
-    /// The supplier that returns a new value object corresponding to the
-    /// specified key object.
+    /// The supplier that returns a new value object. This function is called
+    /// if the key is not already present in the map.
     /// </param>
     /// <returns>
     /// The canonical value object.
     /// </returns>
     public V Intern(K key, Func<V> supplier)
     {
-        if (supplier is null)
-        {
-            throw new ArgumentNullException(nameof(supplier));
-        }
-        return Map.GetOrAdd(key, k => supplier());
+        return supplier is null
+            ? throw new ArgumentNullException(nameof(supplier))
+            : Map.GetOrAdd(key, k => supplier());
     }
 }

@@ -61,34 +61,7 @@ namespace Maroontress.Oxbind.Impl {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [ElementSchema] must not be combined with [ForText]: {0} and {1}.
-        /// </summary>
-        internal static string both_ForText_and_ElementSchema {
-            get {
-                return ResourceManager.GetString("both_ForText_and_ElementSchema", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to [ForText] must not be combined with [FromText]: {0} and {1}.
-        /// </summary>
-        internal static string both_ForText_and_FromText {
-            get {
-                return ResourceManager.GetString("both_ForText_and_FromText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to [ElementSchema] must not be combined with [FromText]: {0} and {1}.
-        /// </summary>
-        internal static string both_FromText_and_ElementSchema {
-            get {
-                return ResourceManager.GetString("both_FromText_and_ElementSchema", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to duplicated attribute name: &apos;{0}&apos; at {1}.
+        ///   Looks up a localized string similar to The attribute name &apos;{0}&apos; is duplicated for [ForAttribute] attributes on constructor parameter(s): {1}..
         /// </summary>
         internal static string duplicated_attribute_name {
             get {
@@ -97,56 +70,11 @@ namespace Maroontress.Oxbind.Impl {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to duplicated child element class: {0} at {1}.
-        /// </summary>
-        internal static string duplicated_child_class {
-            get {
-                return ResourceManager.GetString("duplicated_child_class", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to duplicated child element name: &apos;{0}&apos; at {1}.
-        /// </summary>
-        internal static string duplicated_element_name {
-            get {
-                return ResourceManager.GetString("duplicated_element_name", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to must not have two or more [ElementSchema]s: {0}.
-        /// </summary>
-        internal static string duplicated_ElementSchema {
-            get {
-                return ResourceManager.GetString("duplicated_ElementSchema", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to must not have two or more [ForText]s: {0}.
+        ///   Looks up a localized string similar to A constructor must not have two or more parameters attributed with [ForText]: {0}..
         /// </summary>
         internal static string duplicated_ForText {
             get {
                 return ResourceManager.GetString("duplicated_ForText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to must not have two or more [FromText]s: {0}.
-        /// </summary>
-        internal static string duplicated_FromText {
-            get {
-                return ResourceManager.GetString("duplicated_FromText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to [ElementSchema] is ignored for instance fields: {0}.
-        /// </summary>
-        internal static string ElementSchema_is_ignored {
-            get {
-                return ResourceManager.GetString("ElementSchema_is_ignored", resourceCulture);
             }
         }
         
@@ -160,79 +88,16 @@ namespace Maroontress.Oxbind.Impl {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [ForAttribute] is ignored for static fields: {0}.
+        ///   Looks up a localized string similar to A [Multiple] parameter for element &apos;{0}&apos; must not be followed by another parameter for the same element name: {1}..
         /// </summary>
-        internal static string ForAttribute_is_ignored {
+        internal static string multiple_parameter_followed_by_the_one_that_has_the_same_element_name {
             get {
-                return ResourceManager.GetString("ForAttribute_is_ignored", resourceCulture);
+                return ResourceManager.GetString("multiple_parameter_followed_by_the_one_that_has_the_same_element_name", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to unused [ForChild] or [FromChild] attributes: {0} at {1}.
-        /// </summary>
-        internal static string ForChild_FromChild_is_unused {
-            get {
-                return ResourceManager.GetString("ForChild_FromChild_is_unused", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to [ForChild] is ignored for static fields: {0}.
-        /// </summary>
-        internal static string ForChild_is_ignored {
-            get {
-                return ResourceManager.GetString("ForChild_is_ignored", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to [ForText] is ignored for static fields: {0}.
-        /// </summary>
-        internal static string ForText_is_ignored {
-            get {
-                return ResourceManager.GetString("ForText_is_ignored", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to [FromAttribute] is ignored for static methods: {0}.
-        /// </summary>
-        internal static string FromAttribute_is_ignored {
-            get {
-                return ResourceManager.GetString("FromAttribute_is_ignored", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to [FromChild] is ignored for static fields: {0}.
-        /// </summary>
-        internal static string FromChild_is_ignored {
-            get {
-                return ResourceManager.GetString("FromChild_is_ignored", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to [FromText] is ignored for static methods: {0}.
-        /// </summary>
-        internal static string FromText_is_ignored {
-            get {
-                return ResourceManager.GetString("FromText_is_ignored", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The field annotated with [ForChild] or the method annotated with [FromChild] is found without the static field annotated with [ElementSchema] (probably missing [ElementSchema] annotation): {0}.
-        /// </summary>
-        internal static string missing_ElementSchema {
-            get {
-                return ResourceManager.GetString("missing_ElementSchema", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to must be annotated with [ForElement].
+        ///   Looks up a localized string similar to The class must be attributed with [ForElement]..
         /// </summary>
         internal static string must_be_annotated_with_ForElement {
             get {
@@ -241,7 +106,16 @@ namespace Maroontress.Oxbind.Impl {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to must not be interface.
+        ///   Looks up a localized string similar to The class must have exactly one constructor that is not attributed with [Ignored]..
+        /// </summary>
+        internal static string must_have_one_valid_constructor {
+            get {
+                return ResourceManager.GetString("must_have_one_valid_constructor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The type attributed with [ForElement] must be a class, not an interface..
         /// </summary>
         internal static string must_not_be_interface {
             get {
@@ -250,34 +124,97 @@ namespace Maroontress.Oxbind.Impl {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to the type that the Schema object contains is not the class annotated with [ForElement]: {0}.
+        ///   Looks up a localized string similar to An [Optional] parameter for element &apos;{0}&apos; must not be followed by a [Required] or [Multiple] parameter for the same element name: {1}..
         /// </summary>
-        internal static string not_annotated_with_ForElement {
+        internal static string optional_parameter_followed_by_the_one_that_has_the_same_element_name {
             get {
-                return ResourceManager.GetString("not_annotated_with_ForElement", resourceCulture);
+                return ResourceManager.GetString("optional_parameter_followed_by_the_one_that_has_the_same_element_name", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to the type in the Schema object is not handled with [ForChild] or [FromChild]: {0}.
+        ///   Looks up a localized string similar to A constructor parameter must not be attributed with two or more of the following mutually exclusive attributes: [Required], [Optional], [Multiple]. Parameter: {0}..
         /// </summary>
-        internal static string not_handled_class {
+        internal static string parameter_for_child_elements_must_be_mutually_exclusive {
             get {
-                return ResourceManager.GetString("not_handled_class", resourceCulture);
+                return ResourceManager.GetString("parameter_for_child_elements_must_be_mutually_exclusive", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to the type of the field annotated with [ElementSchema] is not Schema class: {0}.
+        ///   Looks up a localized string similar to A constructor parameter for a child element or text must be attributed with [Required], [Optional], [Multiple], or [ForText]: {0}..
         /// </summary>
-        internal static string type_mismatch_ElementSchema {
+        internal static string parameter_must_be_annotated_with_attributes_for_child_elements {
             get {
-                return ResourceManager.GetString("type_mismatch_ElementSchema", resourceCulture);
+                return ResourceManager.GetString("parameter_must_be_annotated_with_attributes_for_child_elements", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to the type of the field annotated with [ForAttribute] is not string: {0}.
+        ///   Looks up a localized string similar to A constructor parameter must not be attributed with both [ForAttribute] and another Oxbind binding attribute (e.g., [Required], [ForText]): {0}..
+        /// </summary>
+        internal static string parameter_must_not_be_annotated_with_both_ForAttribute_and_another {
+            get {
+                return ResourceManager.GetString("parameter_must_not_be_annotated_with_both_ForAttribute_and_another", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A constructor parameter must not be attributed with both [ForText] and another Oxbind binding attribute (e.g., [Required]): {0}..
+        /// </summary>
+        internal static string parameter_must_not_be_annotated_with_both_ForText_and_another {
+            get {
+                return ResourceManager.GetString("parameter_must_not_be_annotated_with_both_ForText_and_another", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The type of constructor parameter(s) {0} must be a class attributed with [ForElement]..
+        /// </summary>
+        internal static string parameter_type_must_be_annotated_with_ForElement {
+            get {
+                return ResourceManager.GetString("parameter_type_must_be_annotated_with_ForElement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A constructor parameter attributed with [Multiple] must be of type IEnumerable&lt;T&gt; (or IEnumerable&lt;BindResult&lt;T&gt;&gt;): {0}..
+        /// </summary>
+        internal static string parameter_type_must_be_IEnumerableT {
+            get {
+                return ResourceManager.GetString("parameter_type_must_be_IEnumerableT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A constructor parameter not attributed with [Multiple] (e.g., [Required], [Optional]) must not be of type IEnumerable&lt;T&gt;: {0}..
+        /// </summary>
+        internal static string parameter_type_must_not_be_IEnumerableT {
+            get {
+                return ResourceManager.GetString("parameter_type_must_not_be_IEnumerableT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A constructor must not mix parameters attributed with [ForText] ({0}) and parameters attributed with [Required], [Optional], or [Multiple] ({1})..
+        /// </summary>
+        internal static string parameters_must_not_be_mixed {
+            get {
+                return ResourceManager.GetString("parameters_must_not_be_mixed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Constructor parameters attributed with [ForAttribute] must appear consecutively at the beginning of the parameter list. Misplaced parameter(s): {0}..
+        /// </summary>
+        internal static string parameters_with_ForAttribute_must_be_listed_consecutively_at_the_beginning {
+            get {
+                return ResourceManager.GetString("parameters_with_ForAttribute_must_be_listed_consecutively_at_the_beginning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The type of a constructor parameter attributed with [ForAttribute] must be string? or BindResult&lt;string&gt;?: {0}..
         /// </summary>
         internal static string type_mismatch_ForAttribute {
             get {
@@ -286,38 +223,11 @@ namespace Maroontress.Oxbind.Impl {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to the type of the field annotated with [ForText] is not string: {0}.
+        ///   Looks up a localized string similar to The type of a constructor parameter attributed with [ForText] must be string or BindResult&lt;string&gt;: {0}..
         /// </summary>
         internal static string type_mismatch_ForText {
             get {
                 return ResourceManager.GetString("type_mismatch_ForText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to the signature of the method annotated with [FromAttribute] is not void(string): {0}.
-        /// </summary>
-        internal static string type_mismatch_FromAttribute {
-            get {
-                return ResourceManager.GetString("type_mismatch_FromAttribute", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to the method annotated with [FromChild] must have a single parameter and return void: {0}.
-        /// </summary>
-        internal static string type_mismatch_FromChild {
-            get {
-                return ResourceManager.GetString("type_mismatch_FromChild", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to the type of the method annotated with [FromText] is not void(string): {0}.
-        /// </summary>
-        internal static string type_mismatch_FromText {
-            get {
-                return ResourceManager.GetString("type_mismatch_FromText", resourceCulture);
             }
         }
         

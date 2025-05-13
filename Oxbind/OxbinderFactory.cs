@@ -1,7 +1,7 @@
 namespace Maroontress.Oxbind;
 
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Maroontress.Oxbind.Impl;
@@ -9,57 +9,94 @@ using Maroontress.Oxbind.Util;
 using Maroontress.Oxbind.Util.Graph;
 
 /// <summary>
-/// The factory of the <see cref="Oxbinder{T}"/> object.
+/// A factory for <see cref="Oxbinder{T}"/> objects.
 /// </summary>
-/// <param name="ignoreWarnings">
-/// If the value is <c>true</c>, the <see cref="OxbinderFactory.Of{T}"/>
-/// ignores warning messages to the annotations of type <c>T</c>.
-/// Otherwise, the warning messages are treated as errors, and then the
-/// method throws <see cref="BindException"/>.
-/// </param>
-public sealed class OxbinderFactory(bool ignoreWarnings = false)
+public sealed class OxbinderFactory
 {
     /// <summary>
-    /// The cache of the metadata.
+    /// Initializes a new instance of the <see cref="OxbinderFactory"/> class.
     /// </summary>
-    private readonly InternMap<Type, Metadata> metadataCache = new();
+    /// <param name="ignoreWarnings">
+    /// If <c>true</c>, the <see cref="Of{T}"/> method ignores warning
+    /// messages related to attributes on the target types and their
+    /// dependencies. Otherwise, the method treats warnings as errors,
+    /// causing a <see cref="BindException"/>.
+    /// </param>
+    public OxbinderFactory(bool ignoreWarnings = false)
+    {
+        static IEnumerable<Type> ToDependingTypes(Validator v)
+            => v.ChildDependency
+                .ChildParameters
+                .Select(p => p.UnitType);
 
-    /// <summary>
-    /// The cache of the validated classes.
-    /// </summary>
-    private readonly Traversal<Type> validationTraversal = new(type =>
+        ValidationTraversal = new(type =>
         {
-            var v = new Validator(type);
-            var messages = v.GetMessages();
-            if (!v.IsValid
+            var validator = ValidatorCache.Intern(
+                type,
+                () => new(type, new(type.Name)));
+            var logger = validator.ValidationLogger;
+            var messages = logger.GetMessages();
+            if (!validator.IsValid
                 || (!ignoreWarnings && messages.Any()))
             {
-                var log = string.Join(
-                    Environment.NewLine, messages);
+                var m = string.Join(Environment.NewLine, messages);
                 throw new BindException(
-                    $"{type.Name} has failed to validate annotations: "
-                        + $"{log}");
+                    $"{type.Name} has failed to validate annotations: {m}");
             }
-            return v.SchemaClasses;
+            var dependencies = ToDependingTypes(validator);
+            return [.. dependencies];
         });
+        DagChecker = new(type => ValidatorCache.Get(type) is {} validator
+            ? new HashSet<Type>(ToDependingTypes(validator))
+            : throw new NullReferenceException($"{type}"));
+    }
 
     /// <summary>
-    /// The cache of the classes that have been checked for DAG.
+    /// Gets the traversal mechanism that validates and caches types.
     /// </summary>
-    private readonly DagChecker<Type> dagChecker
-        = new(Validator.GetDependencies);
+    private Traversal<Type> ValidationTraversal { get; }
+
+    /// <summary>
+    /// Gets the cache of the types that have been checked for DAG.
+    /// </summary>
+    private DagChecker<Type> DagChecker { get; }
+
+    /// <summary>
+    /// Gets the cache of the metadata.
+    /// </summary>
+    private InternMap<Type, Metadata> MetadataCache { get; } = new();
+
+    /// <summary>
+    /// Gets the cache of the validator.
+    /// </summary>
+    private InternMap<Type, Validator> ValidatorCache { get; } = new();
 
     /// <summary>
     /// Creates an <see cref="Oxbinder{T}"/> object for the specified class.
     /// </summary>
     /// <typeparam name="T">
     /// The type of the class annotated with <see cref="ForElementAttribute"/>
-    /// that stands for the root element.
+    /// that represents the root element.
     /// </typeparam>
     /// <returns>
     /// The <see cref="Oxbinder{T}"/> object to create new objects of the
-    /// specified class with XML streams.
+    /// specified class from XML streams.
     /// </returns>
+    /// <remarks>
+    /// When this method is called, the factory validates the attribute schema
+    /// and dependency graph for the specified type <typeparamref name="T"/>
+    /// and all its transitively referenced types (i.e., types of constructor
+    /// parameters annotated with <see cref="RequiredAttribute"/>, <see
+    /// cref="OptionalAttribute"/>, or <see cref="MultipleAttribute"/>). If any
+    /// validation fails or a circular dependency is detected, a <see
+    /// cref="BindException"/> is thrown.
+    /// </remarks>
+    /// <exception cref="BindException">
+    /// Thrown when binding validation fails for the target type <typeparamref
+    /// name="T"/> or any of its transitively referenced types (e.g., due to a
+    /// type mismatch, a missing required element or attribute, or any other
+    /// binding rule violation).
+    /// </exception>
     /// <seealso cref="Oxbinder{T}.NewInstance(TextReader)"/>
     public Oxbinder<T> Of<T>()
         where T : class
@@ -69,37 +106,51 @@ public sealed class OxbinderFactory(bool ignoreWarnings = false)
 
     /// <summary>
     /// Returns the shared <see cref="Metadata"/> object for the specified
-    /// class.
+    /// type.
     /// </summary>
-    /// <param name="type">The class corresponding to the element.</param>
+    /// <param name="type">
+    /// The type corresponding to an XML element.
+    /// </param>
     /// <returns>
-    /// The <see cref="Metadata"/> object for the specified class.
+    /// The <see cref="Metadata"/> object for the specified type.
     /// </returns>
     private Metadata GetSharedMetadata(Type type)
     {
-        return metadataCache.Intern(type, () =>
+        return MetadataCache.Intern(type, () => NewMetadata(type));
+    }
+
+    private Metadata NewMetadata(Type type)
+    {
+        ValidationTraversal.Visit(type);
+        try
         {
-            validationTraversal.Visit(type);
-            try
-            {
-                dagChecker.Check(type);
-            }
-            catch (CircularDependencyException e)
-            {
-                throw new BindException(
-                    $"{type.Name} has circular dependency.", e);
-            }
-            var fields
-                = Classes.GetInstanceFields<ForTextAttribute>(type);
-            var methods
-                = Classes.GetInstanceMethods<FromTextAttribute>(type);
-            if (fields.Any() && methods.Any())
-            {
-                Debug.Fail(fields.First() + " and " + methods.First());
-            }
-            return fields.Any() ? new TextMetadata(type, fields)
-                : methods.Any() ? new TextMetadata(type, methods)
-                : new SchemaMetadata(type) as Metadata;
-        });
+            DagChecker.Check(type);
+        }
+        catch (CircularDependencyException e)
+        {
+            throw new BindException(
+                $"{type.Name} has a circular dependency.", e);
+        }
+        var validator = ValidatorCache.Get(type)
+            ?? throw new NullReferenceException($"{type}");
+        if (validator.Constructor is not {} ctor)
+        {
+            // Something was missed during the validation
+            throw new InvalidOperationException($"{type}");
+        }
+        var bank = new AttributeBank(
+            ctor,
+            validator.ElementName,
+            validator.AttributeParameters);
+
+        var dependency = validator.ChildDependency;
+        if (dependency.HasInnerText)
+        {
+            var parameters = ctor.GetParameters();
+            var firstChildIndex = validator.AttributeParameters.Count();
+            var firstChild = parameters[firstChildIndex];
+            return new TextMetadata(bank, firstChild);
+        }
+        return new SchemaMetadata(bank, dependency.ChildParameters);
     }
 }

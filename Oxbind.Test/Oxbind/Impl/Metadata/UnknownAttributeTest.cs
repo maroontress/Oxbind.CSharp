@@ -11,36 +11,27 @@ public sealed class UnknownAttributeTest
     [TestMethod]
     public void RootTest()
     {
-        const string xml = ""
-            + "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
-            + "<root>\r\n"
-            + "  <first fake=\"70\" value=\"80\" dummy=\"90\"/>\r\n"
-            + "</root>\r\n";
-
+        const string xml = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <root>
+              <first fake="70" value="42" dummy="90"/>
+            </root>
+            """;
         var factory = new OxbinderFactory();
         var binder = factory.Of<Root>();
         var reader = new StringReader(xml);
         var root = binder.NewInstance(reader);
 
-        _ = root.First ?? throw new NullReferenceException();
-        Assert.AreEqual("80", root.First.Value);
+        var firstChild = root.FirstChild;
+        _ = firstChild ?? throw new NullReferenceException();
+        Assert.IsNotNull(firstChild.AttributeValue);
+        Assert.AreEqual("42", firstChild.AttributeValue);
     }
 
     [ForElement("root")]
-    public sealed class Root
-    {
-        [ElementSchema]
-        private static readonly Schema TheSchema = Schema.Of(
-                Mandatory.Of<First>());
-
-        [field: ForChild]
-        public First? First { get; }
-    }
+    public record class Root([Required] First FirstChild);
 
     [ForElement("first")]
-    public sealed class First
-    {
-        [field: ForAttribute("value")]
-        public string? Value { get; }
-    }
+    public record class First(
+        [ForAttribute("value")] string? AttributeValue);
 }

@@ -12,11 +12,11 @@ using System.Collections.Generic;
 /// This implementation differs from <see cref="HashSet{T}"/> in that it
 /// maintains a doubly-linked list running through all of its entries. This
 /// linked list defines the iteration ordering, which is the order in which
-/// elements were inserted into the set (<i>insertion-order</i>). Note that
-/// insertion order is <i>not</i> affected if an element is re-inserted into
-/// the set. (An element <c>e</c> is reinserted into a set <c>s</c> if
-/// <c>s.Add(e)</c> is invoked when <c>s.Contains(e)</c> would return
-/// <c>true</c> immediately prior to the invocation.)
+/// elements were inserted into the set (insertion-order). Note that insertion
+/// order is not affected if an element is re-inserted into the set. (An
+/// element <c>e</c> is reinserted into a set <c>s</c> if <c>s.Add(e)</c> is
+/// invoked when <c>s.Contains(e)</c> would return <c>true</c> immediately
+/// prior to the invocation.)
 /// </remarks>
 /// <typeparam name="T">
 /// The type of elements maintained by this set.
@@ -111,7 +111,7 @@ public sealed class LinkedHashSet<T> : ISet<T>
             || arrayIndex > array.Length - Count)
         {
             throw new ArgumentException(
-                "Too small array length");
+                "Destination array is not long enough");
         }
         List.CopyTo(array, arrayIndex);
     }

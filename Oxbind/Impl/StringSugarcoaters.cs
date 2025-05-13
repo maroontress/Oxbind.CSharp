@@ -14,15 +14,16 @@ public static class StringSugarcoaters
         = NewMap();
 
     /// <summary>
-    /// Gets whether the specified type is <see cref="string"/> or <see
-    /// cref="BindEvent{T}"/> (<c>T</c> is <c>string</c>).
+    /// Checks if the specified type is <see cref="string"/> or <see
+    /// cref="BindResult{T}">BindResult&lt;string&gt;</see>.
     /// </summary>
     /// <param name="type">
     /// The type to test.
     /// </param>
     /// <returns>
     /// <c>true</c> if the specified type is <see cref="string"/> or <see
-    /// cref="BindEvent{T}"/> (<c>T</c> is <c>string</c>).
+    /// cref="BindResult{T}">BindResult&lt;string&gt;</see>; otherwise,
+    /// <c>false</c>.
     /// </returns>
     public static bool IsValid(Type type)
         => Map.ContainsKey(type);
@@ -31,8 +32,8 @@ public static class StringSugarcoaters
     /// Gets the sugarcoater for the specified type.
     /// </summary>
     /// <param name="type">
-    /// The type of <see cref="string"/> or <see cref="BindEvent{T}"/>
-    /// (<c>T</c> is <c>string</c>).
+    /// The type, which must be <see cref="string"/> or <see
+    /// cref="BindResult{T}">BindResult&lt;string&gt;</see>.
     /// </param>
     /// <returns>
     /// The sugarcoater for the specified type.
@@ -50,6 +51,6 @@ public static class StringSugarcoaters
         => new()
         {
             [Types.String] = (r, s) => s,
-            [Types.BindEventString] = Readers.NewEvent,
+            [Types.BindResultString] = Readers.NewResult,
         };
 }

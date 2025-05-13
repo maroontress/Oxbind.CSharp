@@ -3,34 +3,45 @@ namespace Maroontress.Oxbind;
 using System;
 
 /// <summary>
-/// Marks an instance field to be bound with the text inside the XML element.
+/// Marks a constructor parameter to be bound to the text inside an XML
+/// element.
 /// </summary>
 /// <remarks>
 /// <para>
-/// If the <see cref="Oxbinder{T}"/> finds the XML elements containing a text
-/// node, it populate the annotated field with the value that the text node
-/// contains.
+/// If the <see cref="Oxbinder{T}"/> encounters an XML element containing a
+/// text node, it populates the constructor parameter with the content of the
+/// text node.
 /// </para>
 /// <para>
-/// This annotation must mark an instance field whose type is <see
-/// cref="string"/>. And the class that has the instance field must be
-/// annotated with <see cref="ForElementAttribute"/>.
+/// This attribute must be applied to a constructor parameter of type <see
+/// cref="string"/> or <see
+/// cref="BindResult{T}">BindResult&lt;string&gt;</see>. The class containing
+/// this constructor must also be annotated with <see
+/// cref="ForElementAttribute"/>.
 /// </para>
 /// <para>
-/// If there is an instance field annotated with <see cref="ForTextAttribute"/>
-/// in a class, the class must not have other instance fields annotated with
-/// it, instance methods annotated with <see cref="FromTextAttribute"/>, and be
-/// no <c>static</c> and <c>final</c> fields annotated with <see
-/// cref="ElementSchemaAttribute"/>.
+/// The parameter attributed with <see cref="ForTextAttribute"/> must be the
+/// last parameter of the constructor.
+/// </para>
+/// <para>
+/// A constructor with a parameter attributed with <see
+/// cref="ForTextAttribute"/> must not contain:
+/// <list type="bullet">
+/// <item><description>Any other parameter attributed with <see
+/// cref="ForTextAttribute"/>.</description></item>
+/// <item><description>Any parameters attributed with <see
+/// cref="RequiredAttribute"/>, <see cref="OptionalAttribute"/>, or <see
+/// cref="MultipleAttribute"/>.</description></item>
+/// </list>
+/// </para>
+/// <para>
+/// The parameter will never be <see langword="null"/>. If the element does not
+/// contain a text node, or the text node is empty, the parameter will be set
+/// to an empty string ("").
 /// </para>
 /// </remarks>
-/// <seealso cref="Schema"/>
-/// <seealso cref="ForElementAttribute"/>
-/// <seealso cref="ElementSchemaAttribute"/>
 [AttributeUsage(
-    AttributeTargets.Field,
+    AttributeTargets.Parameter,
     Inherited = false,
     AllowMultiple = false)]
-public sealed class ForTextAttribute : Attribute
-{
-}
+public sealed class ForTextAttribute : Attribute;

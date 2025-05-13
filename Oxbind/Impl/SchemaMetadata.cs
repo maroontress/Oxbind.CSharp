@@ -3,101 +3,87 @@ namespace Maroontress.Oxbind.Impl;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Xml;
-using Maroontress.Oxbind.Util;
 
 /// <summary>
-/// Metadata of the classes that have a <c>static</c> and <c>readonly</c> <see
-/// cref="Schema"/> field annotated with the <see
-/// cref="ElementSchemaAttribute"/>.
+/// Metadata of the classes that have constructor parameters annotated with
+/// the <see cref="RequiredAttribute"/>, <see cref="OptionalAttribute"/>,
+/// or <see cref="MultipleAttribute"/>.
 /// </summary>
-/// <param name="clazz">
-/// The class annotated with <see cref="ForElementAttribute"/>.
+/// <param name="bank">
+/// The attribute bank to be associated with this metadata.
 /// </param>
-public sealed class SchemaMetadata(Type clazz)
-    : Metadata(clazz)
+/// <param name="children">
+/// A collection of <see cref="ChildParameter"/> objects.
+/// </param>
+public sealed class SchemaMetadata(
+        AttributeBank bank, IEnumerable<ChildParameter> children)
+    : Metadata(bank)
 {
     /// <summary>
-    /// The <see cref="Schema"/> object.
+    /// Gets the immutable list that contains <see cref="X"/> objects.
     /// </summary>
-    private readonly Schema schema = SchemaOf(clazz);
-
-    /// <summary>
-    /// The immutable map that wraps a <see cref="ChildReflectorMap"/> object.
-    /// </summary>
-    private readonly IReadOnlyDictionary<Type, Reflector<object>>
-        childReflectorMap = ChildReflectorMap.Of(clazz);
+    private IReadOnlyList<X> ChildList { get; } = NewChildList(children);
 
     /// <inheritdoc/>
     protected override void HandleComponentsWithContent(
-        object instance,
+        object[] arguments,
         XmlReader @in,
         Func<Type, Metadata> getMetadata)
     {
-        HandleAction((t, r) => t.ApplyWithContent(
-            @in, getMetadata, r, o => r.Inject(instance, o)));
+        HandleAction(x =>
+        {
+            var reflector = x.Reflector;
+            x.SchemaType.ApplyWithContent(
+                x.UnitType,
+                @in,
+                getMetadata,
+                reflector,
+                o => reflector.Inject(arguments, o));
+        });
     }
 
     /// <inheritdoc/>
     protected override void HandleComponentsWithEmptyElement(
-        object instance,
+        object[] arguments,
         XmlReader @in,
         Func<Type, Metadata> getMetadata)
     {
-        HandleAction((t, r) => t.ApplyWithEmptyElement(
-            @in, getMetadata, r, o => r.Inject(instance, o)));
-    }
-
-    /// <summary>
-    /// Returns the <see cref="Schema"/> object of the specified class.
-    /// </summary>
-    /// <param name="clazz">
-    /// The class containing the <c>static</c> and <c>readonly</c> <see
-    /// cref="Schema"/> fields annotated with <see
-    /// cref="ElementSchemaAttribute"/>.
-    /// </param>
-    /// <returns>
-    /// The <see cref="ElementSchemaAttribute"/> object of the first <see
-    /// cref="Schema"/> field, or <see cref="Schema.Empty"/> if the class
-    /// contains no <see cref="Schema"/> fields.
-    /// </returns>
-    private static Schema SchemaOf(Type clazz)
-    {
-        return Classes.GetStaticFields<ElementSchemaAttribute>(clazz)
-            .Select(ValueOf<Schema>)
-            .FirstOrDefault() ?? Schema.Empty;
-    }
-
-    /// <summary>
-    /// Returns the value of the specified <c>static</c> field.
-    /// </summary>
-    /// <typeparam name="T">
-    /// The class of the value that <paramref name="field"/> has.
-    /// </typeparam>
-    /// <param name="field">
-    /// The <see cref="FieldInfo"/> object representing a <c>static</c> field.
-    /// </param>
-    /// <returns>
-    /// The value of the <paramref name="field"/>.
-    /// </returns>
-    private static T? ValueOf<T>(FieldInfo field)
-        where T : class
-    {
-        var fieldTypeInfo = field.FieldType.GetTypeInfo();
-        var valueTypeInfo = typeof(T).GetTypeInfo();
-        if (!fieldTypeInfo.IsAssignableFrom(valueTypeInfo))
+        HandleAction(x =>
         {
-            throw new BindException($"{typeof(T).FullName}");
-        }
-        return (T?)field.GetValue(null);
+            var reflector = x.Reflector;
+            x.SchemaType.ApplyWithEmptyElement(
+                x.UnitType,
+                @in,
+                getMetadata,
+                reflector,
+                o => reflector.Inject(arguments, o));
+        });
     }
 
-    private void HandleAction(Action<SchemaType, Reflector<object>> action)
+    private static List<X> NewChildList(IEnumerable<ChildParameter> children)
     {
-        foreach (var t in schema.Types())
+        return [.. children.Select(p =>
         {
-            action(t, childReflectorMap[t.PlaceholderType]);
+            var schemaType = p.SchemaType;
+            var unitType = p.UnitType;
+            var reflector = Reflectors.Of(p.Info);
+            return new X(schemaType, unitType, reflector);
+        })];
+    }
+
+    private void HandleAction(Action<X> action)
+    {
+        foreach (var x in ChildList)
+        {
+            action(x);
         }
+    }
+
+    private record struct X(
+        SchemaType SchemaType,
+        Type UnitType,
+        Reflector<object> Reflector)
+    {
     }
 }

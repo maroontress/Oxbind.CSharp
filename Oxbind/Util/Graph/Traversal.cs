@@ -4,16 +4,14 @@ using System;
 using System.Collections.Generic;
 
 /// <summary>
-/// Provides a way of graph traversal to visit all the reachable nodes from the
-/// specified node.
+/// Provides a mechanism for graph traversal to visit all reachable nodes from
+/// a starting node.
 /// </summary>
 /// <remarks>
 /// For more information, see <a
 /// href="https://en.wikipedia.org/wiki/Graph_traversal">
 /// Graph traversal</a>:
 ///
-/// <para>
-/// <blockquote>
 /// <para>Unlike tree traversal, graph traversal may require that some nodes be
 /// visited more than once, since it is not necessarily known before
 /// transitioning to a node that it has already been explored. As graphs become
@@ -30,39 +28,38 @@ using System.Collections.Generic;
 /// already been visited, it is ignored and the path is pursued no further;
 /// otherwise, the algorithm checks/updates the node and continues down its
 /// current path.</para>
-/// </blockquote>
-/// </para>
 /// </remarks>
 /// <typeparam name="T">
 /// The type of the node.
 /// </typeparam>
-/// <remarks>
-/// Initializes a new instance of the <see cref="Traversal{T}"/> class.
-/// </remarks>
 /// <param name="getDependencies">
-/// The function that returns the dependencies of the specified node.
+/// The function that returns the dependencies for the specified node.
 /// </param>
 public sealed class Traversal<T>(Func<T, IEnumerable<T>> getDependencies)
 {
     /// <summary>
-    /// The set of the visiting node.
+    /// Gets the set of nodes that have already been visited during the current
+    /// traversal process.
     /// </summary>
-    private readonly ISet<T> visitingSet = new HashSet<T>();
+    private ISet<T> VisitingSet { get; } = new HashSet<T>();
 
     /// <summary>
-    /// The function that returns the dependencies of the specified node.
+    /// Gets the function that returns the dependencies for the specified node.
     /// </summary>
-    private readonly Func<T, IEnumerable<T>> getDependencies = getDependencies;
+    private Func<T, IEnumerable<T>> GetDependencies { get; } = getDependencies;
 
     /// <summary>
     /// Visits all the reachable nodes from the specified node.
     /// </summary>
     /// <param name="node">
-    /// The node where to start visiting.
+    /// The starting node for the traversal.
     /// </param>
     public void Visit(T node)
     {
-        IfNotVisited(getDependencies(node));
+        lock (VisitingSet)
+        {
+            IfNotVisited([node]);
+        }
     }
 
     /// <summary>
@@ -70,23 +67,21 @@ public sealed class Traversal<T>(Func<T, IEnumerable<T>> getDependencies)
     /// visited.
     /// </summary>
     /// <remarks>
-    /// At first, calls the <see cref="Traversal{T}.getDependencies"/> function
-    /// with the specified node. And then calls recursively the function with
-    /// those nodes that have never been visited.
+    /// First, it calls the <see cref="GetDependencies"/> function for each
+    /// unvisited node in the input. Then, it recursively calls itself with the
+    /// dependencies of those nodes that had not been visited prior to this
+    /// call.
     /// </remarks>
     /// <param name="all">
-    /// The reachable nodes.
+    /// The nodes to process in the current step of the traversal.
     /// </param>
     private void IfNotVisited(IEnumerable<T> all)
     {
-        lock (visitingSet)
+        foreach (var node in all)
         {
-            foreach (var node in all)
+            if (VisitingSet.Add(node))
             {
-                if (visitingSet.Add(node))
-                {
-                    Visit(node);
-                }
+                IfNotVisited(GetDependencies(node));
             }
         }
     }

@@ -6,78 +6,140 @@ using System.Linq;
 using System.Reflection;
 using System.Xml;
 using Maroontress.Oxbind.Util;
+using StyleChecker.Annotations;
 
 /// <summary>
-/// Validates the semantics of the Oxbind annotations.
+/// Validates the semantics of Oxbind attributes on classes and constructor
+/// parameters.
 /// </summary>
-public sealed class Validator : AbstractValidator
+public sealed class Validator
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Validator"/> class.
     /// </summary>
     /// <param name="clazz">
-    /// The class annotated with <see cref="ForElementAttribute"/>.
+    /// The type of the class attributed with <see
+    /// cref="ForElementAttribute"/>.
     /// </param>
-    public Validator(Type clazz)
-        : base(clazz.Name)
+    /// <param name="logger">
+    /// The logger instance.
+    /// </param>
+    public Validator(Type clazz, Journal logger)
     {
-        Class = clazz;
-        if (!IsElementClass(clazz))
+        BuildSpec NoConstructor()
         {
-            Error("must_be_annotated_with_ForElement");
+            logger.Error("must_have_one_valid_constructor");
+            return new(null, [], Dependency.Empty);
         }
+
+        BuildSpec HaveConstructor(ConstructorInfo ctor)
+        {
+            var attributeParameterList = AttributeParameter.Of(ctor)
+                .ToList();
+            CheckAttributes(logger, attributeParameterList);
+            var childParameterList = ctor.GetParameters()
+                .Skip(attributeParameterList.Count)
+                .ToList();
+            var dependency = CheckChildren(logger, childParameterList);
+            return new(ctor, attributeParameterList, dependency);
+        }
+
+        XmlQualifiedName NoElementNameSpecified()
+        {
+            logger.Error("must_be_annotated_with_ForElement");
+            return XmlQualifiedName.Empty;
+        }
+
         if (clazz.GetTypeInfo().IsInterface)
         {
-            Error("must_not_be_interface");
+            logger.Error("must_not_be_interface");
         }
-        CheckAttributes();
-        SchemaClasses = CheckChildren();
+        ValidationLogger = logger;
+        ElementName = GetElementName(clazz) is not {} elementName
+            ? NoElementNameSpecified()
+            : elementName;
+        (Constructor, AttributeParameters, ChildDependency)
+                = Types.GetConstructor(clazz) is not {} ctor
+            ? NoConstructor()
+            : HaveConstructor(ctor);
     }
 
     /// <summary>
-    /// Gets the collection of the class that the <see cref="Schema"/> object
-    /// of the validated class contains.
+    /// Gets the logger instance.
     /// </summary>
-    /// <returns>
-    /// The collection of the class that the <see cref="Schema"/> object of the
-    /// validated class contains if the class is valid.
-    /// </returns>
-    public IEnumerable<Type> SchemaClasses { get; }
+    public Journal ValidationLogger { get; }
 
     /// <summary>
-    /// Gets the class annotated with <see cref="ForElementAttribute"/>.
+    /// Gets the <see cref="ConstructorInfo"/> for the constructor of the
+    /// validated class that has been determined to be used for binding, or
+    /// <c>null</c> if no suitable constructor is found.
     /// </summary>
-    private Type Class { get; }
+    public ConstructorInfo? Constructor { get; }
 
     /// <summary>
-    /// Returns the new set of types that the specified class depends on.
+    /// Gets the XML element name from the <see cref="ForElementAttribute"/>
+    /// annotation on the class.
+    /// </summary>
+    public XmlQualifiedName ElementName { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether this validator has detected errors.
+    /// </summary>
+    public bool IsValid => !ValidationLogger.HasError;
+
+    /// <summary>
+    /// Gets the collection of the constructor parameters attributed with <see
+    /// cref="ForAttributeAttribute"/>.
+    /// </summary>
+    public IEnumerable<AttributeParameter> AttributeParameters { get; }
+
+    /// <summary>
+    /// Gets the <see cref="Dependency"/> object representing the child element
+    /// dependencies of the validated class.
+    /// </summary>
+    public Dependency ChildDependency { get; }
+
+    private static IReadOnlyList<Type> ChildAttributeList { get; }
+        = [.. ChildParameter.AttributeTypes];
+
+    private static IReadOnlyList<Type> ForAttributeExclusiveList { get; }
+        = [.. ChildParameter.AttributeTypes, typeof(ForTextAttribute)];
+
+    /// <summary>
+    /// Returns a new set of types that the specified class depends on.
     /// </summary>
     /// <param name="clazz">
     /// The type of the class.
     /// </param>
     /// <returns>
-    /// The new set of types that <paramref name="clazz"/> depends on.
+    /// A new set containing the types of constructor parameters attributed
+    /// with <see cref="RequiredAttribute"/> in <paramref name="clazz"/>.
     /// </returns>
     public static ISet<Type> GetDependencies(Type clazz)
     {
-        var all = Classes.GetStaticFields<ElementSchemaAttribute>(clazz);
-        return !all.Any()
+        static RequiredAttribute? ToRequired(ParameterInfo p)
+            => p.GetCustomAttribute<RequiredAttribute>();
+
+        static IEnumerable<Type> GetRequiredTypes(ConstructorInfo ctor)
+            => ctor.GetParameters()
+                .Where(p => ToRequired(p) is {})
+                .Select(m => m.ParameterType);
+
+        return Types.GetConstructor(clazz) is not {} ctor
             ? []
-            : new HashSet<Type>(GetSchema(all.First()).Types()
-                .Where(t => t.IsMandatory)
-                .Select(t => t.ElementType));
+            : new HashSet<Type>(GetRequiredTypes(ctor));
     }
 
     /// <summary>
-    /// Returns whether the specified class is marked with the annotation <see
+    /// Checks if the specified class is annotated with <see
     /// cref="ForElementAttribute"/>.
     /// </summary>
     /// <param name="clazz">
-    /// The class to test.
+    /// The type to test.
     /// </param>
     /// <returns>
-    /// <c>true</c> if the specified class is marked with the annotation <see
-    /// cref="ForElementAttribute"/>.
+    /// <c>true</c> if the specified type is annotated with <see
+    /// cref="ForElementAttribute"/>; otherwise, <c>false</c>.
     /// </returns>
     private static bool IsElementClass(Type clazz)
         => clazz.GetTypeInfo()
@@ -85,490 +147,477 @@ public sealed class Validator : AbstractValidator
             .Any();
 
     /// <summary>
-    /// If the specified key is not already associated with a value (or is
-    /// mapped to <c>null</c>), attempts to compute its value using the given
-    /// mapping function and enters it into the specified map unless
-    /// <c>null</c>.
+    /// Returns the XML element name marked with the annotation <see
+    /// cref="ForElementAttribute"/>.
     /// </summary>
-    /// <typeparam name="K">
-    ///  The type of key.
-    /// </typeparam>
-    /// <typeparam name="V">
-    /// The type of value.
-    /// </typeparam>
-    /// <param name="d">
-    /// The map.
-    /// </param>
-    /// <param name="key">
-    /// The key with which the specified value is to be associated.
-    /// </param>
-    /// <param name="toValue">
-    /// The function to compute a value.
+    /// <param name="clazz">
+    /// The type to test.
     /// </param>
     /// <returns>
-    /// The current (existing or computed) value associated with the specified
-    /// key, or <c>null</c> if the computed value is <c>null</c>.
+    /// The XML element name marked with the annotation <see
+    /// cref="ForElementAttribute"/>, <c>null</c> otherwise.
     /// </returns>
-    private static V ComputeIfAbsent<K, V>(
-        Dictionary<K, V> d, K key, Func<K, V> toValue)
-        where K : notnull
+    private static XmlQualifiedName? GetElementName(Type clazz)
+        => clazz.GetTypeInfo()
+            .GetCustomAttributes<ForElementAttribute>()
+            .Select(a => a.QName)
+            .FirstOrDefault();
+
+    /// <summary>
+    /// Checks the constructor parameters attributed with <see
+    /// cref="ForAttributeAttribute"/>, ensuring there are no duplicate
+    /// attribute names, that types are valid, and that <see
+    /// cref="ForAttributeAttribute"/> is not combined with other mutually
+    /// exclusive attributes. Logs errors for any violations found.
+    /// </summary>
+    /// <param name="logger">
+    /// The <see cref="Journal"/> instance used to record validation errors.
+    /// </param>
+    /// <param name="attributeParameterList">
+    /// The list of <see cref="AttributeParameter"/> objects representing
+    /// constructor parameters attributed with <see
+    /// cref="ForAttributeAttribute"/>.
+    /// </param>
+    private static void CheckAttributes(
+        Journal logger,
+        IReadOnlyList<AttributeParameter> attributeParameterList)
     {
-        if (d.TryGetValue(key, out var value))
+        /*
+            Checks the duplication with the attribute name of the
+            [ForAttribute].
+        */
+        var group = attributeParameterList.GroupBy(
+                x => x.Name,
+                x => x.Info.Name ?? "(no name)")
+            .Where(p => p.Count() is not 1)
+            .ToList();
+        foreach (var i in group)
         {
-            return value;
-        }
-        var newValue = toValue(key);
-        d[key] = newValue;
-        return newValue;
-    }
-
-    /// <summary>
-    /// Add the key and value that each of the specified elements provides to
-    /// the specified multi-value map.
-    /// </summary>
-    /// <typeparam name="T">
-    /// The type of each of <paramref name="all"/> that can provide the key and
-    /// value.
-    /// </typeparam>
-    /// <typeparam name="K">
-    /// The type of key.
-    /// </typeparam>
-    /// <typeparam name="V">
-    /// The type of value.
-    /// </typeparam>
-    /// <param name="map">
-    /// The map of the key to the associated <see cref="List{T}"/> containing
-    /// the value.
-    /// </param>
-    /// <param name="all">
-    /// The collection containing the elements. Each element can provides the
-    /// key and value with the functions <paramref name="getKey"/> and
-    /// <paramref name="getValue"/>.
-    /// </param>
-    /// <param name="getKey">
-    /// The function that returns the key of the parameter.
-    /// </param>
-    /// <param name="getValue">
-    /// The function that returns the value of the parameter.
-    /// </param>
-    private static void Add<T, K, V>(
-        Dictionary<K, List<V>> map,
-        IEnumerable<T> all,
-        Func<T, K?> getKey,
-        Func<T, V> getValue)
-        where K : notnull
-    {
-        foreach (var m in all)
-        {
-            var key = getKey(m) ?? throw new NullReferenceException(
-                $"{nameof(T)} doesn't provide the key");
-            ComputeIfAbsent(map, key, k => [])
-                .Add(getValue(m));
-        }
-    }
-
-    /// <summary>
-    /// Returns the schema object.
-    /// </summary>
-    /// <param name="field">
-    /// The field annotated with [ElementSchema].
-    /// </param>
-    /// <returns>
-    /// The schema object.
-    /// </returns>
-    private static Schema GetSchema(FieldInfo field)
-        => field.GetValue(null) as Schema ?? Schema.Empty;
-
-    /// <summary>
-    /// Returns all the <see cref="SchemaType"/> objects that the specified
-    /// field contains.
-    /// </summary>
-    /// <param name="all">
-    /// The list of the field annotated with <see
-    /// cref="ElementSchemaAttribute"/>. The size of the list must be either 0
-    /// or 1.
-    /// </param>
-    /// <returns>
-    /// All the <see cref="SchemaType"/> objects.
-    /// </returns>
-    private static IEnumerable<SchemaType> GetSchemaTypes(
-        IEnumerable<FieldInfo> all)
-    {
-        return all.Take(1)
-            .SelectMany(i => GetSchema(i).Types());
-    }
-
-    private static bool RetutnsVoidAndHasSingleParameter(
-            MethodInfo m, Func<Type, bool> isValidType)
-    {
-        var parameters = m.GetParameters();
-        return m.ReturnType.Equals(Types.Void)
-            && parameters.Length == 1
-            && isValidType(parameters[0].ParameterType);
-    }
-
-    /// <summary>
-    /// Returns the static fields of the <c>elementClass</c> marked with the
-    /// specified annotation.
-    /// </summary>
-    /// <typeparam name="T">
-    /// The annotation class.
-    /// </typeparam>
-    /// <returns>
-    /// The static fields marked with the specified annotation.
-    /// </returns>
-    private IEnumerable<FieldInfo> GetStaticFields<T>()
-        where T : Attribute
-        => Classes.GetStaticFields<T>(Class);
-
-    /// <summary>
-    /// Returns the instance fields of the <c>elementClass</c> marked with the
-    /// specified annotation.
-    /// </summary>
-    /// <typeparam name="T">
-    /// The annotation class.
-    /// </typeparam>
-    /// <returns>
-    /// The instance fields marked with the specified annotation.
-    /// </returns>
-    private IEnumerable<FieldInfo> GetInstanceFields<T>()
-        where T : Attribute
-        => Classes.GetInstanceFields<T>(Class);
-
-    /// <summary>
-    /// Returns the static methods of the <c>elementClass</c> marked with the
-    /// specified annotation.
-    /// </summary>
-    /// <typeparam name="T">
-    /// The annotation class.
-    /// </typeparam>
-    /// <returns>
-    /// The static methods marked with the specified annotation.
-    /// </returns>
-    private IEnumerable<MethodInfo> GetStaticMethods<T>()
-        where T : Attribute
-        => Classes.GetStaticMethods<T>(Class);
-
-    /// <summary>
-    /// Returns the instance methods of the <c>elementClass</c> marked with the
-    /// specified annotation.
-    /// </summary>
-    /// <typeparam name="T">
-    /// The annotation class.
-    /// </typeparam>
-    /// <returns>
-    /// The instance methods marked with the specified annotation.
-    /// </returns>
-    private IEnumerable<MethodInfo> GetInstanceMethods<T>()
-        where T : Attribute
-        => Classes.GetInstanceMethods<T>(Class);
-
-    /// <summary>
-    /// Validates the fields/methods marked with the annotation <see
-    /// cref="ForAttributeAttribute"/>/<see cref="FromAttributeAttribute"/>.
-    /// </summary>
-    private void CheckAttributes()
-    {
-        // Checks [For] for static fields.
-        Elements.IfNotEmpty(
-            GetStaticFields<ForAttributeAttribute>(),
-            t => Warn("ForAttribute_is_ignored", Names.OfFields(t)));
-
-        // Checks [From] for static methods.
-        Elements.IfNotEmpty(
-            GetStaticMethods<FromAttributeAttribute>(),
-            t => Warn("FromAttribute_is_ignored", Names.OfMethods(t)));
-
-        // Checks the duplication with the attribute name of the
-        // [For] and [From].
-        var fields = GetInstanceFields<ForAttributeAttribute>();
-        var fromMethods = GetInstanceMethods<FromAttributeAttribute>();
-
-        static XmlQualifiedName? GetForAttributeValue(FieldInfo f)
-            => f.GetCustomAttribute<ForAttributeAttribute>()?.QName;
-
-        static XmlQualifiedName? GetFromAttributeValue(MethodInfo m)
-            => m.GetCustomAttribute<FromAttributeAttribute>()?.QName;
-
-        var map = new Dictionary<XmlQualifiedName, List<string>>();
-        Add(map, fields, GetForAttributeValue, f => f.Name);
-        Add(map, fromMethods, GetFromAttributeValue, Names.GetMethodName);
-        foreach (var pair in map)
-        {
-            var list = pair.Value;
-            if (list.Count == 1)
-            {
-                continue;
-            }
-            var names = Names.SortAndJoin(list);
-            Error("duplicated_attribute_name", pair.Key, names);
+            var names = Names.SortAndJoin(i);
+            logger.Error("duplicated_attribute_name", i.Key, names);
         }
 
-        // Checks that the type of the field annotated with [ForAttribute]
-        // is not string.
+        /*
+            Checks that the type of the parameter annotated with [ForAttribute]
+            is either string or BindResult<string>.
+        */
         static bool IsValidType(Type t)
             => StringSugarcoaters.IsValid(t);
 
-        static bool IsInvalidForAttributeField(FieldInfo f)
-            => !IsValidType(f.FieldType);
+        static bool IsInvalidForAttributeParameter(ParameterInfo p)
+            => !IsValidType(p.ParameterType);
 
         Elements.IfNotEmpty(
-            fields.Where(IsInvalidForAttributeField),
-            t => Error("type_mismatch_ForAttribute", Names.OfFields(t)));
+            attributeParameterList.Select(x => x.Info)
+                .Where(IsInvalidForAttributeParameter),
+            t => logger.Error(
+                "type_mismatch_ForAttribute", Names.OfParameters(t)));
 
-        // Checks that the signature of the method annotated with
-        // [FromAttribute] is not "void(string)".
-        static bool IsInvalidFromAttributeMethod(MethodInfo m)
-            => !RetutnsVoidAndHasSingleParameter(m, IsValidType);
-
+        /*
+            Checks that the parameter annotated with [ForAttribute] is not
+            annotated with other attributes: [Required], [Optional],
+            [Multiple], [ForText].
+        */
         Elements.IfNotEmpty(
-            fromMethods.Where(IsInvalidFromAttributeMethod),
-            t => Error("type_mismatch_FromAttribute", Names.OfMethods(t)));
+            attributeParameterList.Select(x => x.Info)
+                .Where(p =>
+                {
+                    var typeSet = new HashSet<Type>(
+                        p.GetCustomAttributes()
+                            .Select(a => a.GetType()));
+                    typeSet.IntersectWith(ForAttributeExclusiveList);
+                    return typeSet.Count > 0;
+                }),
+            t => logger.Error(
+                """
+                parameter_must_not_be_annotated_with_both_ForAttribute_and_another
+                """,
+                Names.OfParameters(t)));
     }
 
     /// <summary>
-    /// Validates the components of the <c>elementClass</c>.
+    /// Validates the constructor parameters that represent child elements.
+    /// Performs several checks to ensure correct usage of Oxbind child-related
+    /// attributes, such as [ForText], [Required], [Optional], and [Multiple].
+    /// Logs errors for invalid combinations or missing annotations.
     /// </summary>
-    private IEnumerable<Type> CheckChildren()
-    {
-        // Checks [ElementSchema] for instance fields.
-        Elements.IfNotEmpty(
-            GetInstanceFields<ElementSchemaAttribute>(),
-            t => Warn("ElementSchema_is_ignored", Names.OfFields(t)));
-
-        // Checks [ForText] for static fields.
-        Elements.IfNotEmpty(
-            GetStaticFields<ForTextAttribute>(),
-            t => Warn("ForText_is_ignored", Names.OfFields(t)));
-
-        // Checks [FromText] for static methods.
-        Elements.IfNotEmpty(
-            GetStaticMethods<FromTextAttribute>(),
-            t => Warn("FromText_is_ignored", Names.OfMethods(t)));
-
-        // Checks [ForChild] for static fields.
-        Elements.IfNotEmpty(
-            GetStaticFields<ForChildAttribute>(),
-            t => Warn("ForChild_is_ignored", Names.OfFields(t)));
-
-        // Checks [FromChild] for static methods.
-        Elements.IfNotEmpty(
-            GetStaticMethods<FromChildAttribute>(),
-            t => Warn("FromChild_is_ignored", Names.OfMethods(t)));
-
-        var elementSchemas = GetStaticFields<ElementSchemaAttribute>();
-        var forTexts = GetInstanceFields<ForTextAttribute>();
-        var fromTexts = GetInstanceMethods<FromTextAttribute>();
-
-        // Checks [ElementSchema] is combined with [ForText], [FromText].
-        if (elementSchemas.Any() && forTexts.Any())
-        {
-            Error(
-                "both_ForText_and_ElementSchema",
-                Names.OfFields(forTexts),
-                Names.OfFields(elementSchemas));
-        }
-        if (elementSchemas.Any() && fromTexts.Any())
-        {
-            Error(
-                "both_FromText_and_ElementSchema",
-                Names.OfMethods(fromTexts),
-                Names.OfFields(elementSchemas));
-        }
-        if (forTexts.Any() && fromTexts.Any())
-        {
-            Error(
-                "both_ForText_and_FromText",
-                Names.OfFields(forTexts),
-                Names.OfMethods(fromTexts));
-        }
-        CheckForText(forTexts);
-        CheckFromText(fromTexts);
-        return CheckForElementSchema(elementSchemas);
-    }
-
-    /// <summary>
-    /// Validates the <see cref="Schema"/> object marked with the annotation
-    /// <see cref="ElementSchemaAttribute"/>.
-    /// </summary>
-    /// <param name="fields">
-    /// The static fields marked with the annotation <see
-    /// cref="ElementSchemaAttribute"/>.
+    /// <param name="logger">
+    /// The <see cref="Journal"/> instance used to record validation errors.
     /// </param>
-    private IEnumerable<Type> CheckForElementSchema(
-        IEnumerable<FieldInfo> fields)
+    /// <param name="childParameterList">
+    /// The list of constructor parameters to validate as child elements.
+    /// </param>
+    /// <returns>
+    /// The <see cref="Dependency"/> object representing the child element
+    /// dependencies.
+    /// </returns>
+    private static Dependency CheckChildren(
+        Journal logger,
+        IReadOnlyList<ParameterInfo> childParameterList)
     {
-        // Checks two or more [ElementSchema]s.
-        if (fields.Count() > 1)
+        var forTexts = childParameterList.Where(
+                p => p.GetCustomAttribute<ForTextAttribute>() is { })
+            .ToList();
+        var forChildren = childParameterList.Where(
+                p => p.GetCustomAttributes()
+                    .Select(a => a.GetType())
+                    .Intersect(ChildAttributeList)
+                    .Any())
+            .ToList();
+
+        /*
+            Checks that constructor parameters annotated with [ForAttribute]
+            appear consecutively at the beginning.
+
+            For example: Foo([Attribute] string bar, [Required] Baz baz,
+                [Attribute] string qux)
+                {...}
+        */
+        var attributeList = childParameterList.Where(
+                p => p.GetCustomAttribute<ForAttributeAttribute>() is { })
+            .ToList();
+        if (attributeList.Count is not 0)
         {
-            Error("duplicated_ElementSchema", Names.OfFields(fields));
+            logger.Error(
+                """
+                parameters_with_ForAttribute_must_be_listed_consecutively_at_the_beginning
+                """,
+                Names.OfParameters(attributeList));
         }
 
-        var schemaTypes = GetSchemaTypes(fields);
-        var placeholders = schemaTypes.Select(t => t.PlaceholderType);
-        var schemaClasses = schemaTypes.Select(t => t.ElementType);
-        var forChildren = GetInstanceFields<ForChildAttribute>();
-        var fromChildren = GetInstanceMethods<FromChildAttribute>();
+        /*
+            Checks if a constructor parameter is annotated with both [ForText]
+            and one of the child element attributes: [Required], [Optional],
+            [Multiple].
 
-        // Checks no [ElementSchema]s and any [ForChild]/[FromChild],
-        // which probably means missing [ElementSchema].
-        if (!fields.Any()
-            && (forChildren.Any() || fromChildren.Any()))
+            For example: Foo([Required][ForText] Bar bar)
+                {...}
+        */
+        var intersection = forTexts.Intersect(forChildren)
+            .ToList();
+        if (intersection.Count is not 0)
         {
-            var all = new[]
-            {
-                Names.OfFields(forChildren),
-                Names.OfMethods(fromChildren),
-            }.Where(s => s is not "");
-
-            Warn("missing_ElementSchema", string.Join(", ", all));
+            logger.Error(
+                """
+                parameter_must_not_be_annotated_with_both_ForText_and_another
+                """,
+                Names.OfParameters(intersection));
         }
 
-        static bool IsType<T>(FieldInfo f)
-            => typeof(T).GetTypeInfo()
-                .IsAssignableFrom(f.FieldType.GetTypeInfo());
+        /*
+            Checks for constructor parameters (after attribute parameters) that
+            are not annotated with any child-binding attribute ([ForText],
+            [Required], [Optional], [Multiple]).
 
-        static bool IsValidFromChildMethod(MethodInfo m)
-            => m.ReturnType.Equals(Types.Void)
-                && m.GetParameters().Length == 1;
-
-        static Type GetFirstParameterType(MethodInfo m)
-            => m.GetParameters()[0].ParameterType;
-
-        // Checks the type of the field annotated with [ElementSchema] is not
-        // Schema class.
-        Elements.IfNotEmpty(
-            fields.Where(s => !IsType<Schema>(s)),
-            t => Error("type_mismatch_ElementSchema", Names.OfFields(t)));
-
-        // Checks each type that the Schema object contains is not the class
-        // annotated with [ForElement].
-        Elements.IfNotEmpty(
-            schemaClasses.Where(t => !IsElementClass(t)),
-            t => Error(
-                "not_annotated_with_ForElement", Names.OfClasses(t)));
-
-        // Checks the duplication with element names.
-        static XmlQualifiedName? ToElementName(Type type)
-            => type.GetTypeInfo()
-                .GetCustomAttribute<ForElementAttribute>()
-                ?.QName;
-        var nameMap = new Dictionary<XmlQualifiedName, List<string>>();
-        var validSchemaClasses
-            = schemaClasses.Where(IsElementClass);
-        Add(nameMap, validSchemaClasses, ToElementName, t => t.Name);
-        foreach (var p in nameMap)
+            For example: Foo(Bar bar)
+                {...}
+        */
+        var noAnnotationList = childParameterList.Except(forChildren)
+            .Except(forTexts)
+            .ToList();
+        if (noAnnotationList.Count is not 0)
         {
-            var key = p.Key;
-            var list = p.Value;
-            if (list.Count == 1)
-            {
-                continue;
-            }
-            Error(
-                "duplicated_element_name",
-                key,
-                Names.SortAndJoin(list));
+            logger.Error(
+                """
+                parameter_must_be_annotated_with_attributes_for_child_elements
+                """,
+                Names.OfParameters(intersection));
         }
 
-        // Checks the method annotated with [FromChild] is invalid.
-        Elements.IfNotEmpty(
-            fromChildren.Where(m => !IsValidFromChildMethod(m)),
-            t => Error("type_mismatch_FromChild", Names.OfMethods(t)));
+        /*
+            Checks if [ForText] is used in the same constructor as child
+            element attributes ([Required], [Optional], [Multiple]).
 
-        // Checks the duplication with the child elements.
-        static Type FieldType(FieldInfo f)
-            => Types.PlaceholderType(f.FieldType);
-        static Type MethodType(MethodInfo m)
-            => Types.PlaceholderType(GetFirstParameterType(m));
-
-        var validFromChildren
-            = fromChildren.Where(IsValidFromChildMethod);
-        var map = new Dictionary<Type, List<string>>();
-        Add(map, forChildren, FieldType, f => f.Name);
-        Add(map, validFromChildren, MethodType, Names.GetMethodName);
-        foreach (var p in map)
+            For example: Foo([Required] Bar bar, [ForText] Baz baz)
+                {...}
+        */
+        if (forChildren.Count is not 0
+            && forTexts.Count is not 0)
         {
-            var key = p.Key;
-            var list = p.Value;
-            if (list.Count == 1)
-            {
-                continue;
-            }
-            Error(
-                "duplicated_child_class",
-                key.Name,
-                Names.SortAndJoin(list));
+            logger.Error(
+                """
+                parameters_must_not_be_mixed
+                """,
+                Names.OfParameters(forTexts),
+                Names.OfParameters(forChildren));
         }
-
-        // Checks the classes in the Schema are not handled.
-        var handledClasses = map.Keys;
-        Elements.IfNotEmpty(
-            Elements.DifferenceOf(placeholders, handledClasses),
-            p => Error("not_handled_class", Names.OfClasses(p)));
-
-        // Checks the field/method(s) that are never used.
-        if (fields.Any())
-        {
-            foreach (var c
-                in Elements.DifferenceOf(handledClasses, placeholders))
-            {
-                Warn(
-                    "ForChild_FromChild_is_unused",
-                    Names.Of(c),
-                    Names.SortAndJoin(map[c]));
-            }
-        }
-
-        return schemaClasses;
+        CheckForText(logger, forTexts);
+        var childParameters = CheckForChildren(logger, forChildren);
+        return forTexts.Count is not 0
+            ? Dependency.InnerText
+            : Dependency.Of(childParameters);
     }
 
     /// <summary>
-    /// Validates the fields marked with the annotation <see
-    /// cref="ForTextAttribute"/>s.
+    /// Validates the constructor parameters marked with the annotation <see
+    /// cref="RequiredAttribute"/>, <see cref="OptionalAttribute"/>, <see
+    /// cref="MultipleAttribute"/>.
     /// </summary>
-    /// <param name="fields">
-    /// The instance fields marked with the annotation <see
+    /// <param name="logger">
+    /// The <see cref="Journal"/> instance used to record validation errors.
+    /// </param>
+    /// <param name="parameterList">
+    /// The constructor parameters marked with the annotation <see
+    /// cref="RequiredAttribute"/>, <see cref="OptionalAttribute"/>, <see
+    /// cref="MultipleAttribute"/>.
+    /// </param>
+    /// <returns>
+    /// An enumerable collection of <see cref="ChildParameter"/> objects that
+    /// represent the child element dependencies.
+    /// </returns>
+    private static IEnumerable<ChildParameter> CheckForChildren(
+        Journal logger,
+        IReadOnlyList<ParameterInfo> parameterList)
+    {
+        Elements.IfNotEmpty(
+            parameterList.Where(
+                p => p.GetCustomAttributes()
+                    .Select(a => a.GetType())
+                    .Intersect(ChildAttributeList)
+                    .Count() > 1),
+            t => logger.Error(
+                """
+                parameter_for_child_elements_must_be_mutually_exclusive
+                """,
+                Names.OfParameters(t)));
+
+        /*
+            Checks that the parameter type is not IEnumerable<T> when the
+            parameter is marked with [Multiple], or vice versa.
+        */
+        static bool IsIEnumerableT(ParameterInfo p)
+            => Types.IsRawType(p.ParameterType, Types.IEnumerableT);
+
+        var requiredOrNotGroup = parameterList.GroupBy(
+            p => p.GetCustomAttribute<MultipleAttribute>() is {});
+        foreach (var g in requiredOrNotGroup)
+        {
+            var (predicate, messageKey) = g.Key
+                ? ((Func<ParameterInfo, bool>)(p => !IsIEnumerableT(p)),
+                    "parameter_type_must_be_IEnumerableT")
+                : (IsIEnumerableT,
+                    "parameter_type_must_not_be_IEnumerableT");
+            Elements.IfNotEmpty(
+                g.Where(predicate),
+                t => logger.Error(messageKey, Names.OfParameters(t)));
+        }
+
+        /*
+            Checks that each parameter type is annotated with
+            [ForElement].
+        */
+        var dependencies = parameterList.Select(ChildParameter.Of)
+            .ToList();
+        Elements.IfNotEmpty(
+            dependencies.Where(p => !IsElementClass(p.UnitType))
+                .Select(p => p.Info),
+            t => logger.Error(
+                """
+                parameter_type_must_be_annotated_with_ForElement
+                """,
+                Names.OfParameters(t)));
+
+        /*
+            Checks additional restrictions on the order for parameters with
+            the same element name.
+        */
+        static bool OptionalPredicate(SchemaType current, SchemaType next)
+            => current is OptionalSchemaType
+                && (next is RequiredSchemaType or MultipleSchemaType);
+
+        static bool MultiplePredicate(
+                SchemaType current,
+                [Unused] SchemaType ignored)
+            => current is MultipleSchemaType;
+
+        var count = dependencies.Count;
+        if (count > 1)
+        {
+            var currentList = dependencies.Take(count - 1);
+            var nextList = dependencies.Skip(1);
+            var pairList = currentList.Zip(
+                nextList, (c, n) => new ChildParameterPair(c, n));
+            var foo = new ChildParameterOrder(pairList, logger);
+            foo.CheckSameElementName(
+                OptionalPredicate,
+                """
+                optional_parameter_followed_by_the_one_that_has_the_same_element_name
+                """);
+            foo.CheckSameElementName(
+                MultiplePredicate,
+                """
+                multiple_parameter_followed_by_the_one_that_has_the_same_element_name
+                """);
+        }
+
+        return dependencies;
+    }
+
+    /// <summary>
+    /// Validates the constructor parameters marked with the <see
+    /// cref="ForTextAttribute"/> annotation.
+    /// </summary>
+    /// <param name="logger">
+    /// The <see cref="Journal"/> instance used to record validation errors.
+    /// </param>
+    /// <param name="parameterList">
+    /// The constructor parameters marked with the annotation <see
     /// cref="ForTextAttribute"/>.
     /// </param>
-    private void CheckForText(IEnumerable<FieldInfo> fields)
+    private static void CheckForText(
+        Journal logger,
+        IReadOnlyList<ParameterInfo> parameterList)
     {
-        // Checks two or more [ForText]s.
-        if (fields.Count() > 1)
+        /*
+            Checks if there are two or more parameters annotated with
+            [ForText].
+        */
+        if (parameterList.Count > 1)
         {
-            Error("duplicated_ForText", Names.OfFields(fields));
+            logger.Error(
+                "duplicated_ForText", Names.OfParameters(parameterList));
         }
 
-        // Checks that the type of the field annotated with [ForText] is not
-        // string.
+        /*
+            Checks that the type of the parameter annotated with [ForText] is
+            either string or BindResult<string>.
+        */
         Elements.IfNotEmpty(
-            fields.Where(f => !StringSugarcoaters.IsValid(f.FieldType)),
-            t => Error("type_mismatch_ForText", Names.OfFields(t)));
+            parameterList.Where(
+                p => !StringSugarcoaters.IsValid(p.ParameterType)),
+            t => logger.Error("type_mismatch_ForText", Names.OfParameters(t)));
     }
 
     /// <summary>
-    /// Validates the methods marked with the annotation <see
-    /// cref="FromTextAttribute"/>s.
+    /// Represents the specification of a class constructor, including the
+    /// constructor itself, the parameters annotated with <see
+    /// cref="ForAttributeAttribute"/>, and the child element dependencies.
     /// </summary>
-    /// <param name="methods">
-    /// The instance methods marked with the annotation <see
-    /// cref="FromTextAttribute"/>.
+    /// <param name="Constructor">
+    /// The <see cref="ConstructorInfo"/> of the constructor that has been
+    /// validated for correct usage, or <c>null</c> if no valid constructor
+    /// was found.
     /// </param>
-    private void CheckFromText(IEnumerable<MethodInfo> methods)
+    /// <param name="AttributeParameters">
+    /// The collection of <see cref="AttributeParameter"/> objects representing
+    /// the constructor parameters annotated with <see
+    /// cref="ForAttributeAttribute"/>.
+    /// </param>
+    /// <param name="ChildDependency">
+    /// The <see cref="Dependency"/> object representing the child element
+    /// dependencies of the validated class.
+    /// </param>
+    private record struct BuildSpec(
+        ConstructorInfo? Constructor,
+        IEnumerable<AttributeParameter> AttributeParameters,
+        Dependency ChildDependency);
+
+    /// <summary>
+    /// Represents an XML element name and a string representation of the
+    /// parameter names that are associated with the element name.
+    /// </summary>
+    /// <param name="ElementName">
+    /// The XML element name that is shared by the child parameters.
+    /// </param>
+    /// <param name="ParameterNames">
+    /// A comma-separated string of the names of parameters that share the same
+    /// XML element name.
+    /// </param>
+    private record struct SameElementNamePair(
+        XmlQualifiedName ElementName,
+        string ParameterNames);
+
+    /// <summary>
+    /// Represents a pair of <see cref="ChildParameter"/> objects, where the
+    /// first one is the current child parameter and the second one is the next
+    /// child parameter in the sequence.
+    /// </summary>
+    /// <param name="Current">
+    /// The current <see cref="ChildParameter"/> in the sequence.
+    /// </param>
+    /// <param name="Next">
+    /// The next <see cref="ChildParameter"/> in the sequence.
+    /// </param>
+    private record struct ChildParameterPair(
+        ChildParameter Current,
+        ChildParameter Next);
+
+    /// <summary>
+    /// Represents the order of child parameters with the same element name,
+    /// providing methods to check the order based on specified predicates and
+    /// log errors if the order is invalid.
+    /// </summary>
+    /// <remarks>
+    /// This class encapsulates the logic for checking the order of child
+    /// parameters with the same element name and logging errors when the order
+    /// does not meet the specified criteria.
+    /// </remarks>
+    /// <param name="pairs">
+    /// An enumerable collection of <see cref="ChildParameterPair"/> objects
+    /// representing pairs of child parameters to check.
+    /// </param>
+    /// <param name="logger">
+    /// The <see cref="Logger"/> instance used to log errors when the order of
+    /// child parameters is invalid.
+    /// </param>
+    private class ChildParameterOrder(
+        IEnumerable<ChildParameterPair> pairs, Journal logger)
     {
-        // Checks two or more [FromText]s.
-        if (methods.Count() > 1)
+        private List<ChildParameterPair> PairList { get; } = [.. pairs];
+
+        private Journal Logger { get; } = logger;
+
+        /// <summary>
+        /// Checks the order of child parameters with the same element name
+        /// and logs errors if the specified predicate is true for any
+        /// consecutive pair.
+        /// </summary>
+        /// <param name="predicate">
+        /// A function that takes the <see cref="SchemaType"/> of the current
+        /// and next <see cref="ChildParameter"/> and returns <c>true</c> if
+        /// the order is invalid.
+        /// </param>
+        /// <param name="resourceKey">
+        /// The resource key for the error message to log when an invalid
+        /// order is detected.
+        /// </param>
+        public void CheckSameElementName(
+            Func<SchemaType, SchemaType, bool> predicate,
+            string resourceKey)
         {
-            Error("duplicated_FromText", Names.OfMethods(methods));
+            IEnumerable<SameElementNamePair> ToPairs(ChildParameterPair p)
+            {
+                var (current, next) = p;
+                var schemaType = current.SchemaType;
+                var elementName = current.ElementName;
+                var nextSchemaType = next.SchemaType;
+                return (predicate(schemaType, nextSchemaType)
+                        && elementName == next.ElementName
+                        && !ReferenceEquals(
+                            elementName, XmlQualifiedName.Empty))
+                    ? [ToSameElementNamePair(elementName, current, next)]
+                    : [];
+            }
+
+            void WriteErrors(IEnumerable<SameElementNamePair> all)
+            {
+                foreach (var (elementName, parameterNames) in all)
+                {
+                    Logger.Error(resourceKey, elementName, parameterNames);
+                }
+            }
+
+            Elements.IfNotEmpty(PairList.SelectMany(ToPairs), WriteErrors);
         }
 
-        // Checks that the method annotated with [FromText] does not return
-        // void and does not take a single parameter whose type is string.
-        static bool IsInvalid(MethodInfo m)
-            => !RetutnsVoidAndHasSingleParameter(
-                m, StringSugarcoaters.IsValid);
-        Elements.IfNotEmpty(
-            methods.Where(IsInvalid),
-            t => Error("type_mismatch_FromText", Names.OfMethods(t)));
+        private static SameElementNamePair ToSameElementNamePair(
+            XmlQualifiedName elementName,
+            ChildParameter current,
+            ChildParameter next)
+        {
+            var parameterNames = Names.OfParameters(
+                new[] { current, next }.Select(i => i.Info));
+            return new(elementName, parameterNames);
+        }
     }
 }

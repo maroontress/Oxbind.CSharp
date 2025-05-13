@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 /// <summary>
-/// Thrown when a circular dependency has occurred in the DAG.
+/// Thrown when a circular dependency is detected in a directed acyclic graph
+/// (DAG).
 /// </summary>
 /// <see cref="DagChecker{T}"/>
 public sealed class CircularDependencyException
@@ -50,16 +51,20 @@ public sealed class CircularDependencyException
 
     /// <summary>
     /// Creates a new instance of the <see cref="CircularDependencyException"/>
-    /// class, with the list representing a circular dependency.
+    /// class, with a message detailing the circular dependency based on the
+    /// provided list of nodes.
     /// </summary>
     /// <typeparam name="T">
     /// The type of the node.
     /// </typeparam>
     /// <param name="list">
-    /// The list of nodes. The first node is equals to the last node. The
-    /// <i>k</i>th node depends (<i>k</i> + 1)th node.
+    /// A list of nodes representing the cycle. The first node must equal the
+    /// last node, and the <c>k</c>-th node depends on the (<c>k</c> + 1)-th
+    /// node.
     /// </param>
-    /// <returns>The new instance.</returns>
+    /// <returns>
+    /// The new instance.
+    /// </returns>
     public static CircularDependencyException Of<T>(IEnumerable<T> list)
         where T : notnull
     {

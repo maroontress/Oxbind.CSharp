@@ -6,10 +6,10 @@ using System.Xml;
 /// The default implementation of <see cref="IXmlLineInfo"/> interface.
 /// </summary>
 /// <param name="lineNumber">
-/// The line number of the XML document.
+/// The 1-based line number in the XML document.
 /// </param>
 /// <param name="linePosition">
-/// The line position of the XML document.
+/// The 1-based line position (column) in the XML document.
 /// </param>
 /// <param name="hasLineInfo">
 /// Indicates whether the line information is available.

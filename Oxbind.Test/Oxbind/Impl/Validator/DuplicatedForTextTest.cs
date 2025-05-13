@@ -10,20 +10,18 @@ public sealed class DuplicatedForTextTest
     [TestMethod]
     public void RootTest()
     {
-        var v = new Validator(typeof(Root));
+        var logger = new Journal("Root");
+        var v = new Validator(typeof(Root), logger);
+        Assert.IsFalse(v.IsValid);
         Assert.AreEqual(
-            "Root: Error: must not have two or more [ForText]s: "
-            + "<Text>k__BackingField, <Value>k__BackingField",
-            string.Join(Environment.NewLine, v.GetMessages()));
+            """
+            Root: Error: A constructor must not have two or more parameters attributed with [ForText]: Extra, InnerText.
+            """,
+            string.Join(Environment.NewLine, logger.GetMessages()));
     }
 
     [ForElement("root")]
-    public sealed class Root
-    {
-        [field: ForText]
-        private string? Text { get; set; }
-
-        [field: ForText]
-        private string? Value { get; set; }
-    }
+    public record class Root(
+        [ForText] string InnerText,
+        [ForText] string Extra);
 }

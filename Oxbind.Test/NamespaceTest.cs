@@ -16,44 +16,33 @@ public sealed class NamespaceTest
     [TestMethod]
     public void DefaultNamespace()
     {
-        var xml = ""
-            + $"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
-            + $"<root xmlns=\"{AlphaNamespace}\"\r\n"
-            + $"      xmlns:b=\"{BetaNamespace}\">\r\n"
-            + $"  <first b:value=\"10\" value=\"30\">20</first>\r\n"
-            + $"</root>\r\n";
+        var xml = $"""
+            <?xml version="1.0" encoding="UTF-8"?>
+            <root xmlns="{AlphaNamespace}" xmlns:b="{BetaNamespace}">
+                <first b:value="10" value="20">42</first>
+            </root>
+            """;
         var factory = new OxbinderFactory();
         var binder = factory.Of<Root>();
         var reader = new StringReader(xml);
         var root = binder.NewInstance(reader);
 
-        _ = root.First ?? throw new NullReferenceException();
-        Assert.AreEqual("20", root.First.Text);
-        Assert.AreEqual("10", root.First.BetaValue);
-        Assert.AreEqual("30", root.First.Value);
+        var firstChild = root.FirstChild;
+        _ = firstChild ?? throw new NullReferenceException();
+        Assert.IsNotNull(firstChild.AlphaValue);
+        Assert.IsNotNull(firstChild.BetaValue);
+        Assert.AreEqual("42", firstChild.InnerText);
+        Assert.AreEqual("10", firstChild.BetaValue);
+        Assert.AreEqual("20", firstChild.AlphaValue);
     }
 
     [ForElement("root", AlphaNamespace)]
-    public sealed class Root
-    {
-        [ElementSchema]
-        private static readonly Schema TheSchema = Schema.Of(
-                Optional.Of<First>());
-
-        [field: ForChild]
-        public First? First { get; }
-    }
+    public record class Root(
+        [Required] First FirstChild);
 
     [ForElement("first", AlphaNamespace)]
-    public sealed class First
-    {
-        [field: ForAttribute("value", BetaNamespace)]
-        public string? BetaValue { get; }
-
-        [field: ForAttribute("value")]
-        public string? Value { get; }
-
-        [field: ForText]
-        public string? Text { get; }
-    }
+    public record class First(
+        [ForAttribute("value", BetaNamespace)] string? BetaValue,
+        [ForAttribute("value")] string? AlphaValue,
+        [ForText] string InnerText);
 }

@@ -5,14 +5,23 @@ using System.Xml;
 using Maroontress.Oxbind.Impl;
 
 /// <summary>
-/// Indicates that an error has occurred while creating a new instance with the
-/// XML reader.
+/// Indicates that an error occurred during XML deserialization, binding, or
+/// configuration validation.
 /// </summary>
+/// <remarks>
+/// This exception is thrown when Oxbind fails to bind XML data to a target
+/// class, for example, when the XML structure does not match the expected
+/// schema defined by the constructor parameters of the target class.
+/// </remarks>
 public sealed class BindException : Exception
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="BindException"/> class.
     /// </summary>
+    /// <remarks>
+    /// The <see cref="LineInfo"/> property is initialized to represent no line
+    /// information.
+    /// </remarks>
     public BindException()
     {
         LineInfo = DefaultXmlLineInfo.NoLineInfo;
@@ -22,6 +31,10 @@ public sealed class BindException : Exception
     /// Initializes a new instance of the <see cref="BindException"/> class,
     /// with the specified detail message.
     /// </summary>
+    /// <remarks>
+    /// The <see cref="LineInfo"/> property is initialized to represent no line
+    /// information.
+    /// </remarks>
     /// <param name="message">
     /// The detail message.
     /// </param>
@@ -35,6 +48,10 @@ public sealed class BindException : Exception
     /// Initializes a new instance of the <see cref="BindException"/> class,
     /// with the specified detail message and cause.
     /// </summary>
+    /// <remarks>
+    /// The <see cref="LineInfo"/> property is initialized to represent no line
+    /// information.
+    /// </remarks>
     /// <param name="message">
     /// The detail message.
     /// </param>
@@ -92,11 +109,11 @@ public sealed class BindException : Exception
     /// Gets the message with the location information.
     /// </summary>
     /// <remarks>
-    /// This method returns the string with the form
-    /// <c>"</c>Line<c>:</c>Column<c>: </c>Message<c>"</c> if the <see
-    /// cref="LineInfo"/> has the line information (i.e. <see
-    /// cref="IXmlLineInfo.HasLineInfo"/> returns <c>true</c>), otherwise
-    /// returns the same as <see cref="Exception.Message"/>.
+    /// This method returns a string in the format
+    /// <c>"</c>Line<c>:</c>Column<c>: </c>Message<c>"</c> if <see
+    /// cref="LineInfo"/> contains line information (i.e., <see
+    /// cref="IXmlLineInfo.HasLineInfo()"/> returns true), otherwise it returns
+    /// the same as <see cref="Exception.Message"/>.
     /// </remarks>
     /// <returns>
     /// The string representation.

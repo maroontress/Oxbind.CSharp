@@ -1,7 +1,16 @@
 # Oxbind
 
-Oxbind is a .NET library that deserializes an XML document. It depends on .NET
-Standard 1.3.
+Oxbind is a .NET library for deserializing XML documents to C# objects using
+constructor injection and a declarative attribute-based mapping. It targets
+.NET Standard 2.0.
+
+## Why Oxbind?
+
+- **Type-Safe Mapping**: Clear correspondence between XML schema and C# classes
+- **Constructor-Driven**: Promotes immutable object design
+- **Declarative Mapping**: Simple configuration through C# attributes
+- **Detailed Error Reporting**: Error messages with XML line and column
+  information
 
 ## Example
 
@@ -29,7 +38,7 @@ XML document can be described with _XML Schema_ as follows:
       <xs:sequence>
         <xs:element ref="director" minOccurs="1" maxOccurs="1"/>
         <xs:element ref="release" minOccurs="0" maxOccurs="1"/>
-        <xs:element ref="cast" minOccurs="0"/>
+        <xs:element ref="cast" minOccurs="0" maxOccurs="unbounded"/>
       </xs:sequence>
       <xs:attribute name="title"/>
     </xs:complexType>
@@ -55,27 +64,27 @@ using Maroontress.Oxbind;
 
 [ForElement("movie")]
 public record class Movie(
-    [ForAttribute("title")] string Title,
-    [Mandatory] Director TheDirector,
+    [ForAttribute("title")] string? Title,
+    [Required] Director TheDirector,
     [Optional] Release? MaybeRelease,
-    [Multiple] IEnumerable<Cast> Casts)
-{
-}
+    [Multiple] IEnumerable<Cast> Casts);
 ```
 
 The `Movie` class has the `ForElement` attribute with the argument `"movie"`,
 which means it is associated with the `movie` element.
 
-And the constructor has parameters with some attributes, which are corresponding
-to the schema of the root element.
+And the constructor has parameters with some attributes, which are
+corresponding to the schema of the root element. In this example, since
+`record class` is used, the constructor parameters implicitly generate
+instance properties. Each parameter is as follows:
 
-- `[ForAttribute("title")] string Title` represents the instance property
+- `[ForAttribute("title")] string? Title` represents the instance property
   `Title`, which is associated with the XML attribute `title` of the `movie`
-  elemtent. This means that the constructor's parameter with `[ForAttribute(…)]`
+  element. This means that the constructor's parameter with `[ForAttribute(…)]`
   is associated with the _XML attribute_ whose name is the argument of the _C#
   attribute_.
 
-- `[Mandatory] Director TheDirector` represents the instance property
+- `[Required] Director TheDirector` represents the instance property
   `TheDirector`, which is associated with the XML element `director` that occurs
   once. The type of `Director` is the class with the `ForElement` attribute with
   the argument `"director"`.
@@ -98,20 +107,13 @@ Second, creates `Director`, `Release` and `Cast` classes representing
 
 ```csharp
 [ForElement("director")]
-public record class Director([ForAttribute("name")] string Name)
-{
-}
+public record class Director([ForAttribute("name")] string? Name);
 
 [ForElement("release")]
-public sealed class Release([ForAttribute("year")] string year)
-{
-    public string Year { get; } = year;
-}
+public record class Release([ForAttribute("year")] string? Year);
 
 [ForElement("cast")]
-public record class Cast([ForText] string Name)
-{
-}
+public record class Cast([ForText] string Name);
 ```
 
 All the classes have the `ForElement` attribute, which means each class is
@@ -120,13 +122,12 @@ example, the `Director` class is associated with the `director` element, and so
 on.
 
 The `Director` class has the constructor. The parameters of the constructor with
-some attributes is associated with the schema. `[ForAttribute("name")] string
+some attributes is associated with the schema. `[ForAttribute("name")] string?
 Name` represents the instance property `Name`, which is associated with the XML
-attribute `name` of the `director` elemtent.
+attribute `name` of the `director` element.
 
-
-The `Release` class is similar to the `Director` class, except that it is not a
-`record class`.
+The `Release` class is similar to the `Director` class, so a detailed
+explanation is omitted here.
 
 The `Cast` class is also similar to the `Director` class, but its constructor
 has the parameter with the `ForText` attribute, which means the instance
@@ -144,13 +145,75 @@ var movie = binder.NewInstance(reader);
 
 > [See the result in .NET Fiddle](https://dotnetfiddle.net/Mu2FL2)
 
+The examples above use `record class` for simplicity, but you can also use
+regular classes or primary constructors with Oxbind. Choose the style that best
+fits your coding preferences or project requirements:
+
+```csharp
+[ForElement("movie")]
+public sealed class Movie
+{
+    public Movie(
+        [ForAttribute("id")] string? id,
+        [ForAttribute("title")] string? title,
+        [Required] Director theDirector,
+        [Optional] Release? maybeRelease,
+        [Multiple] IEnumerable<Cast> casts)
+    {
+        this.Id = id;
+        this.Title = title;
+        this.TheDirector = theDirector;
+        this.MaybeRelease = maybeRelease;
+        this.Casts = casts;
+    }
+
+    public string? Id { get; }
+    public string? Title { get; }
+    public Director TheDirector { get; }
+    public Release? MaybeRelease { get; }
+    public IEnumerable<Cast> Casts { get; }
+}
+```
+
+```csharp
+[ForElement("movie")]
+public sealed class Movie(
+    [ForAttribute("id")] string? id,
+    [ForAttribute("title")] string? title,
+    [Required] Director theDirector,
+    [Optional] Release? maybeRelease,
+    [Multiple] IEnumerable<Cast> casts)
+{
+    public string? Id { get; } = id;
+    public string? Title { get; } = title;
+    public Director TheDirector { get; } = theDirector;
+    public Release? MaybeRelease { get; } = maybeRelease;
+    public IEnumerable<Cast> Casts { get; } = casts;
+}
+```
+
+## Getting started
+
+Oxbind is available as [the ![NuGet-logo][nuget-logo] NuGet
+package][nuget-oxbind].
+
+### Install
+
+```plaintext
+dotnet add package Maroontress.Oxbind
+```
+
+### How to create a class representing an XML element
+
+See [Attribute Specifications](GET_STARTED.md).
+
 ## How to build
 
 ### Requirements for build
 
 - Visual Studio 2022 (Version 17.13) or [.NET 9.0 SDK (SDK 9.0.203)][dotnet-sdk]
 
-### Get started
+### Build instructions
 
 ```plaintext
 git clone URL
@@ -160,8 +223,15 @@ dotnet build --configuration Release
 
 ### Get test coverage report with Coverlet
 
+If not already installed the `dotnet-reportgenerator-globaltool` tool:
+
 ```plaintext
 dotnet tool install -g dotnet-reportgenerator-globaltool
+```
+
+Run the following command to generate a test coverage report with Coverlet:
+
+```plaintext
 dotnet test --configuration Release --no-build \
   --logger "console;verbosity=detailed" \
   --collect:"XPlat Code Coverage" \
@@ -171,3 +241,5 @@ reportgenerator -reports:MsTestResults/*/coverage.cobertura.xml \
 ```
 
 [dotnet-sdk]: https://dotnet.microsoft.com/en-us/download
+[nuget-logo]: https://maroontress.github.io/images/NuGet-logo.png
+[nuget-oxbind]: https://www.nuget.org/packages/Maroontress.Oxbind/
