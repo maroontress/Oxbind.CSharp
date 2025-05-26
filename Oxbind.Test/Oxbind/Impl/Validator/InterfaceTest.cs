@@ -1,32 +1,27 @@
-#pragma warning disable CS1591
+namespace Maroontress.Oxbind.Test.Oxbind.Impl.Validator;
 
-namespace Maroontress.Oxbind.Impl.Validator.Test
+using Maroontress.Oxbind.Impl;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+[TestClass]
+public sealed class InterfaceTest
 {
-    using System;
-    using Maroontress.Oxbind.Impl;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    /* IRoot cannot be annotated with [ForElement] */
+    public interface IRoot;
 
-    [TestClass]
-    public sealed class InterfaceTest
+    [TestMethod]
+    public void RootTest()
     {
-        public interface IRoot
-        {
-        }
-
-        [TestMethod]
-        public void RootTest()
-        {
-            var v = new Validator(typeof(IRoot));
-            Assert.AreEqual(
-                "IRoot: Error: must be annotated with [ForElement]"
-                + Environment.NewLine
-                + "IRoot: Error: must not be interface",
-                string.Join(Environment.NewLine, v.GetMessages()));
-        }
-
-        [ForElement("root")]
-        public sealed class Root : IRoot
-        {
-        }
+        var logger = new Journal("IRoot");
+        var v = new Validator(typeof(IRoot), logger);
+        Assert.IsFalse(v.IsValid);
+        Assert.Contains(
+            """
+            IRoot: Error: The type attributed with [ForElement] must be a class, not an interface.
+            """,
+            logger.GetMessages());
     }
+
+    [ForElement("root")]
+    public record class Root : IRoot;
 }

@@ -1,3 +1,6 @@
+[*]
+charset = utf-8
+
 [*.cs]
 
 # SA1302: Interface names should begin with I
@@ -23,3 +26,15 @@ dotnet_diagnostic.IsNull.severity = none
 
 # SA1000: Keywords should be spaced correctly
 dotnet_diagnostic.SA1000.severity = none
+
+# SA1012: Opening braces should be spaced correctly
+dotnet_diagnostic.SA1012.severity = none
+
+# SA1013: Closing braces should be spaced correctly
+dotnet_diagnostic.SA1013.severity = none
+
+# SA1515: Single-line comments should not use trailing whitespace
+dotnet_diagnostic.SA1515.severity = none
+
+# SA1118: Parameter should not span multiple lines
+dotnet_diagnostic.SA1118.severity = none

@@ -1,0 +1,115 @@
+namespace Maroontress.Oxbind.Impl;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+
+/// <summary>
+/// Provides helper methods to format type and parameter names.
+/// </summary>
+public static class Names
+{
+    /// <summary>
+    /// The initial capacity of the <see cref="StringBuilder"/>.
+    /// </summary>
+    private const int InitialCapacity = 80;
+
+    /// <summary>
+    /// The common delimiter between names.
+    /// </summary>
+    private const string Delimiter = ", ";
+
+    /// <summary>
+    /// Returns the joined string of the specified strings with the default
+    /// delimiter.
+    /// </summary>
+    /// <param name="all">
+    /// The strings.
+    /// </param>
+    /// <returns>
+    /// The joined string.
+    /// </returns>
+    public static string Join(IEnumerable<string> all)
+    {
+        return string.Join(Delimiter, all);
+    }
+
+    /// <summary>
+    /// Sorts the specified strings and returns the joined string of them with
+    /// the default delimiter.
+    /// </summary>
+    /// <param name="all">
+    /// The strings.
+    /// </param>
+    /// <returns>
+    /// The sorted and joined string.
+    /// </returns>
+    public static string SortAndJoin(IEnumerable<string> all)
+    {
+        return Join(all.OrderBy(s => s));
+    }
+
+    /// <summary>
+    /// Returns the joined string of the parameter names with the default
+    /// delimiter.
+    /// </summary>
+    /// <param name="all">
+    /// The parameters.
+    /// </param>
+    /// <returns>
+    /// The joined string.
+    /// </returns>
+    public static string OfParameters(IEnumerable<ParameterInfo> all)
+    {
+        return JoinedNames(all, p => p.Name ?? "(no name)");
+    }
+
+    /// <summary>
+    /// Gets the name representing the specified type.
+    /// </summary>
+    /// <param name="type">
+    /// The type.
+    /// </param>
+    /// <returns>
+    /// The name of the type.
+    /// </returns>
+    public static string Of(Type type)
+    {
+        if (!type.GetTypeInfo().IsGenericType)
+        {
+            return type.Name;
+        }
+        var arguments = type.GenericTypeArguments;
+        var argumentNames = arguments.Select(Of);
+        var name = type.Name;
+        var index = name.IndexOf('`');
+        name = name.Substring(0, index);
+        var genericName = $"{name}<{string.Join(",", argumentNames)}>";
+        return genericName;
+    }
+
+    /// <summary>
+    /// Sorts the names of the specified objects and returns the joined string
+    /// of them with the default delimiter.
+    /// </summary>
+    /// <typeparam name="T">
+    /// The type of the objects.
+    /// </typeparam>
+    /// <param name="all">
+    /// The objects.
+    /// </param>
+    /// <param name="getName">
+    /// The function that returns the name of its argument.
+    /// </param>
+    /// <returns>
+    /// The joined string.
+    /// </returns>
+    private static string JoinedNames<T>(
+        IEnumerable<T> all, Func<T, string> getName)
+    {
+        return Join(all.Select(m => getName(m))
+            .OrderBy(s => s));
+    }
+}

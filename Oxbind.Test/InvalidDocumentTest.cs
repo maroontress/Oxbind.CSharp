@@ -1,82 +1,73 @@
-namespace Maroontress.Oxbind.Test
+namespace Maroontress.Oxbind.Test;
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+[TestClass]
+public sealed class InvalidDocumentTest
 {
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-    [TestClass]
-    public sealed class InvalidDocumentTest
+    [TestMethod]
+    public void ElementNotFound()
     {
-        [TestMethod]
-        public void ElementNotFound()
-        {
-            const string xml = ""
-                + "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
-                + "<root>\r\n"
-                + "</root>\r\n";
-            const string m = ""
-                + "3:3: unexpected node type: EndElement of the element "
-                + "'root' (it is expected that the element 'first' "
-                + "starts)";
-            Checks.ThrowBindException<Root>(xml, m);
-        }
-
-        [TestMethod]
-        public void OtherElementFound()
-        {
-            const string xml = ""
-                + "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
-                + "<root>\r\n"
-                + "  <second/>\r\n"
-                + "</root>\r\n";
-            const string m = ""
-                + "3:4: unexpected node type: Element of the element "
-                + "'second' (it is expected that the element 'first' starts)";
-            Checks.ThrowBindException<Root>(xml, m);
-        }
-
-        [TestMethod]
-        public void UnexpectedElementFound()
-        {
-            const string xml = ""
-                + "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
-                + "<root>\r\n"
-                + "  <first/>\r\n"
-                + "  <second/>\r\n"
-                + "</root>\r\n";
-            const string m = ""
-                + "4:4: unexpected node type: Element of the element "
-                + "'second' (it is expected that the element 'root' ends)";
-            Checks.ThrowBindException<Root>(xml, m);
-        }
-
-        [TestMethod]
-        public void EmptyRoot()
-        {
-            const string xml = ""
-                + "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
-                + "<root/>\r\n";
-            const string m = ""
-                + "2:2: element is empty: Element of the element 'root' "
-                + "(it is expected that the element 'root' contains the "
-                + "child element 'first')";
-            Checks.ThrowBindException<Root>(xml, m);
-        }
-
-        [ForElement("root")]
-        public sealed class Root
-        {
-            [ElementSchema]
-            private static readonly Schema TheSchema = Schema.Of(
-                    Mandatory.Of<First>());
-
-            [field: ForChild]
-            private First? First { get; }
-        }
-
-        [ForElement("first")]
-        public sealed class First
-        {
-            [field: ForAttribute("value")]
-            public BindEvent<string>? Value { get; }
-        }
+        const string xml = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <root>
+            </root>
+            """;
+        const string m = """
+            3:3: Unexpected node type: EndElement of the element 'root'. (It was expected for the element 'first' to start.)
+            """;
+        Checks.ThrowBindException<Root>(xml, m);
     }
+
+    [TestMethod]
+    public void OtherElementFound()
+    {
+        const string xml = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <root>
+              <second/>
+            </root>
+            """;
+        const string m = """
+            3:4: Unexpected node type: Element of the element 'second'. (It was expected for the element 'first' to start.)
+            """;
+        Checks.ThrowBindException<Root>(xml, m);
+    }
+
+    [TestMethod]
+    public void UnexpectedElementFound()
+    {
+        const string xml = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <root>
+              <first/>
+              <second/>
+            </root>
+            """;
+        const string m = """
+            4:4: Unexpected node type: Element of the element 'second'. (It was expected for the element 'root' to end.)
+            """;
+        Checks.ThrowBindException<Root>(xml, m);
+    }
+
+    [TestMethod]
+    public void EmptyRoot()
+    {
+        const string xml = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <root/>
+            """;
+        const string m = """
+            2:2: Element 'root' is empty. (It was expected to contain the child element 'first'.)
+            """;
+        Checks.ThrowBindException<Root>(xml, m);
+    }
+
+    [ForElement("root")]
+    public record class Root(
+        [Required] First FirstChild);
+
+    [ForElement("first")]
+    public record class First(
+        [ForAttribute("value")] BindResult<string>? AttributeValue);
 }

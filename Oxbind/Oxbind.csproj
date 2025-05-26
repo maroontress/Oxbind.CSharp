@@ -1,13 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.3</TargetFramework>
+    <TargetFrameworks>net9.0;netstandard2.0</TargetFrameworks>
     <OutputType>Library</OutputType>
-    <LangVersion>9.0</LangVersion>
+    <LangVersion>13.0</LangVersion>
     <Nullable>enable</Nullable>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AssemblyName>Maroontress.Oxbind</AssemblyName>
     <RootNamespace>Maroontress.Oxbind</RootNamespace>
-    <DocumentationFile>dcx\Oxbind.xml</DocumentationFile>
+    <DocumentationFile>dcx\documentation.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -17,7 +18,7 @@
     <PackageProjectUrl>https://maroontress.github.io/Oxbind-CSharp/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/maroontress/Oxbind.CSharp</RepositoryUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Description>Oxbind is a .NET library that deserializes an XML document. It depends on .NET Standard 1.3.</Description>
+    <Description>Oxbind is a .NET library that deserializes an XML document. It depends on .NET Standard 2.0.</Description>
     <PackageReleaseNotes>See https://maroontress.github.io/Oxbind-CSharp/releasenotes.html</PackageReleaseNotes>
     <Copyright>Copyright (c) 2018 Maroontress Fast Software</Copyright>
     <PackageTags>csharp, XML, deserializer</PackageTags>
@@ -36,13 +37,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="StyleChecker" Version="1.0.27" PrivateAssets="all" />
+    <PackageReference Include="StyleChecker" Version="2.1.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="StyleChecker.Annotations" Version="1.0.1" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.164" PrivateAssets="all" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Maroontress\Oxbind\Impl\Resource.Designer.cs">
+    <Compile Update="Impl\Resource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resource.resx</DependentUpon>
@@ -50,7 +54,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Maroontress\Oxbind\Impl\Resource.resx">
+    <EmbeddedResource Update="Impl\Resource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
       <CustomToolNamespace>Maroontress.Oxbind.Impl</CustomToolNamespace>
@@ -74,6 +78,7 @@
 
   <PropertyGroup>
     <PackageLicenseFile>COPYRIGHT.txt</PackageLicenseFile>
+    <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
 
 </Project>
