@@ -81,6 +81,10 @@ public sealed class DagChecker<T>
     /// </exception>
     public void Check(T node)
     {
+        if (checkedSet.Contains(node))
+        {
+            return;
+        }
         if (!set.Add(node))
         {
             var list = new List<T>(set)
@@ -93,8 +97,7 @@ public sealed class DagChecker<T>
         }
         try
         {
-            var dependencies = getDependencies(node)
-                .Where(d => !checkedSet.Contains(d));
+            var dependencies = getDependencies(node);
             foreach (var d in dependencies)
             {
                 Check(d);

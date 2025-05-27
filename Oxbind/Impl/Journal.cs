@@ -110,7 +110,7 @@ public sealed class Journal
     private void Log(string type, string message, params object[] args)
     {
         var culture = CultureInfo.CurrentCulture;
-        if (Bundle(message) is not { } format)
+        if (Bundle(message) is not {} format)
         {
             throw new ArgumentException(
                 $"Resource key '{message}' not found.", nameof(message));

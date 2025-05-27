@@ -255,8 +255,13 @@ public sealed class Validator
         Journal logger,
         IReadOnlyList<ParameterInfo> childParameterList)
     {
-        var forTexts = childParameterList.Where(
-                p => p.GetCustomAttribute<ForTextAttribute>() is { })
+        static ForAttributeAttribute? ToForAttribute(ParameterInfo info)
+            => info.GetCustomAttribute<ForAttributeAttribute>();
+
+        static ForTextAttribute? ToForText(ParameterInfo info)
+            => info.GetCustomAttribute<ForTextAttribute>();
+
+        var forTexts = childParameterList.Where(p => ToForText(p) is {})
             .ToList();
         var forChildren = childParameterList.Where(
                 p => p.GetCustomAttributes()
@@ -274,7 +279,7 @@ public sealed class Validator
                 {...}
         */
         var attributeList = childParameterList.Where(
-                p => p.GetCustomAttribute<ForAttributeAttribute>() is { })
+                p => ToForAttribute(p) is {})
             .ToList();
         if (attributeList.Count is not 0)
         {

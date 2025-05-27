@@ -79,9 +79,10 @@ public sealed class Traversal<T>(Func<T, IEnumerable<T>> getDependencies)
     {
         foreach (var node in all)
         {
+            var dependencies = GetDependencies(node);
             if (VisitingSet.Add(node))
             {
-                IfNotVisited(GetDependencies(node));
+                IfNotVisited(dependencies);
             }
         }
     }

@@ -1,7 +1,6 @@
 namespace Maroontress.Oxbind.Test;
 
 using System;
-using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 /// <summary>
@@ -9,63 +8,24 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 /// </summary>
 public static class Checks
 {
-    /// <summary>
-    /// Checks the <see cref="BindException"/> that <see
-    /// cref="Oxbinder{T}.NewInstance(TextReader)"/> with the specified XML
-    /// document throws.
-    /// </summary>
-    /// <typeparam name="T">
-    /// The class associated with the root element.
-    /// </typeparam>
-    /// <param name="xml">
-    /// The XML document.
-    /// </param>
-    /// <param name="message">
-    /// The expected message that the <see cref="BindException"/> contains.
-    /// </param>
-    public static void ThrowBindException<T>(string xml, string message)
-        where T : class
+    public static void ThrowBindException(
+        Action action,
+        string actionLabel,
+        string expectedExceptionMessage)
     {
-        var factory = new OxbinderFactory();
-        var binder = factory.Of<T>();
-        ThrowBindException(binder, xml, message);
-    }
-
-    /// <summary>
-    /// Checks the <see cref="BindException"/> that <see
-    /// cref="Oxbinder{T}.NewInstance(TextReader)"/> with the specified XML
-    /// document throws.
-    /// </summary>
-    /// <typeparam name="T">
-    /// The class associated with the root element.
-    /// </typeparam>
-    /// <param name="binder">
-    /// The <see cref="Oxbinder{T}"/> instance.
-    /// </param>
-    /// <param name="xml">
-    /// The XML document.
-    /// </param>
-    /// <param name="message">
-    /// The expected message that the <see cref="BindException"/> contains.
-    /// </param>
-    public static void ThrowBindException<T>(
-        Oxbinder<T> binder, string xml, string message)
-        where T : class
-    {
-        var reader = new StringReader(xml);
         try
         {
-            _ = binder.NewInstance(reader);
+            action();
         }
         catch (BindException e)
         {
-            Assert.AreEqual(message, e.GetFullMessage());
+            Assert.AreEqual(expectedExceptionMessage, e.GetFullMessage());
             return;
         }
         catch (Exception e)
         {
             Assert.Fail(e.ToString());
         }
-        Assert.Fail("NewInstance() did not throw Exception.");
+        Assert.Fail($"{actionLabel} did not throw any exception.");
     }
 }
