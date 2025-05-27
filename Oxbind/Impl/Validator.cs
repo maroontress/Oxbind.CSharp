@@ -321,7 +321,7 @@ public sealed class Validator
                 """
                 parameter_must_be_annotated_with_attributes_for_child_elements
                 """,
-                Names.OfParameters(intersection));
+                Names.OfParameters(noAnnotationList));
         }
 
         /*
