@@ -41,7 +41,7 @@ public sealed class OxbinderFactory
             {
                 var m = string.Join(Environment.NewLine, messages);
                 throw new BindException(
-                    $"{type.Name} has failed to validate annotations: {m}");
+                    $"{type.Name} failed to validate annotations: {m}");
             }
             var dependencies = ToDependingTypes(validator);
             return [.. dependencies];
@@ -101,6 +101,7 @@ public sealed class OxbinderFactory
     public Oxbinder<T> Of<T>()
         where T : class
     {
+        _ = GetSharedMetadata(typeof(T));
         return new OxBinderImpl<T>(GetSharedMetadata);
     }
 
@@ -114,7 +115,9 @@ public sealed class OxbinderFactory
     /// <returns>
     /// The <see cref="Metadata"/> object for the specified type.
     /// </returns>
+#pragma warning disable TypeClassParameter // Fix StyleChecker
     private Metadata GetSharedMetadata(Type type)
+#pragma warning restore TypeClassParameter
     {
         return MetadataCache.Intern(type, () => NewMetadata(type));
     }

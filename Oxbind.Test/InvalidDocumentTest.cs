@@ -16,7 +16,7 @@ public sealed class InvalidDocumentTest
         const string m = """
             3:3: Unexpected node type: EndElement of the element 'root'. (It was expected for the element 'first' to start.)
             """;
-        Checks.ThrowBindException<Root>(xml, m);
+        NewInstanceChecks.ThrowBindException<Root>(xml, m);
     }
 
     [TestMethod]
@@ -31,7 +31,7 @@ public sealed class InvalidDocumentTest
         const string m = """
             3:4: Unexpected node type: Element of the element 'second'. (It was expected for the element 'first' to start.)
             """;
-        Checks.ThrowBindException<Root>(xml, m);
+        NewInstanceChecks.ThrowBindException<Root>(xml, m);
     }
 
     [TestMethod]
@@ -47,7 +47,7 @@ public sealed class InvalidDocumentTest
         const string m = """
             4:4: Unexpected node type: Element of the element 'second'. (It was expected for the element 'root' to end.)
             """;
-        Checks.ThrowBindException<Root>(xml, m);
+        NewInstanceChecks.ThrowBindException<Root>(xml, m);
     }
 
     [TestMethod]
@@ -60,7 +60,7 @@ public sealed class InvalidDocumentTest
         const string m = """
             2:2: Element 'root' is empty. (It was expected to contain the child element 'first'.)
             """;
-        Checks.ThrowBindException<Root>(xml, m);
+        NewInstanceChecks.ThrowBindException<Root>(xml, m);
     }
 
     [ForElement("root")]
