@@ -5,7 +5,8 @@ using System.Collections.ObjectModel;
 using System.Xml;
 
 /// <summary>
-/// The map of an attribute name to the <see cref="Reflector{T}"/> object that
+/// The map of an attribute name to the <see
+/// cref="Reflector{T}"><![CDATA[Reflector<string>]]></see> object that
 /// dispatches a string value to a constructor argument.
 /// </summary>
 public sealed class AttributeReflectorMap
@@ -23,7 +24,7 @@ public sealed class AttributeReflectorMap
 
     /// <summary>
     /// Returns a new read-only dictionary of an attribute name to the <see
-    /// cref="Reflector{T}"/> object.
+    /// cref="Reflector{T}"><![CDATA[Reflector<string>]]></see> object.
     /// </summary>
     /// <param name="attributeParameters">
     /// The collection of <see cref="AttributeParameter"/> instances that
@@ -32,10 +33,12 @@ public sealed class AttributeReflectorMap
     /// cref="ForElementAttribute"/>).
     /// </param>
     /// <returns>
-    /// A new read-only dictionary. Each key in the map is the attribute name
-    /// specified as an argument to <see cref="ForAttributeAttribute"/>. The
-    /// value associated with the key is the <see cref="Reflector{T}"/> object
-    /// that dispatches the attribute value to the constructor parameters.
+    /// A new read-only dictionary. Each key in the map is the qualified name
+    /// (an <see cref="XmlQualifiedName"/>) of an XML attribute, specified as
+    /// an argument to <see cref="ForAttributeAttribute"/>. The value
+    /// associated with the key is the <see
+    /// cref="Reflector{T}"><![CDATA[Reflector<string>]]></see> object that
+    /// dispatches the attribute value to the constructor parameter.
     /// </returns>
     public static IReadOnlyDictionary<XmlQualifiedName, Reflector<string>>
         Of(IEnumerable<AttributeParameter> attributeParameters)

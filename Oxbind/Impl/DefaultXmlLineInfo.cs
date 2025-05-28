@@ -3,7 +3,7 @@ namespace Maroontress.Oxbind.Impl;
 using System.Xml;
 
 /// <summary>
-/// The default implementation of <see cref="IXmlLineInfo"/> interface.
+/// The default implementation of the <see cref="IXmlLineInfo"/> interface.
 /// </summary>
 /// <param name="lineNumber">
 /// The 1-based line number in the XML document.
@@ -32,7 +32,7 @@ public sealed class DefaultXmlLineInfo(
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DefaultXmlLineInfo"/>
-    /// class.
+    /// class, representing no line information.
     /// </summary>
     private DefaultXmlLineInfo()
         : this(0, 0, false)

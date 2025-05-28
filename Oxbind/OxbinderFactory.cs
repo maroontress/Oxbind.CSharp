@@ -35,7 +35,7 @@ public sealed class OxbinderFactory
             var validator = ValidatorCache.Intern(
                 type,
                 () => new(type, new(type.Name)));
-            var logger = validator.ValidationLogger;
+            var logger = validator.Logger;
             var messages = logger.GetMessages();
             if (!validator.IsValid
                 || (!ignoreWarnings && messages.Any()))
@@ -60,7 +60,8 @@ public sealed class OxbinderFactory
     private Traversal<Type> ValidationTraversal { get; }
 
     /// <summary>
-    /// Gets the cache of the types that have been checked for DAG.
+    /// Gets the cache of types that have been verified as forming a Directed
+    /// Acyclic Graph (DAG).
     /// </summary>
     private DagChecker<Type> DagChecker { get; }
 

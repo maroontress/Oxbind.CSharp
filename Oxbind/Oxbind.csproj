@@ -18,14 +18,16 @@
     <PackageProjectUrl>https://maroontress.github.io/Oxbind-CSharp/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/maroontress/Oxbind.CSharp</RepositoryUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Description>Oxbind is a .NET library that deserializes an XML document. It depends on .NET Standard 2.0.</Description>
+    <Description>Oxbind is a .NET library for deserializing XML documents to C# objects using constructor injection and a declarative attribute-based mapping. It targets .NET Standard 2.0.</Description>
     <PackageReleaseNotes>See https://maroontress.github.io/Oxbind-CSharp/releasenotes.html</PackageReleaseNotes>
     <Copyright>Copyright (c) 2018 Maroontress Fast Software</Copyright>
     <PackageTags>csharp, XML, deserializer</PackageTags>
     <NoPackageAnalysis>true</NoPackageAnalysis>
-    <Version>1.0.3.0</Version>
+    <Version>2.0.0-alpha</Version>
     <RepositoryType />
     <Company>Maroontress Fast Software</Company>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>COPYRIGHT.txt</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>

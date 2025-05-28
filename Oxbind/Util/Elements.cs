@@ -69,8 +69,8 @@ public static class Elements
     /// The collection B.
     /// </param>
     /// <returns>
-    /// The new <see cref="ISet{T}"/> object that has the relative complement
-    /// of B in A.
+    /// The new <see cref="ISet{T}"/> object that contains the relative
+    /// complement of B in A.
     /// </returns>
     public static ISet<T> DifferenceOf<T>(
         IEnumerable<T> a, IEnumerable<T> b)

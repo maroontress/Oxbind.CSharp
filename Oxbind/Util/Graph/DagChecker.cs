@@ -9,15 +9,9 @@ using System.Linq;
 /// with no directed cycles.
 /// </summary>
 /// <remarks>
-/// <para>
 /// For more information about DAG, see <a
 /// href="https://en.wikipedia.org/wiki/Directed_acyclic_graph">
 /// Directed acyclic graph</a>.
-/// </para>
-/// <para>
-/// The <see cref="Check(T)"/> method may add the nodes to the specified
-/// node set.
-/// </para>
 /// </remarks>
 /// <typeparam name="T">
 /// The type of the nodes in the graph.
@@ -29,7 +23,9 @@ using System.Linq;
 /// The function that converts a node to its string representation.
 /// </param>
 /// <param name="checkedSet">
-/// The node set containing the nodes that have no circular dependencies.
+/// The set of nodes already confirmed to be free of circular dependencies.
+/// Note that the <see cref="Check(T)"/> method may add new nodes to the
+/// specified node set.
 /// </param>
 public sealed class DagChecker<T>(
     Func<T, ISet<T>> getDependencies,

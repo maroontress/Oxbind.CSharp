@@ -74,7 +74,7 @@ The `Movie` class has the `ForElement` attribute with the argument `"movie"`,
 which means it is associated with the `movie` element.
 
 And the constructor has parameters with some attributes, which are
-corresponding to the schema of the root element. In this example, since
+corresponding to the schema of the root element. In this example, since a
 `record class` is used, the constructor parameters implicitly generate
 instance properties. Each parameter is as follows:
 
@@ -133,8 +133,8 @@ The `Cast` class is also similar to the `Director` class, but its constructor
 has the parameter with the `ForText` attribute, which means the instance
 property `Name` is associated with the inner text of the `cast` element.
 
-Finally, uses the deserializer with an XML document and the associated classes,
-to get a `Movie` instance from the XML document as follows:
+Finally, to obtain a `Movie` instance from the XML document, use the
+deserializer with the XML document and the associated classes as follows:
 
 ```csharp
 var reader = new StringReader(…);
@@ -216,14 +216,14 @@ See [Attribute Specifications](GET_STARTED.md).
 ### Build instructions
 
 ```plaintext
-git clone URL
+git clone <URL>
 cd Oxbind.CSharp
 dotnet build --configuration Release
 ```
 
 ### Get test coverage report with Coverlet
 
-If not already installed the `dotnet-reportgenerator-globaltool` tool:
+If the `dotnet-reportgenerator-globaltool` tool is not already installed:
 
 ```plaintext
 dotnet tool install -g dotnet-reportgenerator-globaltool

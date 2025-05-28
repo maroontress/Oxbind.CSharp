@@ -50,13 +50,15 @@ public sealed class TextMetadata(AttributeBank bank, ParameterInfo info)
     }
 
     /// <inheritdoc/>
+    /// <remarks>
+    /// Treats an empty element like <c><![CDATA[<element/>]]></c> the same as
+    /// <c><![CDATA[<element></element>]]></c>, resulting in an empty string.
+    /// </remarks>
     protected override void HandleComponentsWithEmptyElement(
         object[] arguments,
         XmlReader @in,
         [Unused] Func<Type, Metadata> getMetadata)
     {
-        // Treats an empty element like '<element/>' the same as
-        // '<element></element>', resulting in an empty string.
         var info = Readers.ToXmlLineInfo(@in);
         Reflector.Inject(arguments, Reflector.Sugarcoater(info, string.Empty));
     }

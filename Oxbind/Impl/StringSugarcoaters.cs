@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 
 /// <summary>
-/// Provides methods for <see cref="Sugarcoater{T}"/> (<c>T</c> is
-/// <c>string</c>).
+/// Provides methods for <see
+/// cref="Sugarcoater{T}">Sugarcoater&lt;string&gt;</see>.
 /// </summary>
 public static class StringSugarcoaters
 {
