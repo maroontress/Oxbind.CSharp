@@ -23,10 +23,10 @@ public static class Reflectors
     /// </returns>
     public static Reflector<string> OfString(ParameterInfo info)
     {
-        var injector = ToInjector(info);
+        var parameterIndex = info.Position;
         var type = info.ParameterType;
         var sugarcoater = StringSugarcoaters.Of(type);
-        return new(injector, type, sugarcoater);
+        return new(parameterIndex, type, sugarcoater);
     }
 
     /// <summary>
@@ -43,20 +43,13 @@ public static class Reflectors
     /// </returns>
     public static Reflector<object> Of(ParameterInfo info)
     {
-        var injector = ToInjector(info);
         var t = Doublet.Of(info.ParameterType);
-        return Of(injector, t.ElementType, t.Sugarcoater);
+        return Of(info.Position, t.ElementType, t.Sugarcoater);
     }
 
     private static Reflector<T> Of<T>(
-        Injector inject, Type unitType, Sugarcoater<T> sugarcoater)
+        int parameterIndex, Type unitType, Sugarcoater<T> sugarcoater)
     {
-        return new Reflector<T>(inject, unitType, sugarcoater);
-    }
-
-    private static Injector ToInjector(ParameterInfo info)
-    {
-        var position = info.Position;
-        return (a, v) => a[position] = v;
+        return new Reflector<T>(parameterIndex, unitType, sugarcoater);
     }
 }

@@ -67,30 +67,6 @@ public static class Names
     }
 
     /// <summary>
-    /// Gets the name representing the specified type.
-    /// </summary>
-    /// <param name="type">
-    /// The type.
-    /// </param>
-    /// <returns>
-    /// The name of the type.
-    /// </returns>
-    public static string Of(Type type)
-    {
-        if (!type.GetTypeInfo().IsGenericType)
-        {
-            return type.Name;
-        }
-        var arguments = type.GenericTypeArguments;
-        var argumentNames = arguments.Select(Of);
-        var name = type.Name;
-        var index = name.IndexOf('`');
-        name = name.Substring(0, index);
-        var genericName = $"{name}<{string.Join(",", argumentNames)}>";
-        return genericName;
-    }
-
-    /// <summary>
     /// Sorts the names of the specified objects and returns the joined string
     /// of them with the default delimiter.
     /// </summary>

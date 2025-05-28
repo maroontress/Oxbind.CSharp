@@ -53,9 +53,9 @@ XML document can be described with _XML Schema_ as follows:
   ...
 ```
 
-Note that Oxbind does not use XML Schema and its validation, but the example
-of the XML Schema is given to show the occurrence order of the elements is
-important.
+> [!NOTE]
+> Oxbind does not use XML Schema and its validation, but the example of the XML
+> Schema is given to show the occurrence order of the elements is important.
 
 First, creates a `Movie` class representing the `movie` element as follows:
 
@@ -211,7 +211,7 @@ See [Attribute Specifications](GET_STARTED.md).
 
 ### Requirements for build
 
-- Visual Studio 2022 (Version 17.13) or [.NET 9.0 SDK (SDK 9.0.203)][dotnet-sdk]
+- Visual Studio 2022 (Version 17.14) or [.NET 9.0 SDK (SDK 9.0.300)][dotnet-sdk]
 
 ### Build instructions
 
