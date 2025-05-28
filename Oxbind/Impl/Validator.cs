@@ -106,31 +106,6 @@ public sealed class Validator
         = [.. ChildParameter.AttributeTypes, typeof(ForTextAttribute)];
 
     /// <summary>
-    /// Returns a new set of types that the specified class depends on.
-    /// </summary>
-    /// <param name="clazz">
-    /// The type of the class.
-    /// </param>
-    /// <returns>
-    /// A new set containing the types of constructor parameters attributed
-    /// with <see cref="RequiredAttribute"/> in <paramref name="clazz"/>.
-    /// </returns>
-    public static ISet<Type> GetDependencies(Type clazz)
-    {
-        static RequiredAttribute? ToRequired(ParameterInfo p)
-            => p.GetCustomAttribute<RequiredAttribute>();
-
-        static IEnumerable<Type> GetRequiredTypes(ConstructorInfo ctor)
-            => ctor.GetParameters()
-                .Where(p => ToRequired(p) is {})
-                .Select(m => m.ParameterType);
-
-        return Types.GetConstructor(clazz) is not {} ctor
-            ? []
-            : new HashSet<Type>(GetRequiredTypes(ctor));
-    }
-
-    /// <summary>
     /// Checks if the specified class is annotated with <see
     /// cref="ForElementAttribute"/>.
     /// </summary>

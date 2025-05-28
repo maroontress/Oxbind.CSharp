@@ -27,6 +27,7 @@ public sealed class OxbinderFactory
         static IEnumerable<Type> ToDependingTypes(Validator v)
             => v.ChildDependency
                 .ChildParameters
+                .Where(p => p.SchemaType is RequiredSchemaType)
                 .Select(p => p.UnitType);
 
         ValidationTraversal = new(type =>
@@ -46,9 +47,11 @@ public sealed class OxbinderFactory
             var dependencies = ToDependingTypes(validator);
             return [.. dependencies];
         });
-        DagChecker = new(type => ValidatorCache.Get(type) is {} validator
-            ? new HashSet<Type>(ToDependingTypes(validator))
-            : throw new NullReferenceException($"{type}"));
+        DagChecker = new(
+            type => ValidatorCache.Get(type) is {} validator
+                ? new HashSet<Type>(ToDependingTypes(validator))
+                : throw new NullReferenceException($"{type}"),
+            x => x.Name);
     }
 
     /// <summary>
@@ -132,7 +135,7 @@ public sealed class OxbinderFactory
         catch (CircularDependencyException e)
         {
             throw new BindException(
-                $"{type.Name} has a circular dependency.", e);
+                $"{type.Name} has a circular dependency: " + e.Message, e);
         }
         var validator = ValidatorCache.Get(type)
             ?? throw new NullReferenceException($"{type}");

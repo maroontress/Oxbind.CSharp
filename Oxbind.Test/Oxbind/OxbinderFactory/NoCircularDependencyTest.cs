@@ -1,22 +1,16 @@
 namespace Maroontress.Oxbind.Test.Oxbind.OxbinderFactory;
 
+using System.Collections.Generic;
 using Maroontress.Oxbind;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [TestClass]
-public sealed class CircularDependencyTest
+public sealed class NoCircularDependencyTest
 {
     [TestMethod]
     public void RootTest()
     {
-        const string message = """
-            Root has a circular dependency: Root -> Alpha -> Beta -> Root
-            """;
         var factory = new OxbinderFactory();
-        Checks.ThrowBindException(
-            () => _ = factory.Of<Root>(),
-            "Of<Root>()",
-            message);
     }
 
     [ForElement("root")]
@@ -25,9 +19,10 @@ public sealed class CircularDependencyTest
 
     [ForElement("alpha")]
     public record class Alpha(
-        [Required] Beta FirstChild);
+        [Required] Beta FirstChild,
+        [Optional] Root MaybeSecondChild);
 
     [ForElement("beta")]
     public record class Beta(
-        [Required] /*!?*/ Root FirstChild);
+        [Multiple] IEnumerable<Root> FirstChildren);
 }

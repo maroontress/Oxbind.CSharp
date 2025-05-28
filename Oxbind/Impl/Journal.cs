@@ -3,6 +3,7 @@ namespace Maroontress.Oxbind.Impl;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Resources;
 
 /// <summary>
 /// Provides a logging mechanism, primarily for validation messages.
@@ -21,10 +22,21 @@ public sealed class Journal
     /// <param name="label">
     /// The prefix for each log message.
     /// </param>
-    public Journal(string label)
+    /// <param name="maybeManager">
+    /// The resource manager to use for formatting messages, or <c>null</c> to
+    /// use the default.
+    /// </param>
+    /// <param name="maybeCulture">
+    /// The culture to use for formatting messages, or <c>null</c> to use the
+    /// current culture.
+    /// </param>
+    public Journal(
+        string label,
+        ResourceManager? maybeManager = null,
+        CultureInfo? maybeCulture = null)
     {
-        var manager = Resource.ResourceManager;
-        var culture = Resource.Culture;
+        var manager = maybeManager ?? Resource.ResourceManager;
+        var culture = maybeCulture ?? Resource.Culture;
 
         Label = label;
         Bundle = s => manager.GetString(s, culture);

@@ -9,65 +9,68 @@ using System.Linq;
 /// with no directed cycles.
 /// </summary>
 /// <remarks>
+/// <para>
 /// For more information about DAG, see <a
 /// href="https://en.wikipedia.org/wiki/Directed_acyclic_graph">
 /// Directed acyclic graph</a>.
+/// </para>
+/// <para>
+/// The <see cref="Check(T)"/> method may add the nodes to the specified
+/// node set.
+/// </para>
 /// </remarks>
 /// <typeparam name="T">
 /// The type of the nodes in the graph.
 /// </typeparam>
-public sealed class DagChecker<T>
+/// <param name="getDependencies">
+/// The function that returns the dependencies of the specified node.
+/// </param>
+/// <param name="toNodeName">
+/// The function that converts a node to its string representation.
+/// </param>
+/// <param name="checkedSet">
+/// The node set containing the nodes that have no circular dependencies.
+/// </param>
+public sealed class DagChecker<T>(
+    Func<T, ISet<T>> getDependencies,
+    Func<T, string> toNodeName,
+    ISet<T> checkedSet)
     where T : notnull
 {
-    /// <summary>
-    /// A set used to track the current path during cycle detection (acting as
-    /// breadcrumbs).
-    /// </summary>
-    private readonly LinkedHashSet<T> set = [];
-
-    /// <summary>
-    /// A set of nodes that have already been checked and confirmed to be free
-    /// of circular dependencies.
-    /// </summary>
-    private readonly ISet<T> checkedSet;
-
-    /// <summary>
-    /// The function that returns the dependencies of the specified node.
-    /// </summary>
-    private readonly Func<T, ISet<T>> getDependencies;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="DagChecker{T}"/> class.
     /// </summary>
     /// <param name="getDependencies">
     /// The function that returns the dependencies of the specified node.
     /// </param>
-    public DagChecker(Func<T, ISet<T>> getDependencies)
+    /// <param name="toNodeName">
+    /// The function that converts a node to its string representation.
+    /// </param>
+    public DagChecker(
+        Func<T, ISet<T>> getDependencies,
+        Func<T, string> toNodeName)
+        : this(getDependencies, toNodeName, new HashSet<T>())
     {
-        this.getDependencies = getDependencies;
-        checkedSet = new HashSet<T>();
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DagChecker{T}"/> class,
-    /// with the specified node set containing the nodes that have no circular
-    /// dependencies.
+    /// Gets a set of nodes that have already been checked and confirmed to be
+    /// free of circular dependencies.
     /// </summary>
-    /// <remarks>
-    /// The <see cref="Check(T)"/> method may add the nodes to the specified
-    /// node set.
-    /// </remarks>
-    /// <param name="getDependencies">
-    /// The function that returns the dependencies of the specified node.
-    /// </param>
-    /// <param name="checkedSet">
-    /// The node set containing the nodes that have no circular dependencies.
-    /// </param>
-    public DagChecker(Func<T, ISet<T>> getDependencies, ISet<T> checkedSet)
-    {
-        this.getDependencies = getDependencies;
-        this.checkedSet = checkedSet;
-    }
+    private ISet<T> CheckedSet { get; } = checkedSet;
+
+    /// <summary>
+    /// Gets the function that returns the dependencies of the specified node.
+    /// </summary>
+    private Func<T, ISet<T>> GetDependencies { get; } = getDependencies;
+
+    /// <summary>
+    /// Gets a set used to track the current path during cycle detection
+    /// (acting as breadcrumbs).
+    /// </summary>
+    private LinkedHashSet<T> Breadcrumbs { get; } = [];
+
+    private Func<T, string> ToNodeName { get; } = toNodeName;
 
     /// <summary>
     /// Recursively checks if the specified node or its dependencies form a
@@ -81,32 +84,32 @@ public sealed class DagChecker<T>
     /// </exception>
     public void Check(T node)
     {
-        if (checkedSet.Contains(node))
+        if (CheckedSet.Contains(node))
         {
             return;
         }
-        if (!set.Add(node))
+        if (!Breadcrumbs.Add(node))
         {
-            var list = new List<T>(set)
+            var list = new List<T>(Breadcrumbs)
             {
                 node,
             };
             var index = list.IndexOf(node);
             var loop = list.GetRange(index, list.Count - index);
-            throw CircularDependencyException.Of(loop);
+            throw CircularDependencyException.Of(loop.Select(ToNodeName));
         }
         try
         {
-            var dependencies = getDependencies(node);
+            var dependencies = GetDependencies(node);
             foreach (var d in dependencies)
             {
                 Check(d);
             }
-            checkedSet.Add(node);
+            CheckedSet.Add(node);
         }
         finally
         {
-            set.Remove(node);
+            Breadcrumbs.Remove(node);
         }
     }
 }

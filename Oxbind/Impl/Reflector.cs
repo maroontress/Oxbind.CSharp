@@ -8,9 +8,8 @@ using System;
 /// <typeparam name="T">
 /// The type of the value to be injected.
 /// </typeparam>
-/// <param name="inject">
-/// The delegate that injects the processed value into an array of constructor
-/// arguments.
+/// <param name="parameterIndex">
+/// The parameter index in the constructor where the value is injected.
 /// </param>
 /// <param name="unitType">
 /// The type of the unit.
@@ -19,12 +18,12 @@ using System;
 /// The delegate that sugarcoats the specified value.
 /// </param>
 public sealed class Reflector<T>(
-    Injector inject, Type unitType, Sugarcoater<T> sugarcoater)
+    int parameterIndex, Type unitType, Sugarcoater<T> sugarcoater)
 {
     /// <summary>
-    /// Gets the injector.
+    /// Gets the parameter index.
     /// </summary>
-    public Injector Inject { get; } = inject;
+    public int ParameterIndex { get; } = parameterIndex;
 
     /// <summary>
     /// Gets the type of the unit.
@@ -35,4 +34,16 @@ public sealed class Reflector<T>(
     /// Gets the sugarcoater.
     /// </summary>
     public Sugarcoater<T> Sugarcoater { get; } = sugarcoater;
+
+    /// <summary>
+    /// Injects a value into an array of constructor arguments.
+    /// </summary>
+    /// <param name="arguments">
+    /// The constructor arguments to inject the value into.
+    /// </param>
+    /// <param name="value">
+    /// The value to be injected.
+    /// </param>
+    public void Inject(object[] arguments, object value)
+        => arguments[ParameterIndex] = value;
 }
