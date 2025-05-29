@@ -85,8 +85,7 @@ public sealed class InternMap<K, V>(int initialCapacity, int concurrencyLevel)
     /// The key.
     /// </param>
     /// <param name="newValue">
-    /// The function that returns a new value object corresponding to the
-    /// specified argument.
+    /// The function that creates a new value object for the specified key.
     /// </param>
     /// <returns>
     /// The canonical value object.

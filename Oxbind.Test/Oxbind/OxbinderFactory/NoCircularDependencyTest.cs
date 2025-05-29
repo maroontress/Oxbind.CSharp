@@ -11,6 +11,7 @@ public sealed class NoCircularDependencyTest
     public void RootTest()
     {
         var factory = new OxbinderFactory();
+        _ = factory.Of<Root>();
     }
 
     [ForElement("root")]

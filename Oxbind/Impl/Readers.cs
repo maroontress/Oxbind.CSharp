@@ -24,7 +24,7 @@ public static class Readers
             return;
         }
         throw new BindException(
-            "unexpected end of stream.", AsXmlLineInfo(@in));
+            "Unexpected end of stream.", AsXmlLineInfo(@in));
     }
 
     /// <summary>
@@ -47,7 +47,7 @@ public static class Readers
             return;
         }
         throw new BindException(
-            "expected end of stream", AsXmlLineInfo(@in));
+            "Expected end of stream", AsXmlLineInfo(@in));
     }
 
     /// <summary>
@@ -123,7 +123,7 @@ public static class Readers
     /// The value of the result.
     /// </param>
     /// <returns>
-    /// The new bind result.
+    /// A new <see cref="BindResult{T}"/> instance.
     /// </returns>
     public static BindResult<T> NewResult<T>(IXmlLineInfo info, T value)
         where T : class
@@ -140,7 +140,7 @@ public static class Readers
     /// The value of the result.
     /// </param>
     /// <returns>
-    /// The new bind result.
+    /// A new <see cref="BindResult{T}"/> instance.
     /// </returns>
     public static object NewResultObject(IXmlLineInfo info, object value)
     {
@@ -153,7 +153,7 @@ public static class Readers
                 not happen here as T is constrained to 'class'.
             */
             ?? throw new NullReferenceException(
-                "unexpected type (maybe Nullable<T>)");
+                "Unexpected type (maybe Nullable<T>)");
     }
 
     /// <summary>
@@ -313,7 +313,7 @@ public static class Readers
         throw NewBindExceptionDueToUnexpectedNodeType(
             @in,
             $"""
-            It was expected for the element '{expectedName}' to {startOrEnd}.
+            Expected the {startOrEnd} of element '{expectedName}'.
             """);
     }
 
@@ -326,7 +326,7 @@ public static class Readers
     /// </param>
     /// <returns>
     /// <c>true</c> if the node type is <see cref="XmlNodeType.Text"/> or <see
-    /// cref="XmlNodeType.Whitespace"/>; otherwise, <c>false</c>.
+    /// cref="XmlNodeType.Whitespace"/>; otherwise, <see langword="false"/>.
     /// </returns>
     private static bool IsCharacters(XmlNodeType nodeType)
         => nodeType is XmlNodeType.Text

@@ -77,7 +77,8 @@ public sealed class Journal
     /// errors recorded by this logger.
     /// </summary>
     /// <returns>
-    /// The log messages.
+    /// A collection of log messages, including both warnings and errors,
+    /// recorded by this logger.
     /// </returns>
     public IEnumerable<string> GetMessages()
         => Messages;
@@ -86,7 +87,7 @@ public sealed class Journal
     /// Logs a warning message.
     /// </summary>
     /// <param name="message">
-    /// The resource key for the format string pattern.
+    /// The resource key for the message format string.
     /// </param>
     /// <param name="args">
     /// The arguments for the formatted string.
@@ -99,7 +100,7 @@ public sealed class Journal
     /// has been recorded.
     /// </summary>
     /// <param name="message">
-    /// The resource key for the format string pattern.
+    /// The resource key for the message format string.
     /// </param>
     /// <param name="args">
     /// The arguments for the formatted string.
@@ -114,7 +115,7 @@ public sealed class Journal
     /// <c>"warning"</c> or <c>"error"</c>.
     /// </param>
     /// <param name="message">
-    /// The resource key for the format string pattern.
+    /// The resource key for the message format string.
     /// </param>
     /// <param name="args">
     /// The arguments for the formatted string.

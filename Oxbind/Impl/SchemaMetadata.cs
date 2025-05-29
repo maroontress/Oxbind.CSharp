@@ -21,7 +21,7 @@ public sealed class SchemaMetadata(
     : Metadata(bank)
 {
     /// <summary>
-    /// Gets the immutable list that contains <see cref="X"/> objects.
+    /// Gets the immutable list containing <see cref="X"/> objects.
     /// </summary>
     private IReadOnlyList<X> ChildList { get; } = NewChildList(children);
 

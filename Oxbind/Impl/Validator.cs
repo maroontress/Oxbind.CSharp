@@ -21,14 +21,14 @@ public sealed class Validator
     /// The type of the class attributed with <see
     /// cref="ForElementAttribute"/>.
     /// </param>
-    /// <param name="logger">
-    /// The logger instance.
+    /// <param name="journal">
+    /// The <see cref="Journal"/> instance.
     /// </param>
-    public Validator(Type clazz, Journal logger)
+    public Validator(Type clazz, Journal journal)
     {
         BuildSpec NoConstructor()
         {
-            logger.Error("must_have_one_valid_constructor");
+            journal.Error("must_have_one_valid_constructor");
             return new(null, [], Dependency.Empty);
         }
 
@@ -36,25 +36,25 @@ public sealed class Validator
         {
             var attributeParameterList = AttributeParameter.Of(ctor)
                 .ToList();
-            CheckAttributes(logger, attributeParameterList);
+            CheckAttributes(journal, attributeParameterList);
             var childParameterList = ctor.GetParameters()
                 .Skip(attributeParameterList.Count)
                 .ToList();
-            var dependency = CheckChildren(logger, childParameterList);
+            var dependency = CheckChildren(journal, childParameterList);
             return new(ctor, attributeParameterList, dependency);
         }
 
         XmlQualifiedName NoElementNameSpecified()
         {
-            logger.Error("must_be_annotated_with_ForElement");
+            journal.Error("must_be_annotated_with_ForElement");
             return XmlQualifiedName.Empty;
         }
 
         if (clazz.GetTypeInfo().IsInterface)
         {
-            logger.Error("must_not_be_interface");
+            journal.Error("must_not_be_interface");
         }
-        ValidationLogger = logger;
+        Logger = journal;
         ElementName = GetElementName(clazz) is not {} elementName
             ? NoElementNameSpecified()
             : elementName;
@@ -65,9 +65,9 @@ public sealed class Validator
     }
 
     /// <summary>
-    /// Gets the logger instance.
+    /// Gets the <see cref="Journal"/> instance.
     /// </summary>
-    public Journal ValidationLogger { get; }
+    public Journal Logger { get; }
 
     /// <summary>
     /// Gets the <see cref="ConstructorInfo"/> for the constructor of the
@@ -85,7 +85,7 @@ public sealed class Validator
     /// <summary>
     /// Gets a value indicating whether this validator has detected errors.
     /// </summary>
-    public bool IsValid => !ValidationLogger.HasError;
+    public bool IsValid => !Logger.HasError;
 
     /// <summary>
     /// Gets the collection of the constructor parameters attributed with <see
@@ -129,8 +129,8 @@ public sealed class Validator
     /// The type to test.
     /// </param>
     /// <returns>
-    /// The XML element name marked with the annotation <see
-    /// cref="ForElementAttribute"/>, <c>null</c> otherwise.
+    /// The XML element name marked with the <see cref="ForElementAttribute"/>
+    /// annotation; <c>null</c> otherwise.
     /// </returns>
     private static XmlQualifiedName? GetElementName(Type clazz)
         => clazz.GetTypeInfo()
@@ -145,7 +145,7 @@ public sealed class Validator
     /// cref="ForAttributeAttribute"/> is not combined with other mutually
     /// exclusive attributes. Logs errors for any violations found.
     /// </summary>
-    /// <param name="logger">
+    /// <param name="journal">
     /// The <see cref="Journal"/> instance used to record validation errors.
     /// </param>
     /// <param name="attributeParameterList">
@@ -154,12 +154,12 @@ public sealed class Validator
     /// cref="ForAttributeAttribute"/>.
     /// </param>
     private static void CheckAttributes(
-        Journal logger,
+        Journal journal,
         IReadOnlyList<AttributeParameter> attributeParameterList)
     {
         /*
-            Checks the duplication with the attribute name of the
-            [ForAttribute].
+            Checks for duplicate attribute names from [ForAttribute]
+            annotations.
         */
         var group = attributeParameterList.GroupBy(
                 x => x.Name,
@@ -169,7 +169,7 @@ public sealed class Validator
         foreach (var i in group)
         {
             var names = Names.SortAndJoin(i);
-            logger.Error("duplicated_attribute_name", i.Key, names);
+            journal.Error("duplicated_attribute_name", i.Key, names);
         }
 
         /*
@@ -185,7 +185,7 @@ public sealed class Validator
         Elements.IfNotEmpty(
             attributeParameterList.Select(x => x.Info)
                 .Where(IsInvalidForAttributeParameter),
-            t => logger.Error(
+            t => journal.Error(
                 "type_mismatch_ForAttribute", Names.OfParameters(t)));
 
         /*
@@ -203,7 +203,7 @@ public sealed class Validator
                     typeSet.IntersectWith(ForAttributeExclusiveList);
                     return typeSet.Count > 0;
                 }),
-            t => logger.Error(
+            t => journal.Error(
                 """
                 parameter_must_not_be_annotated_with_both_ForAttribute_and_another
                 """,
@@ -216,7 +216,7 @@ public sealed class Validator
     /// attributes, such as [ForText], [Required], [Optional], and [Multiple].
     /// Logs errors for invalid combinations or missing annotations.
     /// </summary>
-    /// <param name="logger">
+    /// <param name="journal">
     /// The <see cref="Journal"/> instance used to record validation errors.
     /// </param>
     /// <param name="childParameterList">
@@ -227,7 +227,7 @@ public sealed class Validator
     /// dependencies.
     /// </returns>
     private static Dependency CheckChildren(
-        Journal logger,
+        Journal journal,
         IReadOnlyList<ParameterInfo> childParameterList)
     {
         static ForAttributeAttribute? ToForAttribute(ParameterInfo info)
@@ -258,7 +258,7 @@ public sealed class Validator
             .ToList();
         if (attributeList.Count is not 0)
         {
-            logger.Error(
+            journal.Error(
                 """
                 parameters_with_ForAttribute_must_be_listed_consecutively_at_the_beginning
                 """,
@@ -277,7 +277,7 @@ public sealed class Validator
             .ToList();
         if (intersection.Count is not 0)
         {
-            logger.Error(
+            journal.Error(
                 """
                 parameter_must_not_be_annotated_with_both_ForText_and_another
                 """,
@@ -297,7 +297,7 @@ public sealed class Validator
             .ToList();
         if (noAnnotationList.Count is not 0)
         {
-            logger.Error(
+            journal.Error(
                 """
                 parameter_must_be_annotated_with_attributes_for_child_elements
                 """,
@@ -314,15 +314,15 @@ public sealed class Validator
         if (forChildren.Count is not 0
             && forTexts.Count is not 0)
         {
-            logger.Error(
+            journal.Error(
                 """
                 parameters_must_not_be_mixed
                 """,
                 Names.OfParameters(forTexts),
                 Names.OfParameters(forChildren));
         }
-        CheckForText(logger, forTexts);
-        var childParameters = CheckForChildren(logger, forChildren);
+        CheckForText(journal, forTexts);
+        var childParameters = CheckForChildren(journal, forChildren);
         return forTexts.Count is not 0
             ? Dependency.InnerText
             : Dependency.Of(childParameters);
@@ -333,7 +333,7 @@ public sealed class Validator
     /// cref="RequiredAttribute"/>, <see cref="OptionalAttribute"/>, <see
     /// cref="MultipleAttribute"/>.
     /// </summary>
-    /// <param name="logger">
+    /// <param name="journal">
     /// The <see cref="Journal"/> instance used to record validation errors.
     /// </param>
     /// <param name="parameterList">
@@ -346,7 +346,7 @@ public sealed class Validator
     /// represent the child element dependencies.
     /// </returns>
     private static IEnumerable<ChildParameter> CheckForChildren(
-        Journal logger,
+        Journal journal,
         IReadOnlyList<ParameterInfo> parameterList)
     {
         Elements.IfNotEmpty(
@@ -355,7 +355,7 @@ public sealed class Validator
                     .Select(a => a.GetType())
                     .Intersect(ChildAttributeList)
                     .Count() > 1),
-            t => logger.Error(
+            t => journal.Error(
                 """
                 parameter_for_child_elements_must_be_mutually_exclusive
                 """,
@@ -379,11 +379,11 @@ public sealed class Validator
                     "parameter_type_must_not_be_IEnumerableT");
             Elements.IfNotEmpty(
                 g.Where(predicate),
-                t => logger.Error(messageKey, Names.OfParameters(t)));
+                t => journal.Error(messageKey, Names.OfParameters(t)));
         }
 
         /*
-            Checks that each parameter type is annotated with
+            Checks that the unit type of each child parameter is annotated with
             [ForElement].
         */
         var dependencies = parameterList.Select(ChildParameter.Of)
@@ -391,7 +391,7 @@ public sealed class Validator
         Elements.IfNotEmpty(
             dependencies.Where(p => !IsElementClass(p.UnitType))
                 .Select(p => p.Info),
-            t => logger.Error(
+            t => journal.Error(
                 """
                 parameter_type_must_be_annotated_with_ForElement
                 """,
@@ -417,7 +417,7 @@ public sealed class Validator
             var nextList = dependencies.Skip(1);
             var pairList = currentList.Zip(
                 nextList, (c, n) => new ChildParameterPair(c, n));
-            var foo = new ChildParameterOrder(pairList, logger);
+            var foo = new ChildParameterOrder(pairList, journal);
             foo.CheckSameElementName(
                 OptionalPredicate,
                 """
@@ -437,7 +437,7 @@ public sealed class Validator
     /// Validates the constructor parameters marked with the <see
     /// cref="ForTextAttribute"/> annotation.
     /// </summary>
-    /// <param name="logger">
+    /// <param name="journal">
     /// The <see cref="Journal"/> instance used to record validation errors.
     /// </param>
     /// <param name="parameterList">
@@ -445,7 +445,7 @@ public sealed class Validator
     /// cref="ForTextAttribute"/>.
     /// </param>
     private static void CheckForText(
-        Journal logger,
+        Journal journal,
         IReadOnlyList<ParameterInfo> parameterList)
     {
         /*
@@ -454,7 +454,7 @@ public sealed class Validator
         */
         if (parameterList.Count > 1)
         {
-            logger.Error(
+            journal.Error(
                 "duplicated_ForText", Names.OfParameters(parameterList));
         }
 
@@ -465,7 +465,8 @@ public sealed class Validator
         Elements.IfNotEmpty(
             parameterList.Where(
                 p => !StringSugarcoaters.IsValid(p.ParameterType)),
-            t => logger.Error("type_mismatch_ForText", Names.OfParameters(t)));
+            t => journal.Error(
+                "type_mismatch_ForText", Names.OfParameters(t)));
     }
 
     /// <summary>
@@ -536,16 +537,16 @@ public sealed class Validator
     /// An enumerable collection of <see cref="ChildParameterPair"/> objects
     /// representing pairs of child parameters to check.
     /// </param>
-    /// <param name="logger">
-    /// The <see cref="Logger"/> instance used to log errors when the order of
+    /// <param name="journal">
+    /// The <see cref="Journal"/> instance used to log errors when the order of
     /// child parameters is invalid.
     /// </param>
     private class ChildParameterOrder(
-        IEnumerable<ChildParameterPair> pairs, Journal logger)
+        IEnumerable<ChildParameterPair> pairs, Journal journal)
     {
         private List<ChildParameterPair> PairList { get; } = [.. pairs];
 
-        private Journal Logger { get; } = logger;
+        private Journal Logger { get; } = journal;
 
         /// <summary>
         /// Checks the order of child parameters with the same element name

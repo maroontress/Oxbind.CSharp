@@ -63,7 +63,7 @@ public sealed class Traversal<T>(Func<T, IEnumerable<T>> getDependencies)
     }
 
     /// <summary>
-    /// Visits recursively all the specified nodes that have never been
+    /// Recursively visits all the specified nodes that have never been
     /// visited.
     /// </summary>
     /// <remarks>

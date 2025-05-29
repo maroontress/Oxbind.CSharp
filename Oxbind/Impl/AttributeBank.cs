@@ -22,8 +22,8 @@ public sealed class AttributeBank
     /// cref="ForElementAttribute"/>.
     /// </param>
     /// <param name="elementName">
-    /// The name of the XML element, which is the value of the attribute <see
-    /// cref="ForElementAttribute"/> for the class bound to this metadata.
+    /// The qualified name of the XML element, derived from the <see
+    /// cref="ForElementAttribute"/> on the class bound to this metadata.
     /// </param>
     /// <param name="attributeParameters">
     /// The collection of <see cref="AttributeParameter"/> instances,
@@ -50,7 +50,7 @@ public sealed class AttributeBank
     public ConstructorInfo ElementConstructor { get; }
 
     /// <summary>
-    /// Gets the name of the XML element, which is the value from the <see
+    /// Gets the qualified name of the XML element, derived from the <see
     /// cref="ForElementAttribute"/> on the class bound to this metadata.
     /// </summary>
     public XmlQualifiedName ElementName { get; }

@@ -57,10 +57,13 @@ using System.Xml;
 /// </param>
 /// <example>
 /// <code>
-/// [ForElement("person")] public record class Person( [ForAttribute("id")]
-/// string? Id, [ForAttribute("name")] string? Name);
+/// [ForElement("person")]
+/// public record class Person(
+///     [ForAttribute("id")] string? Id,
+///     [ForAttribute("name")] string? Name);
 ///
-/// // Corresponding XML: // <![CDATA[<person id="42" name="John Doe"/>]]>
+/// // Corresponding XML:
+/// // <![CDATA[<person id="42" name="John Doe"/>]]>
 /// </code>
 /// </example>
 [AttributeUsage(

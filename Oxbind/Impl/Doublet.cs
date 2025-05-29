@@ -45,7 +45,7 @@ public readonly struct Doublet
     /// The type.
     /// </param>
     /// <returns>
-    /// The new triplet.
+    /// The new doublet.
     /// </returns>
     public static Doublet Of(Type type)
     {

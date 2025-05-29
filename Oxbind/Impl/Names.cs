@@ -37,8 +37,8 @@ public static class Names
     }
 
     /// <summary>
-    /// Sorts the specified strings and returns the joined string of them with
-    /// the default delimiter.
+    /// Sorts the specified strings and returns a string joining them with the
+    /// default delimiter.
     /// </summary>
     /// <param name="all">
     /// The strings.
@@ -59,7 +59,7 @@ public static class Names
     /// The parameters.
     /// </param>
     /// <returns>
-    /// The joined string.
+    /// A comma-separated string of parameter names, sorted alphabetically.
     /// </returns>
     public static string OfParameters(IEnumerable<ParameterInfo> all)
     {
@@ -67,8 +67,8 @@ public static class Names
     }
 
     /// <summary>
-    /// Sorts the names of the specified objects and returns the joined string
-    /// of them with the default delimiter.
+    /// Sorts the names of the specified objects and returns a string joining
+    /// them with the default delimiter.
     /// </summary>
     /// <typeparam name="T">
     /// The type of the objects.
@@ -80,7 +80,8 @@ public static class Names
     /// The function that returns the name of its argument.
     /// </param>
     /// <returns>
-    /// The joined string.
+    /// A comma-separated string of names, obtained by the <paramref
+    /// name="getName"/> function and sorted alphabetically.
     /// </returns>
     private static string JoinedNames<T>(
         IEnumerable<T> all, Func<T, string> getName)

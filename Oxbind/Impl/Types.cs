@@ -83,7 +83,7 @@ public static class Types
     /// <c>typeof(IEnumerable&lt;&gt;)</c>).
     /// </param>
     /// <returns>
-    /// <c>true</c> if <paramref name="type"/> is generic type and if its
+    /// <c>true</c> if <paramref name="type"/> is a generic type and if its
     /// generic type definition equals <paramref name="expectedType"/>, or if
     /// <paramref name="type"/> is not a generic type and it equals <paramref
     /// name="expectedType"/>; otherwise, <c>false</c>.

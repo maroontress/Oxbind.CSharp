@@ -26,7 +26,7 @@ public abstract class Metadata(AttributeBank bank)
     /// the specified XML reader.
     /// </summary>
     /// <param name="in">
-    /// The XmlReader providing the input stream.
+    /// The XML reader that provides the input stream.
     /// </param>
     /// <param name="getMetadata">
     /// The function that returns the <see cref="Metadata"/> object for the
@@ -49,7 +49,7 @@ public abstract class Metadata(AttributeBank bank)
     /// XML reader.
     /// </summary>
     /// <param name="in">
-    /// The XML reader.
+    /// The XML reader that provides the input stream.
     /// </param>
     /// <param name="getMetadata">
     /// The function that returns the <see cref="Metadata"/> object for the
@@ -94,7 +94,7 @@ public abstract class Metadata(AttributeBank bank)
     /// The array of constructor arguments to populate.
     /// </param>
     /// <param name="in">
-    /// The XML reader.
+    /// The XML reader that provides the input stream.
     /// </param>
     /// <param name="getMetadata">
     /// The function that returns the <see cref="Metadata"/> object for the
@@ -106,14 +106,14 @@ public abstract class Metadata(AttributeBank bank)
         Func<Type, Metadata> getMetadata);
 
     /// <summary>
-    /// Handles the component of the specified instance with empty element that
-    /// the specified XML reader is providing.
+    /// Handles component binding when the XML reader encounters an empty
+    /// element.
     /// </summary>
     /// <param name="arguments">
     /// The arguments for the constructor parameters to be injected.
     /// </param>
     /// <param name="in">
-    /// The XML reader.
+    /// The XML reader that provides the input stream.
     /// </param>
     /// <param name="getMetadata">
     /// The function that returns the <see cref="Metadata"/> object for the
@@ -125,12 +125,13 @@ public abstract class Metadata(AttributeBank bank)
         Func<Type, Metadata> getMetadata);
 
     /// <summary>
-    /// Invokes the <see cref="Reflector{T}"/> delegate associated with the
-    /// attribute name read from the XML reader, injecting the value into the
-    /// array of arguments for the constructor.
+    /// Invokes the <see
+    /// cref="Reflector{T}"><![CDATA[Reflector<string>]]></see> delegate
+    /// associated with the attribute name read from the XML reader, injecting
+    /// the value into the array of arguments for the constructor.
     /// </summary>
     /// <param name="in">
-    /// The XML reader.
+    /// The XML reader that provides the input stream.
     /// </param>
     /// <param name="args">
     /// The array of arguments for the constructor.

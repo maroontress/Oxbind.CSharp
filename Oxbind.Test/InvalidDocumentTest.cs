@@ -14,7 +14,7 @@ public sealed class InvalidDocumentTest
             </root>
             """;
         const string m = """
-            3:3: Unexpected node type: EndElement of the element 'root'. (It was expected for the element 'first' to start.)
+            3:3: Unexpected node type: EndElement of the element 'root'. (Expected the start of element 'first'.)
             """;
         NewInstanceChecks.ThrowBindException<Root>(xml, m);
     }
@@ -29,7 +29,7 @@ public sealed class InvalidDocumentTest
             </root>
             """;
         const string m = """
-            3:4: Unexpected node type: Element of the element 'second'. (It was expected for the element 'first' to start.)
+            3:4: Unexpected node type: Element of the element 'second'. (Expected the start of element 'first'.)
             """;
         NewInstanceChecks.ThrowBindException<Root>(xml, m);
     }
@@ -45,7 +45,7 @@ public sealed class InvalidDocumentTest
             </root>
             """;
         const string m = """
-            4:4: Unexpected node type: Element of the element 'second'. (It was expected for the element 'root' to end.)
+            4:4: Unexpected node type: Element of the element 'second'. (Expected the end of element 'root'.)
             """;
         NewInstanceChecks.ThrowBindException<Root>(xml, m);
     }
