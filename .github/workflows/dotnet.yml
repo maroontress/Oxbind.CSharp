@@ -31,6 +31,8 @@ jobs:
       run: bomsweeper '**/*.cs' '**/*.csproj' '**/*.sln'
     - name: Build
       run: dotnet build --configuration Release
+    - name: Pack
+      run: dotnet pack -c Release -p:TargetFramework=netstandard2.0
     - name: Install reportgenerator
       run: dotnet tool install -g dotnet-reportgenerator-globaltool
     - name: Test
