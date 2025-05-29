@@ -143,7 +143,7 @@ var binder = factory.Of<Movie>();
 var movie = binder.NewInstance(reader);
 ```
 
-> [See the result in .NET Fiddle](https://dotnetfiddle.net/Mu2FL2)
+> [See the result in .NET Fiddle](https://dotnetfiddle.net/24Smmg)
 
 The examples above use `record class` for simplicity, but you can also use
 regular classes or primary constructors with Oxbind. Choose the style that best
