@@ -8,7 +8,7 @@
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AssemblyName>Maroontress.Oxbind</AssemblyName>
     <RootNamespace>Maroontress.Oxbind</RootNamespace>
-    <DocumentationFile>dcx\documentation.xml</DocumentationFile>
+    <DocumentationFile>dcx\Maroontress.Oxbind.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -23,7 +23,7 @@
     <Copyright>Copyright (c) 2018 Maroontress Fast Software</Copyright>
     <PackageTags>csharp, XML, deserializer</PackageTags>
     <NoPackageAnalysis>true</NoPackageAnalysis>
-    <Version>2.0.0-alpha</Version>
+    <Version>2.0.0-beta</Version>
     <RepositoryType />
     <Company>Maroontress Fast Software</Company>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -39,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="StyleChecker" Version="2.2.0-alpha">
+    <PackageReference Include="StyleChecker" Version="2.2.0-beta">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
