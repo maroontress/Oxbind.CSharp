@@ -46,7 +46,7 @@ If the element belongs to a namespace, supply its URI as the second argument:
 public record class Movie;
 ```
 
-> [!TIPS]
+> [!TIP]
 > For elements without a namespace (so-called “no namespace” or “null
 > namespace”), either pass an empty string `""` as the second argument of
 > `[ForElement]` or omit the second argument entirely. According to the XML
