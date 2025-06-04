@@ -294,6 +294,7 @@ public sealed class Validator
         */
         var noAnnotationList = childParameterList.Except(forChildren)
             .Except(forTexts)
+            .Except(attributeList)
             .ToList();
         if (noAnnotationList.Count is not 0)
         {
@@ -311,15 +312,19 @@ public sealed class Validator
             For example: Foo([Required] Bar bar, [ForText] Baz baz)
                 {...}
         */
-        if (forChildren.Count is not 0
-            && forTexts.Count is not 0)
+        var onlyForChildren = forChildren.Except(intersection)
+            .ToList();
+        var onlyForText = forTexts.Except(intersection)
+            .ToList();
+        if (onlyForChildren.Count is not 0
+            && onlyForText.Count is not 0)
         {
             journal.Error(
                 """
                 parameters_must_not_be_mixed
                 """,
-                Names.OfParameters(forTexts),
-                Names.OfParameters(forChildren));
+                Names.OfParameters(onlyForText),
+                Names.OfParameters(onlyForChildren));
         }
         CheckForText(journal, forTexts);
         var childParameters = CheckForChildren(journal, forChildren);
