@@ -1,0 +1,62 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IsPackable>true</IsPackable>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>Maroontress.Oxbind</PackageId>
+    <PackageVersion>$(Version)</PackageVersion>
+    <Authors>Tomohisa Tanaka</Authors>
+    <PackageProjectUrl>https://maroontress.github.io/Oxbind-CSharp/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/maroontress/Oxbind.CSharp</RepositoryUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Description>Oxbind is a .NET library for deserializing XML documents to C# objects using constructor injection and a declarative attribute-based mapping. It targets .NET Standard 2.0.</Description>
+    <PackageReleaseNotes>See https://maroontress.github.io/Oxbind-CSharp/releasenotes.html</PackageReleaseNotes>
+    <Copyright>Copyright (c) 2018 Maroontress Fast Software</Copyright>
+    <PackageTags>csharp, XML, deserializer</PackageTags>
+    <NoPackageAnalysis>true</NoPackageAnalysis>
+    <Version>2.0.0-beta</Version>
+    <RepositoryType />
+    <Company>Maroontress Fast Software</Company>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>COPYRIGHT.txt</PackageLicenseFile>
+    <NeutralLanguage>en-US</NeutralLanguage>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="nuget\samples\**" />
+    <EmbeddedResource Remove="nuget\samples\**" />
+    <None Remove="nuget\samples\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="nuget\readme.txt">
+      <Pack>true</Pack>
+      <PackagePath>\</PackagePath>
+    </Content>
+    <Content Include="nuget\COPYRIGHT.txt">
+      <Pack>true</Pack>
+      <PackagePath>\</PackagePath>
+    </Content>
+    <Content Include="nuget\LEGAL_NOTICES.txt">
+      <Pack>true</Pack>
+      <PackagePath>\</PackagePath>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Oxbind\Oxbind.csproj" PrivateAssets="all" />
+    <PackageReference Include="StyleChecker.Annotations" Version="1.0.1" />
+    <None Include="$(OutputPath)\Maroontress.Oxbind.dll" Pack="true" PackagePath="lib/netstandard2.0" Visible="true" />
+    <None Include="$(OutputPath)\Maroontress.Oxbind.xml" Pack="true" PackagePath="lib/netstandard2.0" Visible="true" />
+  </ItemGroup>
+
+</Project>
