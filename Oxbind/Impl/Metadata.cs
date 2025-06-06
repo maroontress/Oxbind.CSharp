@@ -82,7 +82,7 @@ public abstract class Metadata(AttributeBank bank)
             Readers.ConfirmEndElement(@in, Bank.ElementName);
         }
         @in.Read();
-        var instance = Bank.ElementConstructor.Invoke(arguments);
+        var instance = Bank.Factory(arguments);
         return instance;
     }
 

@@ -2,6 +2,8 @@ namespace Maroontress.Oxbind.Impl;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Xml;
 
@@ -36,18 +38,20 @@ public sealed class AttributeBank
         IEnumerable<AttributeParameter> attributeParameters)
     {
         var map = AttributeReflectorMap.Of(attributeParameters);
-        ElementConstructor = ctor;
         ElementName = elementName;
         ToReflector = (name) => map.TryGetValue(name, out var reflector)
             ? reflector
             : null;
         ParameterCount = ctor.GetParameters().Length;
+        Factory = CreateFactory(ctor);
     }
 
     /// <summary>
-    /// Gets the constructor of the class that represents the XML element.
+    /// Gets a function that creates an instance of the class bound to this
+    /// <see cref="AttributeBank"/> instance, given an array of constructor
+    /// parameters.
     /// </summary>
-    public ConstructorInfo ElementConstructor { get; }
+    public Func<object[], object> Factory { get; }
 
     /// <summary>
     /// Gets the qualified name of the XML element, derived from the <see
@@ -77,4 +81,20 @@ public sealed class AttributeBank
     /// constructor parameters.
     /// </returns>
     public object[] NewPlaceholder() => new object[ParameterCount];
+
+    private static Func<object[], object> CreateFactory(ConstructorInfo ctor)
+    {
+        var paramExpr = Expression.Parameter(typeof(object[]), "args");
+        var argsExprs = ctor.GetParameters()
+            .Select(p => Expression.Convert(
+                Expression.ArrayIndex(
+                    paramExpr, Expression.Constant(p.Position)),
+                p.ParameterType))
+            .ToArray();
+        var newExpr = Expression.New(ctor, argsExprs);
+        var convertExpr = Expression.Convert(newExpr, typeof(object));
+        var lambda = Expression.Lambda<Func<object[], object>>(
+            convertExpr, paramExpr);
+        return lambda.Compile();
+    }
 }
