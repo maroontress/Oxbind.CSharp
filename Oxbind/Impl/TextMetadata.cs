@@ -1,8 +1,8 @@
 namespace Maroontress.Oxbind.Impl;
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using System.Xml;
 using StyleChecker.Annotations;
 
@@ -29,24 +29,45 @@ public sealed class TextMetadata(AttributeBank bank, ParameterInfo info)
 
     /// <inheritdoc/>
     protected override void HandleComponentsWithContent(
-        object[] arguments,
+        object?[] arguments,
         XmlReader @in,
         [Unused] Func<Type, Metadata> getMetadata)
     {
-        var info = Readers.ToXmlLineInfo(@in);
-        var b = new StringBuilder();
-        for (;;)
+        static string GetInnerText(XmlReader reader)
         {
-            Readers.ConfirmNext(@in);
-            var nodeType = @in.NodeType;
-            if (nodeType != XmlNodeType.Text)
+            Readers.ConfirmNext(reader);
+            if (reader.NodeType != XmlNodeType.Text)
             {
-                break;
+                return string.Empty;
             }
-            b.Append(@in.Value);
-            @in.Read();
+            var text = reader.Value;
+            reader.Read();
+            Readers.ConfirmNext(reader);
+            if (reader.NodeType != XmlNodeType.Text)
+            {
+                return text;
+            }
+
+            var textList = new List<string>()
+            {
+                text,
+                reader.Value,
+            };
+            for (;;)
+            {
+                reader.Read();
+                Readers.ConfirmNext(reader);
+                if (reader.NodeType != XmlNodeType.Text)
+                {
+                    return string.Concat(textList);
+                }
+                textList.Add(reader.Value);
+            }
         }
-        Reflector.Inject(arguments, Reflector.Sugarcoater(info, b.ToString()));
+
+        var info = Readers.ToXmlLineInfo(@in);
+        var value = GetInnerText(@in);
+        Reflector.Inject(arguments, Reflector.Sugarcoater(info, value));
     }
 
     /// <inheritdoc/>
@@ -55,7 +76,7 @@ public sealed class TextMetadata(AttributeBank bank, ParameterInfo info)
     /// <c><![CDATA[<element></element>]]></c>, resulting in an empty string.
     /// </remarks>
     protected override void HandleComponentsWithEmptyElement(
-        object[] arguments,
+        object?[] arguments,
         XmlReader @in,
         [Unused] Func<Type, Metadata> getMetadata)
     {

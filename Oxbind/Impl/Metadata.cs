@@ -2,7 +2,6 @@ namespace Maroontress.Oxbind.Impl;
 
 using System;
 using System.Xml;
-using Maroontress.Oxbind.Util;
 
 /// <summary>
 /// Represents metadata that binds a class and its constructor parameters to an
@@ -63,11 +62,11 @@ public abstract class Metadata(AttributeBank bank)
         XmlReader @in, Func<Type, Metadata> getMetadata)
     {
         var arguments = Bank.NewPlaceholder();
-        Elements.ForEach(@in.AttributeCount, k =>
+        for (var k = 0; k < @in.AttributeCount; ++k)
         {
             @in.MoveToAttribute(k);
             DispatchAttribute(@in, arguments);
-        });
+        }
         @in.MoveToElement();
         if (@in.IsEmptyElement)
         {
@@ -101,7 +100,7 @@ public abstract class Metadata(AttributeBank bank)
     /// specified type.
     /// </param>
     protected abstract void HandleComponentsWithContent(
-        object[] arguments,
+        object?[] arguments,
         XmlReader @in,
         Func<Type, Metadata> getMetadata);
 
@@ -120,7 +119,7 @@ public abstract class Metadata(AttributeBank bank)
     /// specified type.
     /// </param>
     protected abstract void HandleComponentsWithEmptyElement(
-        object[] arguments,
+        object?[] arguments,
         XmlReader @in,
         Func<Type, Metadata> getMetadata);
 
@@ -136,7 +135,7 @@ public abstract class Metadata(AttributeBank bank)
     /// <param name="args">
     /// The array of arguments for the constructor.
     /// </param>
-    private void DispatchAttribute(XmlReader @in, object[] args)
+    private void DispatchAttribute(XmlReader @in, object?[] args)
     {
         var key = Readers.NewQName(@in);
         if (Bank.ToReflector(key) is not {} reflector)

@@ -27,7 +27,7 @@ public sealed class SchemaMetadata(
 
     /// <inheritdoc/>
     protected override void HandleComponentsWithContent(
-        object[] arguments,
+        object?[] arguments,
         XmlReader @in,
         Func<Type, Metadata> getMetadata)
     {
@@ -45,7 +45,7 @@ public sealed class SchemaMetadata(
 
     /// <inheritdoc/>
     protected override void HandleComponentsWithEmptyElement(
-        object[] arguments,
+        object?[] arguments,
         XmlReader @in,
         Func<Type, Metadata> getMetadata)
     {

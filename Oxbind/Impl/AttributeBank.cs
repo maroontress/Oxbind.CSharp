@@ -51,7 +51,7 @@ public sealed class AttributeBank
     /// <see cref="AttributeBank"/> instance, given an array of constructor
     /// parameters.
     /// </summary>
-    public Func<object[], object> Factory { get; }
+    public Func<object?[], object> Factory { get; }
 
     /// <summary>
     /// Gets the qualified name of the XML element, derived from the <see
@@ -82,7 +82,7 @@ public sealed class AttributeBank
     /// </returns>
     public object[] NewPlaceholder() => new object[ParameterCount];
 
-    private static Func<object[], object> CreateFactory(ConstructorInfo ctor)
+    private static Func<object?[], object> CreateFactory(ConstructorInfo ctor)
     {
         var paramExpr = Expression.Parameter(typeof(object[]), "args");
         var argsExprs = ctor.GetParameters()
@@ -93,7 +93,7 @@ public sealed class AttributeBank
             .ToArray();
         var newExpr = Expression.New(ctor, argsExprs);
         var convertExpr = Expression.Convert(newExpr, typeof(object));
-        var lambda = Expression.Lambda<Func<object[], object>>(
+        var lambda = Expression.Lambda<Func<object?[], object>>(
             convertExpr, paramExpr);
         return lambda.Compile();
     }

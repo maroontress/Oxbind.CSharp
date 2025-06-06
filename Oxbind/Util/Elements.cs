@@ -11,26 +11,6 @@ using System.Linq;
 public static class Elements
 {
     /// <summary>
-    /// Performs an action for each integer from 0 up to (but not including)
-    /// <paramref name="count"/>.
-    /// </summary>
-    /// <param name="count">
-    /// The exclusive upper bound.
-    /// </param>
-    /// <param name="consumer">
-    /// The action to execute for each integer from 0 (inclusive) to <paramref
-    /// name="count"/> (exclusive). The current integer is passed as an
-    /// argument to the action.
-    /// </param>
-    public static void ForEach(int count, Action<int> consumer)
-    {
-        for (var k = 0; k < count; ++k)
-        {
-            consumer(k);
-        }
-    }
-
-    /// <summary>
     /// Accepts the specified consumer function if the specified collection is
     /// not empty.
     /// </summary>
