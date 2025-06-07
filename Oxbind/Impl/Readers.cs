@@ -2,6 +2,7 @@ namespace Maroontress.Oxbind.Impl;
 
 using System;
 using System.Xml;
+using StyleChecker.Annotations;
 
 /// <summary>
 /// Provides utility methods for reading and validating XML content using an
@@ -170,6 +171,20 @@ public static class Readers
         => @in is IXmlLineInfo info
             ? new DefaultXmlLineInfo(info)
             : DefaultXmlLineInfo.NoLineInfo;
+
+    /// <summary>
+    /// Returns a default <see cref="IXmlLineInfo"/> object indicating no line
+    /// information.
+    /// </summary>
+    /// <param name="in">
+    /// The XML reader. This parameter is unused.
+    /// </param>
+    /// <returns>
+    /// The default <see cref="IXmlLineInfo"/> object indicating no line
+    /// information.
+    /// </returns>
+    public static IXmlLineInfo ToNoXmlLineInfo([Unused] XmlReader @in)
+        => DefaultXmlLineInfo.NoLineInfo;
 
     /// <summary>
     /// Gets the <see cref="IXmlLineInfo"/> object from the specified XML

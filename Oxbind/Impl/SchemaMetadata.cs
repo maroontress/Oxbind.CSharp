@@ -21,17 +21,17 @@ public sealed class SchemaMetadata(
     : Metadata(bank)
 {
     /// <summary>
-    /// Gets the immutable list containing <see cref="X"/> objects.
+    /// Gets the immutable list containing <see cref="Child"/> objects.
     /// </summary>
-    private IReadOnlyList<X> ChildList { get; } = NewChildList(children);
+    private IReadOnlyList<Child> ChildList { get; } = NewChildList(children);
 
     /// <inheritdoc/>
     protected override void HandleComponentsWithContent(
-        object[] arguments,
+        object?[] arguments,
         XmlReader @in,
         Func<Type, Metadata> getMetadata)
     {
-        HandleAction(x =>
+        foreach (var x in ChildList)
         {
             var reflector = x.Reflector;
             x.SchemaType.ApplyWithContent(
@@ -39,17 +39,17 @@ public sealed class SchemaMetadata(
                 @in,
                 getMetadata,
                 reflector,
-                o => reflector.Inject(arguments, o));
-        });
+                arguments);
+        }
     }
 
     /// <inheritdoc/>
     protected override void HandleComponentsWithEmptyElement(
-        object[] arguments,
+        object?[] arguments,
         XmlReader @in,
         Func<Type, Metadata> getMetadata)
     {
-        HandleAction(x =>
+        foreach (var x in ChildList)
         {
             var reflector = x.Reflector;
             x.SchemaType.ApplyWithEmptyElement(
@@ -57,33 +57,26 @@ public sealed class SchemaMetadata(
                 @in,
                 getMetadata,
                 reflector,
-                o => reflector.Inject(arguments, o));
-        });
+                arguments);
+        }
     }
 
-    private static List<X> NewChildList(IEnumerable<ChildParameter> children)
+    private static List<Child> NewChildList(
+        IEnumerable<ChildParameter> children)
     {
-        return [.. children.Select(p =>
+        static Child ToChild(ChildParameter p)
         {
             var schemaType = p.SchemaType;
             var unitType = p.UnitType;
             var reflector = Reflectors.Of(p.Info);
-            return new X(schemaType, unitType, reflector);
-        })];
-    }
-
-    private void HandleAction(Action<X> action)
-    {
-        foreach (var x in ChildList)
-        {
-            action(x);
+            return new(schemaType, unitType, reflector);
         }
+
+        return [.. children.Select(ToChild)];
     }
 
-    private record struct X(
+    private record struct Child(
         SchemaType SchemaType,
         Type UnitType,
-        Reflector<object> Reflector)
-    {
-    }
+        Reflector<object> Reflector);
 }

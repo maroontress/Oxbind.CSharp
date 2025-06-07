@@ -21,6 +21,8 @@ public abstract class Metadata(AttributeBank bank)
     /// </summary>
     public AttributeBank Bank { get; } = bank;
 
+    private InternMap<string, QualifiedNameMap> NsMap { get; } = new();
+
     /// <summary>
     /// Returns a new instance bound to the root XML element that is read from
     /// the specified XML reader.
@@ -62,12 +64,12 @@ public abstract class Metadata(AttributeBank bank)
     public object CreateInstance(
         XmlReader @in, Func<Type, Metadata> getMetadata)
     {
-        var arguments = Bank.NewPlaceholder();
-        Elements.ForEach(@in.AttributeCount, k =>
+        var arguments = Bank.GetPlaceholder();
+        for (var k = 0; k < @in.AttributeCount; ++k)
         {
             @in.MoveToAttribute(k);
             DispatchAttribute(@in, arguments);
-        });
+        }
         @in.MoveToElement();
         if (@in.IsEmptyElement)
         {
@@ -82,7 +84,8 @@ public abstract class Metadata(AttributeBank bank)
             Readers.ConfirmEndElement(@in, Bank.ElementName);
         }
         @in.Read();
-        var instance = Bank.ElementConstructor.Invoke(arguments);
+        var instance = Bank.Factory(arguments);
+        Bank.RecyclePlaceholder(arguments);
         return instance;
     }
 
@@ -101,7 +104,7 @@ public abstract class Metadata(AttributeBank bank)
     /// specified type.
     /// </param>
     protected abstract void HandleComponentsWithContent(
-        object[] arguments,
+        object?[] arguments,
         XmlReader @in,
         Func<Type, Metadata> getMetadata);
 
@@ -120,9 +123,12 @@ public abstract class Metadata(AttributeBank bank)
     /// specified type.
     /// </param>
     protected abstract void HandleComponentsWithEmptyElement(
-        object[] arguments,
+        object?[] arguments,
         XmlReader @in,
         Func<Type, Metadata> getMetadata);
+
+    private static QualifiedNameMap NewQualifiedNameMap(string ns)
+        => new(ns);
 
     /// <summary>
     /// Invokes the <see
@@ -136,16 +142,30 @@ public abstract class Metadata(AttributeBank bank)
     /// <param name="args">
     /// The array of arguments for the constructor.
     /// </param>
-    private void DispatchAttribute(XmlReader @in, object[] args)
+    private void DispatchAttribute(XmlReader @in, object?[] args)
     {
-        var key = Readers.NewQName(@in);
+        var qualifiedNameMap = NsMap.Intern(
+            @in.NamespaceURI, NewQualifiedNameMap);
+        var key = qualifiedNameMap.LocalNameMap.Intern(
+            @in.LocalName,
+            qualifiedNameMap.ToQualifiedName);
         if (Bank.ToReflector(key) is not {} reflector)
         {
             // just ignore the attribute if it is not recognized.
             return;
         }
+        var s = reflector.Sugarcoater;
+        var info = s.NewLineInfo(@in);
         var value = @in.Value;
-        var info = Readers.AsXmlLineInfo(@in);
-        reflector.Inject(args, reflector.Sugarcoater(info, value));
+        reflector.Inject(args, s.NewInstance(info, value));
+    }
+
+    private class QualifiedNameMap(string ns)
+    {
+        public InternMap<string, XmlQualifiedName> LocalNameMap { get; }
+            = new();
+
+        public Func<string, XmlQualifiedName> ToQualifiedName { get; }
+            = name => new XmlQualifiedName(name, ns);
     }
 }
