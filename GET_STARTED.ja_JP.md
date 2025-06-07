@@ -147,19 +147,21 @@ public record class Actor(
 <parameters>           ::= <for-attribute> <content>?
 
 <for-attribute>        ::= { [ForAttribute] <param> }*
-<param>                ::= (string? | BindResult<string>?) パラメータ名称
+<param>                ::= (string? | BindResult<string>?) <parameter-name>
 
 <content>              ::= <for-text> | <child-elements>
-<for-text>             ::= [ForText] (string | BindResult<string>) パラメータ名称
+<for-text>             ::= [ForText] (string | BindResult<string>) <parameter-name>
 <child-elements>       ::= { (<required-element>
                             | <optional-element>
-                            | <multiple-elements>) パラメータ名称 }*
+                            | <multiple-elements>) <parameter-name> }*
 
-<required-element>     ::= [Required] (型 | BindResult<型>)
-<optional-element>     ::= [Optional] (型? | BindResult<型>?)
-<multiple-elements>    ::= [Multiple] (IEnumerable<型> | IEnumerable<BindResult<型>>)
+<required-element>     ::= [Required] (<element-type> | BindResult<<element-type>>)
+<optional-element>     ::= [Optional] (<element-type>? | BindResult<<element-type>>?)
+<multiple-elements>    ::= [Multiple] (IEnumerable<<element-type>>
+                                     | IEnumerable<BindResult<<element-type>>>)
 
-; 型は [ForElement] 属性が付与されたクラス
+; <parameter-name> はC#の有効なパラメータ名です。
+; <element-type> は[ForElement]属性が付与されたクラスです。
 ```
 
 - `[ForAttribute]` は先頭から連続
