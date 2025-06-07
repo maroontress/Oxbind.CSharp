@@ -27,16 +27,15 @@ public abstract class SchemaType
     /// <param name="reflector">
     /// The reflector.
     /// </param>
-    /// <param name="setChildValue">
-    /// An action that injects the processed child value into the parent
-    /// object's constructor arguments.
+    /// <param name="arguments">
+    /// The parent object's constructor arguments.
     /// </param>
     public abstract void ApplyWithContent(
         Type unitType,
         XmlReader input,
         Func<Type, Metadata> getMetadata,
         Reflector<object> reflector,
-        Action<object> setChildValue);
+        object?[] arguments);
 
     /// <summary>
     /// Processes an empty child element, applying the binding logic.
@@ -54,14 +53,13 @@ public abstract class SchemaType
     /// <param name="reflector">
     /// The reflector.
     /// </param>
-    /// <param name="setChildValue">
-    /// An action that injects the processed child value into the parent
-    /// object's constructor arguments.
+    /// <param name="arguments">
+    /// The parent object's constructor arguments.
     /// </param>
     public abstract void ApplyWithEmptyElement(
         Type unitType,
         XmlReader input,
         Func<Type, Metadata> getMetadata,
         Reflector<object> reflector,
-        Action<object> setChildValue);
+        object?[] arguments);
 }

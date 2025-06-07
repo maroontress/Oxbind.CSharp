@@ -65,9 +65,10 @@ public sealed class TextMetadata(AttributeBank bank, ParameterInfo info)
             }
         }
 
-        var info = Readers.ToXmlLineInfo(@in);
+        var s = Reflector.Sugarcoater;
+        var info = s.NewLineInfo(@in);
         var value = GetInnerText(@in);
-        Reflector.Inject(arguments, Reflector.Sugarcoater(info, value));
+        Reflector.Inject(arguments, s.NewInstance(info, value));
     }
 
     /// <inheritdoc/>
@@ -80,7 +81,8 @@ public sealed class TextMetadata(AttributeBank bank, ParameterInfo info)
         XmlReader @in,
         [Unused] Func<Type, Metadata> getMetadata)
     {
-        var info = Readers.ToXmlLineInfo(@in);
-        Reflector.Inject(arguments, Reflector.Sugarcoater(info, string.Empty));
+        var s = Reflector.Sugarcoater;
+        var info = s.NewLineInfo(@in);
+        Reflector.Inject(arguments, s.NewInstance(info, string.Empty));
     }
 }

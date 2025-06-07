@@ -121,7 +121,7 @@ public sealed class OxbinderFactory
     /// </returns>
     private Metadata GetSharedMetadata(Type type)
     {
-        return MetadataCache.Intern(type, () => NewMetadata(type));
+        return MetadataCache.Intern(type, NewMetadata);
     }
 
     private Metadata NewMetadata(Type type)
