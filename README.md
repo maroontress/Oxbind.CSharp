@@ -192,6 +192,12 @@ public sealed class Movie(
 }
 ```
 
+> [!NOTE]
+> The examples above use record class (available in C# 9.0 and later) and
+> primary constructors (C# 12 and later) for simplicity, but you can also use
+> regular classes with Oxbind. The library itself targets .NET Standard 2.0 and
+> does not require these newer language features.
+
 ## Getting started
 
 Oxbind is available as [the ![NuGet-logo][nuget-logo] NuGet

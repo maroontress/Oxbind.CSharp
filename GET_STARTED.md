@@ -168,19 +168,21 @@ The order and combination of parameters follow this BNF:
 <parameters>           ::= <for-attribute> <content>?
 
 <for-attribute>        ::= { [ForAttribute] <param> }*
-<param>                ::= (string? | BindResult<string>?) parameter-name
+<param>                ::= (string? | BindResult<string>?) <parameter-name>
 
 <content>              ::= <for-text> | <child-elements>
-<for-text>             ::= [ForText] (string | BindResult<string>) parameter-name
+<for-text>             ::= [ForText] (string | BindResult<string>) <parameter-name>
 <child-elements>       ::= { (<required-element>
                             | <optional-element>
-                            | <multiple-elements>) parameter-name }*
+                            | <multiple-elements>) <parameter-name> }*
 
-<required-element>     ::= [Required] (Type | BindResult<Type>)
-<optional-element>     ::= [Optional] (Type? | BindResult<Type>?)
-<multiple-elements>    ::= [Multiple] (IEnumerable<Type> | IEnumerable<BindResult<Type>>)
+<required-element>     ::= [Required] (<element-type> | BindResult<<element-type>>)
+<optional-element>     ::= [Optional] (<element-type>? | BindResult<<element-type>>?)
+<multiple-elements>    ::= [Multiple] (IEnumerable<<element-type>>
+                                     | IEnumerable<BindResult<<element-type>>>)
 
-; Type refers to a class marked with [ForElement]
+; <parameter-name> is a valid C# parameter name.
+; <element-type> refers to a class marked with [ForElement].
 ```
 
 - `[ForAttribute]` parameters appear first.
