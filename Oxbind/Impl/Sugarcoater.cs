@@ -1,22 +1,22 @@
 namespace Maroontress.Oxbind.Impl;
 
+using System;
 using System.Xml;
 
 /// <summary>
-/// A delegate that transforms or wraps a raw deserialized value, often to
-/// include metadata such as line information.
+/// Represents a utility for creating instances of a type with metadata.
 /// </summary>
 /// <typeparam name="T">
 /// The type of the value.
 /// </typeparam>
-/// <param name="info">
-/// The location information.
+/// <param name="NewInstance">
+/// A function that transforms or wraps a raw deserialized value, often to
+/// include metadata such as line information.
 /// </param>
-/// <param name="value">
-/// The raw value to process.
+/// <param name="NewLineInfo">
+/// A function that creates and returns a new <see cref="IXmlLineInfo"/>
+/// object with a given XML reader.
 /// </param>
-/// <returns>
-/// The processed value, which may be the original value or a new object
-/// wrapping it (e.g., a <see cref="BindResult{T}"/>).
-/// </returns>
-public delegate object Sugarcoater<in T>(IXmlLineInfo info, T value);
+public record struct Sugarcoater<T>(
+    Func<IXmlLineInfo, T, object> NewInstance,
+    Func<XmlReader, IXmlLineInfo> NewLineInfo);

@@ -124,4 +124,31 @@ public sealed class InternMap<K, V>(int initialCapacity, int concurrencyLevel)
             ? throw new ArgumentNullException(nameof(supplier))
             : Map.GetOrAdd(key, k => supplier());
     }
+
+    /// <summary>
+    /// Gets the canonical value object corresponding to the specified key. If
+    /// a canonical value does not already exist in the map, the specified
+    /// value is stored and returned.
+    /// </summary>
+    /// <remarks>
+    /// If multiple threads call this method concurrently with the same key,
+    /// only one canonical value object will be stored and returned for that
+    /// key.
+    /// </remarks>
+    /// <param name="key">
+    /// The key.
+    /// </param>
+    /// <param name="value">
+    /// The value to associate with the key if the key is not already present
+    /// in the map.
+    /// </param>
+    /// <returns>
+    /// The canonical value object.
+    /// </returns>
+    public V Intern(K key, V value)
+    {
+        return value is null
+            ? throw new ArgumentNullException(nameof(value))
+            : Map.GetOrAdd(key, value);
+    }
 }

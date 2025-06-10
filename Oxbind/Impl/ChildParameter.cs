@@ -68,6 +68,10 @@ public record struct ChildParameter(
     /// <param name="p">
     /// The parameter information.
     /// </param>
+    /// <param name="nameBank">
+    /// The <see cref="QNameBank"/> instance used to intern XML qualified
+    /// names.
+    /// </param>
     /// <returns>
     /// A <see cref="ChildParameter"/> representing the parameter.
     /// </returns>
@@ -76,7 +80,7 @@ public record struct ChildParameter(
     /// child element binding (e.g., <see cref="RequiredAttribute"/>, <see
     /// cref="OptionalAttribute"/>, or <see cref="MultipleAttribute"/>).
     /// </exception>
-    public static ChildParameter Of(ParameterInfo p)
+    public static ChildParameter Of(ParameterInfo p, QNameBank nameBank)
     {
         var parameterType = p.ParameterType;
         if (p.GetCustomAttributes()
@@ -98,7 +102,7 @@ public record struct ChildParameter(
             : elementType;
         var name = (elementType.GetCustomAttribute<ForElementAttribute>()
                 is {} forElementAttribute)
-            ? forElementAttribute.QName
+            ? nameBank.Intern(forElementAttribute.QName)
             : XmlQualifiedName.Empty;
         return new ChildParameter(unitType, schemaType, name, p);
     }

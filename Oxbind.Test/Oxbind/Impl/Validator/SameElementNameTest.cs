@@ -12,7 +12,7 @@ public sealed class SameElementNameTest
     public void OptionalFollowedByRequired()
     {
         var logger = new Journal("Root");
-        var v = new Validator(typeof(OptionalRequiredRoot), logger);
+        var v = Validators.New<OptionalRequiredRoot>(logger);
         Assert.IsFalse(v.IsValid);
         Assert.AreEqual(
             """
@@ -25,7 +25,7 @@ public sealed class SameElementNameTest
     public void OptionalFollowedByMultiple()
     {
         var logger = new Journal("Root");
-        var v = new Validator(typeof(OptionalMultipleRoot), logger);
+        var v = Validators.New<OptionalMultipleRoot>(logger);
         Assert.IsFalse(v.IsValid);
         Assert.AreEqual(
             """
@@ -38,7 +38,7 @@ public sealed class SameElementNameTest
     public void MultipleFollowedByRequired()
     {
         var logger = new Journal("Root");
-        var v = new Validator(typeof(MultipleRequiredRoot), logger);
+        var v = Validators.New<MultipleRequiredRoot>(logger);
         Assert.IsFalse(v.IsValid);
         Assert.AreEqual(
             """
@@ -51,7 +51,7 @@ public sealed class SameElementNameTest
     public void MultipleFollowedByOptional()
     {
         var logger = new Journal("Root");
-        var v = new Validator(typeof(MultipleOptionalRoot), logger);
+        var v = Validators.New<MultipleOptionalRoot>(logger);
         Assert.IsFalse(v.IsValid);
         Assert.AreEqual(
             """
@@ -64,7 +64,7 @@ public sealed class SameElementNameTest
     public void MultipleFollowedByMultiple()
     {
         var logger = new Journal("Root");
-        var v = new Validator(typeof(MultipleMultipleRoot), logger);
+        var v = Validators.New<MultipleMultipleRoot>(logger);
         Assert.IsFalse(v.IsValid);
         Assert.AreEqual(
             """

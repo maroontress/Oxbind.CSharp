@@ -11,7 +11,7 @@ public sealed class DupliacatedAttributeNameTest
     public void RootTest()
     {
         var logger = new Journal("Root");
-        var v = new Validator(typeof(Root), logger);
+        var v = Validators.New<Root>(logger);
         Assert.IsFalse(v.IsValid);
         Assert.AreEqual(
             """

@@ -18,9 +18,11 @@ public sealed class MultipleSchemaType
         XmlReader input,
         Func<Type, Metadata> getMetadata,
         Reflector<object> reflector,
-        Action<object> setChildValue)
+        object?[] arguments)
     {
         var m = getMetadata(unitType);
+        var s = reflector.Sugarcoater;
+        var elementName = m.Bank.ElementName;
         var list = new List<object>();
         for (;;)
         {
@@ -29,13 +31,13 @@ public sealed class MultipleSchemaType
             {
                 break;
             }
-            if (!Readers.Equals(input, m.Bank.ElementName))
+            if (!Readers.Equals(input, elementName))
             {
                 break;
             }
-            var info = Readers.ToXmlLineInfo(input);
+            var info = s.NewLineInfo(input);
             var child = m.CreateInstance(input, getMetadata);
-            list.Add(reflector.Sugarcoater(info, child));
+            list.Add(s.NewInstance(info, child));
         }
         var count = list.Count;
         // Create an array of the specific element type (e.g., T or
@@ -45,7 +47,7 @@ public sealed class MultipleSchemaType
         {
             array.SetValue(list[k], k);
         }
-        setChildValue(array);
+        reflector.Inject(arguments, array);
     }
 
     /// <inheritdoc/>
@@ -54,9 +56,9 @@ public sealed class MultipleSchemaType
         [Unused] XmlReader input,
         [Unused] Func<Type, Metadata> getMetadata,
         Reflector<object> reflector,
-        Action<object> setChildValue)
+        object?[] arguments)
     {
         var array = Array.CreateInstance(reflector.UnitType, 0);
-        setChildValue(array);
+        reflector.Inject(arguments, array);
     }
 }

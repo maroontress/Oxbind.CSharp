@@ -2,7 +2,6 @@ namespace Maroontress.Oxbind.Impl;
 
 using System;
 using System.Xml;
-using Maroontress.Oxbind.Util;
 
 /// <summary>
 /// Represents metadata that binds a class and its constructor parameters to an
@@ -62,12 +61,15 @@ public abstract class Metadata(AttributeBank bank)
     public object CreateInstance(
         XmlReader @in, Func<Type, Metadata> getMetadata)
     {
-        var arguments = Bank.NewPlaceholder();
-        Elements.ForEach(@in.AttributeCount, k =>
+        var arguments = Bank.GetPlaceholder();
+        if (@in.MoveToFirstAttribute())
         {
-            @in.MoveToAttribute(k);
             DispatchAttribute(@in, arguments);
-        });
+            while (@in.MoveToNextAttribute())
+            {
+                DispatchAttribute(@in, arguments);
+            }
+        }
         @in.MoveToElement();
         if (@in.IsEmptyElement)
         {
@@ -82,7 +84,8 @@ public abstract class Metadata(AttributeBank bank)
             Readers.ConfirmEndElement(@in, Bank.ElementName);
         }
         @in.Read();
-        var instance = Bank.ElementConstructor.Invoke(arguments);
+        var instance = Bank.Factory(arguments);
+        Bank.RecyclePlaceholder(arguments);
         return instance;
     }
 
@@ -101,7 +104,7 @@ public abstract class Metadata(AttributeBank bank)
     /// specified type.
     /// </param>
     protected abstract void HandleComponentsWithContent(
-        object[] arguments,
+        object?[] arguments,
         XmlReader @in,
         Func<Type, Metadata> getMetadata);
 
@@ -120,7 +123,7 @@ public abstract class Metadata(AttributeBank bank)
     /// specified type.
     /// </param>
     protected abstract void HandleComponentsWithEmptyElement(
-        object[] arguments,
+        object?[] arguments,
         XmlReader @in,
         Func<Type, Metadata> getMetadata);
 
@@ -136,16 +139,20 @@ public abstract class Metadata(AttributeBank bank)
     /// <param name="args">
     /// The array of arguments for the constructor.
     /// </param>
-    private void DispatchAttribute(XmlReader @in, object[] args)
+    private void DispatchAttribute(XmlReader @in, object?[] args)
     {
-        var key = Readers.NewQName(@in);
-        if (Bank.ToReflector(key) is not {} reflector)
+        var ns = @in.NamespaceURI;
+        var localName = @in.LocalName;
+        var key = Bank.NameBank.Find(ns, localName);
+        if (key is null
+            || Bank.ToReflector(key) is not {} reflector)
         {
             // just ignore the attribute if it is not recognized.
             return;
         }
+        var s = reflector.Sugarcoater;
+        var info = s.NewLineInfo(@in);
         var value = @in.Value;
-        var info = Readers.AsXmlLineInfo(@in);
-        reflector.Inject(args, reflector.Sugarcoater(info, value));
+        reflector.Inject(args, s.NewInstance(info, value));
     }
 }
