@@ -14,10 +14,10 @@ using System;
 public readonly struct Doublet
 {
     private static readonly Sugarcoater<object> ToBindResult
-        = Readers.NewResultObject;
+        = new(Readers.NewResultObject, Readers.ToXmlLineInfo);
 
     private static readonly Sugarcoater<object> PassThrough
-        = (r, v) => v;
+        = new((r, v) => v, r => DefaultXmlLineInfo.NoLineInfo);
 
     private Doublet(
         Type elementType,

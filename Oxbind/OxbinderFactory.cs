@@ -34,7 +34,7 @@ public sealed class OxbinderFactory
         {
             var validator = ValidatorCache.Intern(
                 type,
-                () => new(type, new(type.Name)));
+                () => new(type, new(type.Name), NameBank));
             var logger = validator.Logger;
             var messages = logger.GetMessages();
             if (!validator.IsValid
@@ -74,6 +74,8 @@ public sealed class OxbinderFactory
     /// Gets the cache of the validator.
     /// </summary>
     private InternMap<Type, Validator> ValidatorCache { get; } = new();
+
+    private QNameBank NameBank { get; } = new();
 
     /// <summary>
     /// Creates an <see cref="Oxbinder{T}"/> object for the specified class.
@@ -121,7 +123,7 @@ public sealed class OxbinderFactory
     /// </returns>
     private Metadata GetSharedMetadata(Type type)
     {
-        return MetadataCache.Intern(type, () => NewMetadata(type));
+        return MetadataCache.Intern(type, NewMetadata);
     }
 
     private Metadata NewMetadata(Type type)
@@ -146,7 +148,8 @@ public sealed class OxbinderFactory
         var bank = new AttributeBank(
             ctor,
             validator.ElementName,
-            validator.AttributeParameters);
+            validator.AttributeParameters,
+            NameBank);
 
         var dependency = validator.ChildDependency;
         if (dependency.HasInnerText)

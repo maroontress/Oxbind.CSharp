@@ -1,5 +1,6 @@
 namespace Maroontress.Oxbind.Impl;
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -27,14 +28,22 @@ public record struct AttributeParameter(
     /// <param name="ctor">
     /// The constructor to analyze.
     /// </param>
+    /// <param name="nameBank">
+    /// The <see cref="QNameBank"/> instance used to intern XML qualified
+    /// names.
+    /// </param>
     /// <returns>
     /// A collection of <see cref="AttributeParameter"/> instances for
     /// constructor parameters marked with <see cref="ForAttributeAttribute"/>.
     /// </returns>
-    public static IEnumerable<AttributeParameter> Of(ConstructorInfo ctor)
+    public static IEnumerable<AttributeParameter> Of(
+        ConstructorInfo ctor, QNameBank nameBank)
     {
+        Func<ParameterInfo, AttributeParameter?> ToAttributeParameter()
+            => p => Of(p, nameBank);
+
         return ctor.GetParameters()
-            .Select(ToAttributeParameter)
+            .Select(ToAttributeParameter())
             .TakeWhile(x => x is {})
             .OfType<AttributeParameter>()
             .AsEnumerable();
@@ -45,13 +54,19 @@ public record struct AttributeParameter(
     /// cref="AttributeParameter"/> if it is associated with a <see
     /// cref="ForAttributeAttribute"/>.
     /// </summary>
-    /// <param name="p">The parameter to convert.</param>
+    /// <param name="p">
+    /// The parameter to convert.
+    /// </param>
+    /// <param name="nameBank">
+    /// The <see cref="QNameBank"/> instance used to intern XML qualified
+    /// names.
+    /// </param>
     /// <returns>
     /// An <see cref="AttributeParameter"/> if the parameter is associated
     /// with a <see cref="ForAttributeAttribute"/>; otherwise, <c>null</c>.
     /// </returns>
-    private static AttributeParameter? ToAttributeParameter(ParameterInfo p)
+    private static AttributeParameter? Of(ParameterInfo p, QNameBank nameBank)
         => p.GetCustomAttribute<ForAttributeAttribute>() is not {} a
             ? null
-            : new AttributeParameter(a.QName, p);
+            : new AttributeParameter(nameBank.Intern(a.QName), p);
 }

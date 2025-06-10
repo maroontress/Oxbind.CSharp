@@ -13,7 +13,7 @@ public sealed class InterfaceTest
     public void RootTest()
     {
         var logger = new Journal("IRoot");
-        var v = new Validator(typeof(IRoot), logger);
+        var v = Validators.New<IRoot>(logger);
         Assert.IsFalse(v.IsValid);
         Assert.Contains(
             """

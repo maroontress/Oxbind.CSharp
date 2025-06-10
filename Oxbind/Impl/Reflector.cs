@@ -44,6 +44,6 @@ public sealed class Reflector<T>(
     /// <param name="value">
     /// The value to be injected.
     /// </param>
-    public void Inject(object[] arguments, object value)
+    public void Inject(object?[] arguments, object value)
         => arguments[ParameterIndex] = value;
 }

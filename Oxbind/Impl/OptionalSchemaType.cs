@@ -17,7 +17,7 @@ public sealed class OptionalSchemaType
         XmlReader input,
         Func<Type, Metadata> getMetadata,
         Reflector<object> reflector,
-        Action<object> setChildValue)
+        object?[] arguments)
     {
         var m = getMetadata(unitType);
         var nodeType = Readers.SkipCharacters(input);
@@ -29,9 +29,11 @@ public sealed class OptionalSchemaType
         {
             return;
         }
-        var info = Readers.ToXmlLineInfo(input);
+        var s = reflector.Sugarcoater;
+        var info = s.NewLineInfo(input);
         var child = m.CreateInstance(input, getMetadata);
-        setChildValue(reflector.Sugarcoater(info, child));
+        var o = s.NewInstance(info, child);
+        reflector.Inject(arguments, o);
     }
 
     /// <inheritdoc/>
@@ -40,7 +42,7 @@ public sealed class OptionalSchemaType
         [Unused] XmlReader input,
         [Unused] Func<Type, Metadata> getMetadata,
         [Unused] Reflector<object> reflector,
-        [Unused] Action<object> setChildValue)
+        [Unused] object?[] arguments)
     {
     }
 }

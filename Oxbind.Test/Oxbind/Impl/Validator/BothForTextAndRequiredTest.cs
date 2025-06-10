@@ -11,7 +11,7 @@ public sealed class BothForTextAndRequiredTest
     public void TwoParametersConflict()
     {
         var logger = new Journal("Root");
-        var v = new Validator(typeof(Root1), logger);
+        var v = Validators.New<Root1>(logger);
         Assert.IsFalse(v.IsValid);
         Assert.AreEqual(
             """
@@ -24,7 +24,7 @@ public sealed class BothForTextAndRequiredTest
     public void OneParameterHasForTextAndRequired()
     {
         var logger = new Journal("Root");
-        var v = new Validator(typeof(Root2), logger);
+        var v = Validators.New<Root2>(logger);
         Assert.IsFalse(v.IsValid);
         Assert.AreEqual(
             """

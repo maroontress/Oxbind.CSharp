@@ -50,7 +50,9 @@ public static class StringSugarcoaters
     private static Dictionary<Type, Sugarcoater<string>> NewMap()
         => new()
         {
-            [Types.String] = (r, s) => s,
-            [Types.BindResultString] = Readers.NewResult,
+            [Types.String]
+                = new((r, s) => s, r => DefaultXmlLineInfo.NoLineInfo),
+            [Types.BindResultString]
+                = new(Readers.NewResult, Readers.ToXmlLineInfo),
         };
 }
