@@ -50,7 +50,10 @@ public sealed class OxbinderFactory
         DagChecker = new(
             type => ValidatorCache.Get(type) is {} validator
                 ? new HashSet<Type>(ToDependingTypes(validator))
-                : throw new NullReferenceException($"{type}"),
+                : throw new InvalidOperationException(
+                    $"""
+                    Validator for type '{type.Name}' not found in cache. This indicates an internal error.
+                    """),
             x => x.Name);
     }
 
@@ -139,7 +142,10 @@ public sealed class OxbinderFactory
                 $"{type.Name} has a circular dependency: " + e.Message, e);
         }
         var validator = ValidatorCache.Get(type)
-            ?? throw new NullReferenceException($"{type}");
+            ?? throw new InvalidOperationException(
+                $"""
+                Validator for type '{type.Name}' not found in cache. This indicates an internal error.
+                """);
         if (validator.Constructor is not {} ctor)
         {
             // Something was missed during the validation

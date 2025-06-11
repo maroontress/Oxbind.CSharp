@@ -37,7 +37,7 @@ using System;
 /// <para>
 /// The parameter will never be <see langword="null"/>. If the element does not
 /// contain a text node, or the text node is empty, the parameter will be set
-/// to an empty string ("").
+/// to an empty string (<c>""</c>).
 /// </para>
 /// </remarks>
 [AttributeUsage(
