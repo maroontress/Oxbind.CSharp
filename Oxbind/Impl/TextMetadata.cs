@@ -33,17 +33,21 @@ public sealed class TextMetadata(AttributeBank bank, ParameterInfo info)
         XmlReader @in,
         [Unused] Func<Type, Metadata> getMetadata)
     {
+        static bool IsTextNodeType(XmlReader reader)
+            => reader.NodeType is XmlNodeType.Text
+                || reader.NodeType is XmlNodeType.CDATA;
+
         static string GetInnerText(XmlReader reader)
         {
             Readers.ConfirmNext(reader);
-            if (reader.NodeType != XmlNodeType.Text)
+            if (!IsTextNodeType(reader))
             {
                 return string.Empty;
             }
             var text = reader.Value;
             reader.Read();
             Readers.ConfirmNext(reader);
-            if (reader.NodeType != XmlNodeType.Text)
+            if (!IsTextNodeType(reader))
             {
                 return text;
             }
@@ -57,7 +61,7 @@ public sealed class TextMetadata(AttributeBank bank, ParameterInfo info)
             {
                 reader.Read();
                 Readers.ConfirmNext(reader);
-                if (reader.NodeType != XmlNodeType.Text)
+                if (!IsTextNodeType(reader))
                 {
                     return string.Concat(textList);
                 }
