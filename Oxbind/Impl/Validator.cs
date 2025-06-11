@@ -103,12 +103,6 @@ public sealed class Validator
     /// </summary>
     public Dependency ChildDependency { get; }
 
-    private static IReadOnlyList<Type> ChildAttributeList { get; }
-        = [.. ChildParameter.AttributeTypes];
-
-    private static IReadOnlyList<Type> ForAttributeExclusiveList { get; }
-        = [.. ChildParameter.AttributeTypes, typeof(ForTextAttribute)];
-
     /// <summary>
     /// Returns the XML element name marked with the annotation <see
     /// cref="ForElementAttribute"/>.
