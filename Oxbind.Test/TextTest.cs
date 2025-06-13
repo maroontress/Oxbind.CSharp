@@ -22,6 +22,21 @@ public sealed class TextTest
     }
 
     [TestMethod]
+    public void Entity()
+    {
+        const string xml = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <root>Hello&lt;&amp;&gt;World</root>
+            """;
+        var factory = new OxbinderFactory();
+        var binder = factory.Of<Root>();
+        var reader = new StringReader(xml);
+        var root = binder.NewInstance(reader);
+
+        Assert.AreEqual("Hello<&>World", root.InnerText);
+    }
+
+    [TestMethod]
     public void CDataText()
     {
         const string xml = """
@@ -34,6 +49,21 @@ public sealed class TextTest
         var root = binder.NewInstance(reader);
 
         Assert.AreEqual("Hello<&>World", root.InnerText);
+    }
+
+    [TestMethod]
+    public void Comment()
+    {
+        const string xml = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <root>Hello<!-- -->World</root>
+            """;
+        var factory = new OxbinderFactory();
+        var binder = factory.Of<Root>();
+        var reader = new StringReader(xml);
+        var root = binder.NewInstance(reader);
+
+        Assert.AreEqual("HelloWorld", root.InnerText);
     }
 
     [ForElement("root")]
