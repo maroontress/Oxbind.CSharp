@@ -198,6 +198,44 @@ public sealed class Movie(
 > regular classes with Oxbind. The library itself targets .NET Standard 2.0 and
 > does not require these newer language features.
 
+## Limitations
+
+Oxbind is designed to map XML structures to C# constructor parameters
+declaratively. This design principle leads to certain limitations on the XML
+structures it can handle.
+
+Specifically, Oxbind requires child elements to appear in a **fixed, sequential
+order**, corresponding to the order of parameters in the C# constructor. This
+is analogous to the `<xs:sequence>` compositor in an XML Schema.
+
+Consequently, structures that require choice or non-sequential ordering are
+**not supported**. This includes:
+
+- **Choice of elements** (like `<xs:choice>`): Where only one element from a
+  group of different elements can appear.
+- **Interleaved repeating elements** (like `<xs:choice
+  maxOccurs="unbounded">`): Where different types of child elements are mixed
+  together, rather than being grouped by type.
+- **Any order of elements** (like `<xs:all>`): Where elements can appear in any
+  order.
+
+For example, Oxbind cannot deserialize a document where different types of
+elements are interleaved, as shown in the `<library-contents>` element below:
+
+```xml
+<!-- This structure is NOT supported -->
+<library-contents>
+  <book title="The Hobbit"/>
+  <movie title="Avatar"/>
+  <book title="Dune"/>
+  <music-album artist="Queen" title="Greatest Hits"/>
+  <movie title="The Lord of the Rings"/>
+</library-contents>
+```
+
+This limitation is a direct consequence of mapping to a constructor's parameter
+list, which has a single, defined signature.
+
 ## Getting started
 
 Oxbind is available as [the ![NuGet-logo][nuget-logo] NuGet
