@@ -27,48 +27,65 @@ public sealed class TextMetadata(AttributeBank bank, ParameterInfo info)
     /// </summary>
     private Reflector<string> Reflector { get; } = Reflectors.OfString(info);
 
+    /// <summary>
+    /// Reads the text content of the current element from the specified XML
+    /// reader.
+    /// </summary>
+    /// <remarks>
+    /// This method reads all consecutive text and CDATA nodes. The method
+    /// leaves the reader positioned on the node that follows the last text
+    /// node (typically the end element tag), but does not consume the end
+    /// element tag itself. The caller is responsible for reading past the end
+    /// element.
+    /// </remarks>
+    /// <param name="reader">
+    /// The XML reader, positioned at the first text node inside an element.
+    /// </param>
+    /// <returns>
+    /// The concatenated text content.
+    /// </returns>
+    public static string GetInnerText(XmlReader reader)
+    {
+        static bool IsTextNodeType(XmlReader reader)
+            => reader.NodeType is XmlNodeType.Text
+                || reader.NodeType is XmlNodeType.CDATA;
+
+        Readers.ConfirmNext(reader);
+        if (!IsTextNodeType(reader))
+        {
+            return string.Empty;
+        }
+        var text = reader.Value;
+        reader.Read();
+        Readers.ConfirmNext(reader);
+        if (!IsTextNodeType(reader))
+        {
+            return text;
+        }
+
+        var textList = new List<string>()
+        {
+            text,
+            reader.Value,
+        };
+        for (;;)
+        {
+            reader.Read();
+            Readers.ConfirmNext(reader);
+            if (!IsTextNodeType(reader))
+            {
+                return string.Concat(textList);
+            }
+            textList.Add(reader.Value);
+        }
+    }
+
     /// <inheritdoc/>
     protected override void HandleComponentsWithContent(
         object?[] arguments,
         XmlReader @in,
         [Unused] Func<Type, Metadata> getMetadata)
     {
-        static bool IsTextNodeType(XmlReader reader)
-            => reader.NodeType is XmlNodeType.Text
-                || reader.NodeType is XmlNodeType.CDATA;
-
-        static string GetInnerText(XmlReader reader)
-        {
-            Readers.ConfirmNext(reader);
-            if (!IsTextNodeType(reader))
-            {
-                return string.Empty;
-            }
-            var text = reader.Value;
-            reader.Read();
-            Readers.ConfirmNext(reader);
-            if (!IsTextNodeType(reader))
-            {
-                return text;
-            }
-
-            var textList = new List<string>()
-            {
-                text,
-                reader.Value,
-            };
-            for (;;)
-            {
-                reader.Read();
-                Readers.ConfirmNext(reader);
-                if (!IsTextNodeType(reader))
-                {
-                    return string.Concat(textList);
-                }
-                textList.Add(reader.Value);
-            }
-        }
-
         var s = Reflector.Sugarcoater;
         var info = s.NewLineInfo(@in);
         var value = GetInnerText(@in);

@@ -129,10 +129,7 @@ public sealed class AttributeBank
         {
             return;
         }
-        for (var k = 0; k < placeholder.Length; ++k)
-        {
-            placeholder[k] = null;
-        }
+        Array.Clear(placeholder, 0, placeholder.Length);
         queue.Enqueue(placeholder);
     }
 

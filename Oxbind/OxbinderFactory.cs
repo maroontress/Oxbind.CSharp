@@ -28,7 +28,8 @@ public sealed class OxbinderFactory
             => v.ChildDependency
                 .ChildParameters
                 .Where(p => p.SchemaType is RequiredSchemaType)
-                .Select(p => p.UnitType);
+                .Select(p => p.UnitType)
+                .Where(t => t != typeof(string));
 
         ValidationTraversal = new(type =>
         {

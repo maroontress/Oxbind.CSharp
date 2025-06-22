@@ -198,6 +198,59 @@ public sealed class Movie(
 > regular classes with Oxbind. The library itself targets .NET Standard 2.0 and
 > does not require these newer language features.
 
+### Optimizing elements that have no attributes and contain only text
+
+The `cast` element, which has no attributes and only contains text, can also be
+mapped directly in the `Movie` constructor using the `ForChildElement` attribute.
+This avoids creating a separate `Cast` class:
+
+```csharp
+[ForElement("movie")]
+public record class Movie(
+    [ForAttribute("title")] string? Title,
+    [Required] Director TheDirector,
+    [Optional] Release? MaybeRelease,
+    [Multiple][ForChildElement("cast")] IEnumerable<string> Casts);
+/* The Cast class is no longer needed. */
+```
+
+This shows how `ForChildElement` simplifies binding for simple, text-only child
+elements.
+
+> [!TIP]
+>
+> For users familiar with `System.Xml.Serialization`, this optimization is
+> analogous to mapping a text-only element directly to a string property. This
+> avoids the need for a separate wrapper class that uses `[XmlText]`.
+>
+> For instance, with System.Xml.Serialization you could write:
+>
+> ```csharp
+> public sealed class Movie
+> {
+>     ⋮
+>     [XmlElement("cast")]
+>     public List<string>? Casts { get; set; }
+> }
+> ```
+>
+> instead of:
+>
+> ```csharp
+> public sealed class Movie
+> {
+>     ⋮
+>     [XmlElement("cast")]
+>     public List<Cast>? Casts { get; set; }
+> }
+>
+> public sealed class Cast
+> {
+>     [XmlText]
+>     public string? Name { get; set; }
+> }
+> ```
+
 ## Limitations
 
 Oxbind is designed to map XML structures to C# constructor parameters

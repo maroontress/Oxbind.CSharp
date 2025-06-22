@@ -88,6 +88,15 @@ namespace Maroontress.Oxbind.Impl {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The type of a constructor parameter attributed with [ForChildElement] must be string, BindResult&lt;string&gt;, or an IEnumerable of these types: {0}..
+        /// </summary>
+        internal static string innermost_type_of_the_ForChildElement_parameter_must_be_string {
+            get {
+                return ResourceManager.GetString("innermost_type_of_the_ForChildElement_parameter_must_be_string", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A [Multiple] parameter for element &apos;{0}&apos; must not be followed by another parameter for the same element name: {1}..
         /// </summary>
         internal static string multiple_parameter_followed_by_the_one_that_has_the_same_element_name {
@@ -147,6 +156,15 @@ namespace Maroontress.Oxbind.Impl {
         internal static string parameter_must_be_annotated_with_attributes_for_child_elements {
             get {
                 return ResourceManager.GetString("parameter_must_be_annotated_with_attributes_for_child_elements", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A constructor parameter for a string child element must be annotated with [ForChildElement]: {0}..
+        /// </summary>
+        internal static string parameter_must_be_annotated_with_ForChildElement {
+            get {
+                return ResourceManager.GetString("parameter_must_be_annotated_with_ForChildElement", resourceCulture);
             }
         }
         
