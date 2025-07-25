@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [TestClass]
-public sealed class SameElementNameTest
+public sealed class SameElementNameWithBindResultTest
 {
     [TestMethod]
     public void OptionalFollowedByRequired()
@@ -28,28 +28,28 @@ public sealed class SameElementNameTest
 
     [ForElement("root")]
     public record class OptionalRequiredRoot(
-        [Optional] First? MaybeFirstChild,
-        [Required] Second SecondChild);
+        [Optional] BindResult<First>? MaybeFirstChild,
+        [Required] BindResult<Second> SecondChild);
 
     [ForElement("root")]
     public record class OptionalMultipleRoot(
-        [Optional] First? MaybeFirstChild,
-        [Multiple] IEnumerable<Second> SecondChildren);
+        [Optional] BindResult<First>? MaybeFirstChild,
+        [Multiple] IEnumerable<BindResult<Second>> SecondChildren);
 
     [ForElement("root")]
     public record class MultipleRequiredRoot(
-        [Multiple] IEnumerable<First> FirstChildren,
-        [Required] Second SecondChild);
+        [Multiple] IEnumerable<BindResult<First>> FirstChildren,
+        [Required] BindResult<Second> SecondChild);
 
     [ForElement("root")]
     public record class MultipleOptionalRoot(
-        [Multiple] IEnumerable<First> FirstChildren,
-        [Optional] Second? MaybeSecond);
+        [Multiple] IEnumerable<BindResult<First>> FirstChildren,
+        [Optional] BindResult<Second>? MaybeSecond);
 
     [ForElement("root")]
     public record class MultipleMultipleRoot(
-        [Multiple] IEnumerable<First> FirstChildren,
-        [Multiple] IEnumerable<Second> SecondChildren);
+        [Multiple] IEnumerable<BindResult<First>> FirstChildren,
+        [Multiple] IEnumerable<BindResult<Second>> SecondChildren);
 
     [ForElement("first")]
     public record class First;
