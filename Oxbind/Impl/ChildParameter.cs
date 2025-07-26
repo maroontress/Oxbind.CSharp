@@ -100,7 +100,7 @@ public record struct ChildParameter(
         var unitType = Types.IsRawType(elementType, Types.BindResultT)
             ? Types.FirstInnerType(elementType)
             : elementType;
-        var name = (elementType.GetCustomAttribute<ForElementAttribute>()
+        var name = (unitType.GetCustomAttribute<ForElementAttribute>()
                 is {} forElementAttribute)
             ? nameBank.Intern(forElementAttribute.QName)
             : XmlQualifiedName.Empty;
