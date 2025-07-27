@@ -26,6 +26,8 @@ jobs:
           build-mode: none
         - language: csharp
           build-mode: manual
+        - language: actions
+          build-mode: none
 
     steps:
     - name: Setup .NET SDK
