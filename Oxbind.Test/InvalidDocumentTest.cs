@@ -63,6 +63,19 @@ public sealed class InvalidDocumentTest
         NewInstanceChecks.ThrowBindException<Root>(xml, m);
     }
 
+    [TestMethod]
+    public void NestedElementsWithForText()
+    {
+        const string xml = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <root>Hello<foo> </foo>World</root>
+            """;
+        const string m = """
+            2:13: Unexpected node type: Element of the element 'foo'. (Expected the end of element 'root'.)
+            """;
+        NewInstanceChecks.ThrowBindException<RootContainingOnlyText>(xml, m);
+    }
+
     [ForElement("root")]
     public record class Root(
         [Required] First FirstChild);
@@ -70,4 +83,7 @@ public sealed class InvalidDocumentTest
     [ForElement("first")]
     public record class First(
         [ForAttribute("value")] BindResult<string>? AttributeValue);
+
+    [ForElement("root")]
+    public record class RootContainingOnlyText([ForText] string InnerText);
 }
