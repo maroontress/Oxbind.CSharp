@@ -44,8 +44,9 @@ using System.Xml;
 /// </para>
 /// <para>
 /// If the XML attribute does not exist in the element, the parameter is
-/// populated with <see langword="null"/>. Therefore, the parameter type must
-/// be a nullable reference type.
+/// populated with <see langword="null"/>. Therefore, in a nullable-aware
+/// context, the parameter type must be a nullable reference type
+/// (e.g., <c>string?</c> or <c><![CDATA[BindResult<string>?]]></c>).
 /// </para>
 /// </remarks>
 /// <param name="name">
