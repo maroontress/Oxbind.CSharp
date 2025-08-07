@@ -125,6 +125,49 @@ public sealed class BasicTest
         Assert.IsNull(root.ThirdChild);
     }
 
+    [TestMethod]
+    public void RequiredForChildElement()
+    {
+        const string xml = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <root>
+              <foo>Hello</foo>
+              <bar>World</bar>
+            </root>
+            """;
+        var factory = new OxbinderFactory();
+        var binder = factory.Of<FooBarRoot>();
+        var reader = new StringReader(xml);
+        var root = binder.NewInstance(reader);
+
+        Assert.AreEqual("Hello", root.Foo);
+        Assert.AreEqual("World", root.Bar);
+    }
+
+    [TestMethod]
+    public void OptionalMultipleForChildElement()
+    {
+        const string xml = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <root>
+              <foo>Hello, World</foo>
+              <bar>firstBar</bar>
+              <bar>secondBar</bar>
+            </root>
+            """;
+        var factory = new OxbinderFactory();
+        var binder = factory.Of<OptionalFooMultipleBarRoot>();
+        var reader = new StringReader(xml);
+        var root = binder.NewInstance(reader);
+
+        Assert.AreEqual("Hello, World", root.Foo);
+        var list = root.Bar.ToList();
+        Assert.AreEqual(2, list.Count);
+        Assert.AreEqual("firstBar", list[0]);
+        Assert.AreEqual("secondBar", list[1]);
+        Assert.IsNull(root.Baz);
+    }
+
     [ForElement("root")]
     public record class RequiredOptionalMultipleRoot(
         [Required] First FirstChild,
@@ -148,4 +191,15 @@ public sealed class BasicTest
     [ForElement("third")]
     public record class Third(
         [ForText] string InnerText);
+
+    [ForElement("root")]
+    public record class FooBarRoot(
+        [Required][ForChildElement("foo")] string Foo,
+        [Required][ForChildElement("bar")] string Bar);
+
+    [ForElement("root")]
+    public record class OptionalFooMultipleBarRoot(
+        [Optional][ForChildElement("foo")] string? Foo,
+        [Multiple][ForChildElement("bar")] IEnumerable<string> Bar,
+        [Optional][ForChildElement("baz")] string? Baz);
 }

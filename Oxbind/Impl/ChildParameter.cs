@@ -100,6 +100,14 @@ public record struct ChildParameter(
         var unitType = Types.IsRawType(elementType, Types.BindResultT)
             ? Types.FirstInnerType(elementType)
             : elementType;
+        if (unitType == typeof(string))
+        {
+            var childName = (p.GetCustomAttribute<ForChildElementAttribute>()
+                is {} forChildAttribute)
+                ? nameBank.Intern(forChildAttribute.QName)
+                : XmlQualifiedName.Empty;
+            return new ChildParameter(unitType, schemaType, childName, p);
+        }
         var name = (unitType.GetCustomAttribute<ForElementAttribute>()
                 is {} forElementAttribute)
             ? nameBank.Intern(forElementAttribute.QName)

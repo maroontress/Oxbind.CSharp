@@ -161,10 +161,6 @@
     <value>The type of constructor parameter(s) {0} must be a class attributed with [ForElement].</value>
     <comment>@</comment>
   </data>
-  <data name="parameter_must_not_be_annotated_with_both_ForAttribute_and_another" xml:space="preserve">
-    <value>A constructor parameter must not be attributed with both [ForAttribute] and another Oxbind binding attribute (e.g., [Required], [ForText]): {0}.</value>
-    <comment>@</comment>
-  </data>
   <data name="parameters_must_not_be_mixed" xml:space="preserve">
     <value>A constructor must not mix parameters attributed with [ForText] ({0}) and parameters attributed with [Required], [Optional], or [Multiple] ({1}).</value>
     <comment>@</comment>
@@ -195,6 +191,18 @@
   </data>
   <data name="optional_parameter_followed_by_the_one_that_has_the_same_element_name" xml:space="preserve">
     <value>An [Optional] parameter for element '{0}' must not be followed by a [Required] or [Multiple] parameter for the same element name: {1}.</value>
+    <comment>@</comment>
+  </data>
+  <data name="parameter_must_be_annotated_with_ForChildElement" xml:space="preserve">
+    <value>A constructor parameter for a string child element must be annotated with [ForChildElement]: {0}.</value>
+    <comment>@</comment>
+  </data>
+  <data name="parameter_must_not_be_annotated_with_both_ForAttribute_and_another" xml:space="preserve">
+    <value>A constructor parameter must not be attributed with both [ForAttribute] and another Oxbind binding attribute (e.g., [Required], [ForText]): {0}.</value>
+    <comment>@</comment>
+  </data>
+  <data name="innermost_type_of_the_ForChildElement_parameter_must_be_string" xml:space="preserve">
+    <value>The type of a constructor parameter attributed with [ForChildElement] must be string, BindResult&lt;string&gt;, or an IEnumerable of these types: {0}.</value>
     <comment>@</comment>
   </data>
 </root>

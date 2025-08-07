@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using StyleChecker.Annotations;
 
 /// <summary>
 /// Metadata of the classes that have constructor parameters annotated with
@@ -35,12 +36,7 @@ public sealed class SchemaMetadata(
         for (var i = 0; i < n; ++i)
         {
             var x = ChildList[i];
-            x.SchemaType.ApplyWithContent(
-                x.UnitType,
-                @in,
-                getMetadata,
-                x.Reflector,
-                arguments);
+            x.MainAction(arguments, @in, getMetadata);
         }
     }
 
@@ -54,31 +50,58 @@ public sealed class SchemaMetadata(
         for (var i = 0; i < n; ++i)
         {
             var x = ChildList[i];
-            x.SchemaType.ApplyWithEmptyElement(
-                x.UnitType,
-                @in,
-                getMetadata,
-                x.Reflector,
-                arguments);
+            x.EmptyAction(arguments, @in, getMetadata);
         }
     }
 
     private static List<Child> NewChildList(
         IEnumerable<ChildParameter> children)
     {
-        static Child ToChild(ChildParameter p)
-        {
-            var schemaType = p.SchemaType;
-            var unitType = p.UnitType;
-            var reflector = Reflectors.Of(p.Info);
-            return new(schemaType, unitType, reflector);
-        }
-
         return [.. children.Select(ToChild)];
     }
 
+    private static Child ToChild(ChildParameter p)
+    {
+        var schemaType = p.SchemaType;
+        var unitType = p.UnitType;
+        var name = p.ElementName;
+        var reflector = Reflectors.Of(p.Info);
+
+        void ElementAction(
+            object?[] arguments,
+            XmlReader @in,
+            Func<Type, Metadata> getMetadata)
+        {
+            schemaType.ApplyWithContent(
+                unitType, @in, getMetadata, reflector, arguments);
+        }
+
+        void TextAction(
+            object?[] arguments,
+            XmlReader @in,
+            [Unused] Func<Type, Metadata> getMetadata)
+        {
+            schemaType.ApplyWithTextContent(name, @in, reflector, arguments);
+        }
+
+        void EmptyAction(
+            object?[] arguments,
+            XmlReader @in,
+            Func<Type, Metadata> getMetadata)
+        {
+            schemaType.ApplyWithEmptyElement(
+                unitType, @in, getMetadata, reflector, arguments);
+        }
+
+        var elementAction = ElementAction;
+        var textAction = TextAction;
+        var mainAction = unitType == typeof(string)
+            ? textAction
+            : elementAction;
+        return new(mainAction, EmptyAction);
+    }
+
     private record struct Child(
-        SchemaType SchemaType,
-        Type UnitType,
-        Reflector<object> Reflector);
+        Action<object?[], XmlReader, Func<Type, Metadata>> MainAction,
+        Action<object?[], XmlReader, Func<Type, Metadata>> EmptyAction);
 }

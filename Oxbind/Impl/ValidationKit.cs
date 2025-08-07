@@ -137,7 +137,7 @@ public sealed class ValidationKit(Journal journal, QNameBank nameBank)
                 {...}
         */
         var attributeList = childParameterList.Where(
-                p => ToForAttribute(p) is { })
+                p => ToForAttribute(p) is {})
             .ToList();
         if (attributeList.Count is not 0)
         {
@@ -320,14 +320,63 @@ public sealed class ValidationKit(Journal journal, QNameBank nameBank)
         Func<ParameterInfo, ChildParameter> ToChildParameter()
             => p => ChildParameter.Of(p, NameBank);
 
+        static bool IsMissingForElement(ChildParameter p)
+        {
+            var unitType = p.UnitType;
+            return !IsElementClass(unitType)
+                && unitType != typeof(string)
+                && p.Info.GetCustomAttribute<ForChildElementAttribute>()
+                    is null;
+        }
+
         var dependencies = parameterList.Select(ToChildParameter())
             .ToList();
         Elements.IfNotEmpty(
-            dependencies.Where(p => !IsElementClass(p.UnitType))
+            dependencies.Where(IsMissingForElement)
                 .Select(p => p.Info),
             t => Journal.Error(
                 """
                 parameter_type_must_be_annotated_with_ForElement
+                """,
+                Names.OfParameters(t)));
+
+        /*
+            Checks that [ForChildElement] is used with string,
+            BindResult<string>, or an IEnumerable of these types.
+        */
+        static bool IsMisusedForChildElement(ChildParameter p)
+        {
+            return p.UnitType != typeof(string)
+                && p.Info.GetCustomAttribute<ForChildElementAttribute>()
+                    is not null;
+        }
+
+        Elements.IfNotEmpty(
+            dependencies.Where(IsMisusedForChildElement)
+                .Select(p => p.Info),
+            t => Journal.Error(
+                """
+                innermost_type_of_the_ForChildElement_parameter_must_be_string
+                """,
+                Names.OfParameters(t)));
+
+        /*
+            Checks that a parameter for string child has [ForChildElement]
+        */
+        static bool IsMissingForChildElement(ChildParameter p)
+        {
+            var unitType = p.UnitType;
+            return unitType == typeof(string)
+                && p.Info.GetCustomAttribute<ForChildElementAttribute>()
+                    is null;
+        }
+
+        Elements.IfNotEmpty(
+            dependencies.Where(IsMissingForChildElement)
+                .Select(p => p.Info),
+            t => Journal.Error(
+                """
+                parameter_must_be_annotated_with_ForChildElement
                 """,
                 Names.OfParameters(t)));
 

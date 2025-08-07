@@ -247,6 +247,68 @@ public static class Readers
             && @in.NamespaceURI == qName.Namespace;
 
     /// <summary>
+    /// Creates a new object by reading a simple text-only element from the
+    /// specified XML reader.
+    /// </summary>
+    /// <remarks>
+    /// This method expects the <paramref name="in"/> reader to be positioned
+    /// on a start element tag. It performs the following actions:
+    /// <list type="bullet">
+    ///   <item>
+    ///     <description>
+    ///       Advances the reader past the start element tag.
+    ///     </description>
+    ///   </item>
+    ///   <item>
+    ///     <description>
+    ///       Reads the inner text content of the element.
+    ///     </description>
+    ///   </item>
+    ///   <item>
+    ///     <description>
+    ///       Confirms that the next node is the corresponding end element tag
+    ///       and advances the reader past it.
+    ///     </description>
+    ///   </item>
+    /// </list>
+    /// If the element contains child elements or is empty, behavior may be
+    /// unexpected or result in an exception.
+    /// </remarks>
+    /// <param name="in">
+    /// The XML reader, positioned at the start of the text-only element.
+    /// </param>
+    /// <param name="name">
+    /// The expected qualified name of the element.
+    /// </param>
+    /// <param name="sugarcoater">
+    /// The sugarcoater used to create the final object, which may wrap the
+    /// text value in a <see cref="BindResult{T}"/> to include line
+    /// information.
+    /// </param>
+    /// <returns>
+    /// The created object, which is either a <see cref="string"/> or a <see
+    /// cref="BindResult{T}"><![CDATA[BindResult<string>]]></see> containing
+    /// the element's text content.
+    /// </returns>
+    /// <exception cref="BindException">
+    /// Thrown if the XML structure does not match a simple text-only element
+    /// (e.g., if the end tag is missing or mismatched, or if unexpected child
+    /// elements are found).
+    /// </exception>
+    public static object NewTextOnlyObject(
+        XmlReader @in,
+        XmlQualifiedName name,
+        Sugarcoater<object> sugarcoater)
+    {
+        @in.Read();
+        var info = sugarcoater.NewLineInfo(@in);
+        var child = TextMetadata.GetInnerText(@in);
+        ConfirmEndElement(@in, name);
+        @in.Read();
+        return sugarcoater.NewInstance(info, child);
+    }
+
+    /// <summary>
     /// Creates a new <see cref="BindException"/> for an unexpected node type
     /// encountered by the XML reader.
     /// </summary>

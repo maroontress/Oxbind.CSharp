@@ -38,6 +38,28 @@ public abstract class SchemaType
         object?[] arguments);
 
     /// <summary>
+    /// Processes a child element that contains only text content, applying the
+    /// binding logic.
+    /// </summary>
+    /// <param name="name">
+    /// The qualified name of the child element being bound.
+    /// </param>
+    /// <param name="input">
+    /// The <see cref="XmlReader"/> object.
+    /// </param>
+    /// <param name="reflector">
+    /// The reflector.
+    /// </param>
+    /// <param name="arguments">
+    /// The parent object's constructor arguments.
+    /// </param>
+    public abstract void ApplyWithTextContent(
+        XmlQualifiedName name,
+        XmlReader input,
+        Reflector<object> reflector,
+        object?[] arguments);
+
+    /// <summary>
     /// Processes an empty child element, applying the binding logic.
     /// </summary>
     /// <param name="unitType">

@@ -51,6 +51,40 @@ public sealed class MultipleSchemaType
     }
 
     /// <inheritdoc/>
+    public override void ApplyWithTextContent(
+        XmlQualifiedName name,
+        XmlReader input,
+        Reflector<object> reflector,
+        object?[] arguments)
+    {
+        var s = reflector.Sugarcoater;
+        var list = new List<object>();
+        for (;;)
+        {
+            var nodeType = Readers.SkipCharacters(input);
+            if (nodeType != XmlNodeType.Element)
+            {
+                break;
+            }
+            if (!Readers.Equals(input, name))
+            {
+                break;
+            }
+            var o = Readers.NewTextOnlyObject(input, name, s);
+            list.Add(o);
+        }
+        var count = list.Count;
+        // Create an array of the specific element type (e.g., T or
+        // BindResult<T>)
+        var array = Array.CreateInstance(reflector.UnitType, count);
+        for (var k = 0; k < count; ++k)
+        {
+            array.SetValue(list[k], k);
+        }
+        reflector.Inject(arguments, array);
+    }
+
+    /// <inheritdoc/>
     public override void ApplyWithEmptyElement(
         [Unused] Type unitType,
         [Unused] XmlReader input,

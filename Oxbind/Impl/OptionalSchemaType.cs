@@ -37,6 +37,26 @@ public sealed class OptionalSchemaType
     }
 
     /// <inheritdoc/>
+    public override void ApplyWithTextContent(
+        XmlQualifiedName name,
+        XmlReader input,
+        Reflector<object> reflector,
+        object?[] arguments)
+    {
+        var nodeType = Readers.SkipCharacters(input);
+        if (nodeType != XmlNodeType.Element)
+        {
+            return;
+        }
+        if (!Readers.Equals(input, name))
+        {
+            return;
+        }
+        var o = Readers.NewTextOnlyObject(input, name, reflector.Sugarcoater);
+        reflector.Inject(arguments, o);
+    }
+
+    /// <inheritdoc/>
     public override void ApplyWithEmptyElement(
         [Unused] Type unitType,
         [Unused] XmlReader input,

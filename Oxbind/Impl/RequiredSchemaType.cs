@@ -30,6 +30,19 @@ public sealed class RequiredSchemaType
     }
 
     /// <inheritdoc/>
+    public override void ApplyWithTextContent(
+        XmlQualifiedName name,
+        XmlReader input,
+        Reflector<object> reflector,
+        object?[] arguments)
+    {
+        _ = Readers.SkipCharacters(input);
+        Readers.ConfirmStartElement(input, name);
+        var o = Readers.NewTextOnlyObject(input, name, reflector.Sugarcoater);
+        reflector.Inject(arguments, o);
+    }
+
+    /// <inheritdoc/>
     public override void ApplyWithEmptyElement(
         Type unitType,
         XmlReader input,

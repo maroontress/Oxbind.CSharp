@@ -15,8 +15,8 @@ using System;
 /// <para>
 /// This attribute must be applied to a constructor parameter of type <see
 /// cref="string"/> or <see
-/// cref="BindResult{T}">BindResult&lt;string&gt;</see>. The class containing
-/// this constructor must also be annotated with <see
+/// cref="BindResult{T}"><![CDATA[BindResult<string>]]></see>. The class
+/// containing this constructor must also be annotated with <see
 /// cref="ForElementAttribute"/>.
 /// </para>
 /// <para>
@@ -27,12 +27,26 @@ using System;
 /// A constructor with a parameter attributed with <see
 /// cref="ForTextAttribute"/> must not contain:
 /// <list type="bullet">
-/// <item><description>Any other parameter attributed with <see
-/// cref="ForTextAttribute"/>.</description></item>
-/// <item><description>Any parameters attributed with <see
-/// cref="RequiredAttribute"/>, <see cref="OptionalAttribute"/>, or <see
-/// cref="MultipleAttribute"/>.</description></item>
+/// <item>
+/// <description>
+/// Any other parameter attributed with <see cref="ForTextAttribute"/>.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Any parameters attributed with <see cref="RequiredAttribute"/>, <see
+/// cref="OptionalAttribute"/>, or <see cref="MultipleAttribute"/>.
+/// </description>
+/// </item>
 /// </list>
+/// </para>
+/// <para>
+/// The <see cref="ForTextAttribute"/> is designed to bind the text content of
+/// the current element, making it mutually exclusive with attributes that bind
+/// to child elements. To bind to the text content of a child element, use
+/// the <see cref="ForChildElementAttribute"/> in combination with <see
+/// cref="RequiredAttribute"/>, <see cref="OptionalAttribute"/>, or <see
+/// cref="MultipleAttribute"/>.
 /// </para>
 /// <para>
 /// The parameter will never be <see langword="null"/>. If the element does not
